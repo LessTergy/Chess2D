@@ -194,8 +194,8 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 367491670}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1024, y: 768, z: 0}
-  m_LocalScale: {x: 1.0666667, y: 1.0666667, z: 1.0666667}
+  m_LocalPosition: {x: 512, y: 384, z: 0}
+  m_LocalScale: {x: 0.53333336, y: 0.53333336, z: 0.53333336}
   m_Children:
   - {fileID: 563958873}
   - {fileID: 1734279527}
@@ -416,6 +416,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2f49a82989e8d44989beb45b4def325, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  offset: {x: 62, y: 61}
+  cellPrefab: {fileID: 114657569288288960, guid: 915a149bb2b1f0848801e5f8471a4f7b,
+    type: 2}
+  debugGridTexture: {fileID: 2800000, guid: 3b519e34d8cfacd4a98f2a00f1f2f17a, type: 3}
 --- !u!114 &1734279529
 MonoBehaviour:
   m_ObjectHideFlags: 0
