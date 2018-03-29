@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
+[RequireComponent(typeof(Image))]
 public class ChessPiece : MonoBehaviour {
 
     public enum Type {
@@ -17,11 +19,5 @@ public class ChessPiece : MonoBehaviour {
     private Type _type;
     public Type type { get { return _type; } }
     
-    void Start () {
-		
-	}
-	
-	void Update () {
-		
-	}
+    
 }
