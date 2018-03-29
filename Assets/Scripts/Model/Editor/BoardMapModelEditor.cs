@@ -25,7 +25,7 @@ namespace Lesster.Chess2D {
         }
 
         private void CheckChessCount(List<CellInfo> cells) {
-            Dictionary<ChessPiece.Type, int> chessCountDict = new Dictionary<ChessPiece.Type, int>();
+            Dictionary<Piece.Type, int> chessCountDict = new Dictionary<Piece.Type, int>();
 
             foreach (var cell in cells) {
                 if (!chessCountDict.ContainsKey(cell.pieceType)) {
@@ -36,7 +36,7 @@ namespace Lesster.Chess2D {
             }
 
             foreach (var pair in chessCountDict) {
-                RangeInt pieceCountRange = ChessInfo.chessCountDict[pair.Key];
+                RangeInt pieceCountRange = GameInfo.pieceCountDict[pair.Key];
                 if (!pieceCountRange.IsInRange(pair.Value)) {
                     EditorGUILayout.HelpBox("Piece " + pair.Key.ToString() + " have incorrect count value", MessageType.Error);
                 }

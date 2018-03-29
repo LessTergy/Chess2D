@@ -9,7 +9,7 @@ namespace Lesster.Chess2D {
         private Vector2 offset;
 
         [SerializeField]
-        private ChessCell cellPrefab;
+        private Cell cellPrefab;
         private RectTransform rectT;
 
         private void Awake() {
@@ -19,14 +19,14 @@ namespace Lesster.Chess2D {
         }
 
         private void InitCells() {
-            int cellCount = ChessInfo.CELL_COUNT;
+            int cellCount = GameInfo.CELL_COUNT;
 
             float cellWidth = (rectT.rect.width - offset.x * 2) / cellCount;
             float cellHeight = (rectT.rect.height - offset.y * 2) / cellCount;
 
             for (int xIndex = 0; xIndex < cellCount; xIndex++) {
                 for (int yIndex = 0; yIndex < cellCount; yIndex++) {
-                    ChessCell cell = Instantiate(cellPrefab, transform);
+                    Cell cell = Instantiate(cellPrefab, transform);
                     cell.transform.localScale = Vector3.one;
 
                     Vector3 position = new Vector3(xIndex * cellWidth, yIndex * cellHeight);

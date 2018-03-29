@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c250ae4ba1237534cba0d8622256f132, type: 3}
+  m_Name: PieceContainer
+  m_EditorClassIdentifier: 
+  pieces:
+  - type: 0
+    prefab: {fileID: 114227425174727698, guid: 56988e093067b414cafcc48039194606, type: 2}
+  - type: 4
+    prefab: {fileID: 114650791863379530, guid: d912929f6f10f8047988a696543bd400, type: 2}
+  - type: 1
+    prefab: {fileID: 114167202145268446, guid: 63159fba17f8a3540bd04dfc45f3a1ad, type: 2}
+  - type: 3
+    prefab: {fileID: 114715130832424488, guid: 3b4f3e77a0201e247b3dcdfff7fedb61, type: 2}
+  - type: 2
+    prefab: {fileID: 114845781579626942, guid: 2cc34cb54339fe04f977e8f16c2fc333, type: 2}
+  - type: 5
+    prefab: {fileID: 114769812346887400, guid: 92465e24eb8795342a08f468966d25f0, type: 2}
