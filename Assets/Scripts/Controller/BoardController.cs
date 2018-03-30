@@ -31,8 +31,8 @@ namespace Lesstergy.Chess2D {
             int cellCount = Board.CELL_COUNT;
             cells = new Cell[cellCount, cellCount];
 
-            float cellWidth = (board.rectT.rect.width - board.offset.x * 2) / cellCount;
-            float cellHeight = (board.rectT.rect.height - board.offset.y * 2) / cellCount;
+            float cellWidth = board.widthOffset / cellCount;
+            float cellHeight = board.heightOffset / cellCount;
 
             for (int xIndex = 0; xIndex < cellCount; xIndex++) {
                 for (int yIndex = 0; yIndex < cellCount; yIndex++) {
@@ -48,8 +48,9 @@ namespace Lesstergy.Chess2D {
             cell.transform.localScale = Vector3.one;
 
             Vector3 position = new Vector3(xIndex * width, yIndex * height);
-            position.x -= (board.rectT.rect.width * board.rectT.pivot.x - board.offset.x);
-            position.y -= (board.rectT.rect.height * board.rectT.pivot.y - board.offset.y);
+
+            position.x -= (board.width * board.rectT.pivot.x - board.xOffset);
+            position.y -= (board.height * board.rectT.pivot.y - board.yOffset);
             cell.transform.localPosition = position;
 
             RectTransform cellRectT = cell.transform as RectTransform;

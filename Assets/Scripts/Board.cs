@@ -9,9 +9,17 @@ namespace Lesstergy.Chess2D {
 
         [SerializeField]
         private Vector2 _offset;
-        public Vector2 offset { get { return _offset; } }
+        public float xOffset { get { return width * _offset.x; } }
+        public float yOffset { get { return height * _offset.y; } }
         
+        public float width { get { return rectT.rect.width; } }
+        public float widthOffset { get { return width - (xOffset * 2); } }
+
+        public float height { get { return rectT.rect.height; } }
+        public float heightOffset { get { return height - (yOffset * 2); } }
+
         public RectTransform rectT { get; private set; }
+
 
         public void Awake() {
             rectT = transform as RectTransform;
@@ -24,11 +32,11 @@ namespace Lesstergy.Chess2D {
 
         private void OnDrawGizmosSelected() {
             //Look at grid interactive
-            RectTransform rectT = transform as RectTransform;
+            rectT = transform as RectTransform;
             Rect rect = rectT.rect;
 
-            rect.width = (rect.width - offset.x * 2) * transform.lossyScale.x;
-            rect.height = (rect.height - offset.y * 2) * transform.lossyScale.y;
+            rect.width = widthOffset * transform.lossyScale.x;
+            rect.height = heightOffset * transform.lossyScale.y;
             rect.position = new Vector2(rectT.position.x - rect.width * rectT.pivot.x, rectT.position.y - rect.height * rectT.pivot.y);
 
             Gizmos.DrawGUITexture(rect, debugGridTexture);
