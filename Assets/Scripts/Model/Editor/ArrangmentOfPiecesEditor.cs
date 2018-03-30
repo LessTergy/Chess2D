@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using RangeInt = Lesster.Math.RangeInt;
+using RangeInt = Lesstergy.Math.RangeInt;
 
-namespace Lesster.Chess2D {
+namespace Lesstergy.Chess2D {
 
     [CustomEditor(typeof(ArrangmentOfPieces))]
     public class ArrangmentOfPiecesEditor : Editor {

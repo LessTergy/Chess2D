@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-namespace Lesster.Chess2D {
+namespace Lesstergy.Chess2D {
 
     [Serializable]
     public class CellInfo {

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Lesster.Chess2D {
+namespace Lesstergy.Chess2D {
 
     public abstract class IBoardContoller : MonoBehaviour {
 

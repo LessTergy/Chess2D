@@ -22,13 +22,39 @@ GameObject:
   - component: {fileID: 222919719474214628}
   - component: {fileID: 114856785149433488}
   - component: {fileID: 114650791863379530}
+  - component: {fileID: 114269846713309768}
+  - component: {fileID: 114590601254434820}
   m_Layer: 5
-  m_Name: Bishop
+  m_Name: BasePiece
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &114269846713309768
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1385082436046198}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e971f93c3364bec4da565edaea590fe8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114590601254434820
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1385082436046198}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1862395651, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates: []
+  delegates: []
 --- !u!114 &114650791863379530
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -40,7 +66,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fcc9bfd4fd582647974846bc5f56597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _type: 4
+  interactive: {fileID: 0}
 --- !u!114 &114856785149433488
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -60,7 +86,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300004, guid: 8ee939d77af9a6c42bcd1d9b7d64b50c, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using RangeInt = Lesster.Math.RangeInt;
+using RangeInt = Lesstergy.Math.RangeInt;
 
-namespace Lesster.Chess2D {
+namespace Lesstergy.Chess2D {
 
     public static class GameInfo {
         

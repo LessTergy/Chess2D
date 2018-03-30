@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-namespace Lesster.Chess2D {
+namespace Lesstergy.Chess2D {
 
     [CustomPropertyDrawer(typeof(CellInfo))]
     public class CellInfoPropertyDrawer : PropertyDrawer {

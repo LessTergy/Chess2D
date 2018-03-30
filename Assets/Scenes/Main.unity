@@ -680,8 +680,8 @@ MonoBehaviour:
   arrangmentOfPieces: {fileID: 11400000, guid: 1a75eab406d726b4aa4ebb1e6da4d543, type: 2}
   boardController: {fileID: 1876080209}
   piecesParent: {fileID: 1152494345}
-  whiteSideColor: {r: 1, g: 1, b: 1, a: 1}
-  blackSideColor: {r: 0.2647059, g: 0.2647059, b: 0.2647059, a: 1}
+  whiteTeamColor: {r: 1, g: 1, b: 1, a: 1}
+  blackTeamColor: {r: 0.20588237, g: 0.20588237, b: 0.20588237, a: 1}
 --- !u!1 &1914472312
 GameObject:
   m_ObjectHideFlags: 0

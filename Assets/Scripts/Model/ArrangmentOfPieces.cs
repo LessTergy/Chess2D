@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Lesster.Chess2D {
+namespace Lesstergy.Chess2D {
 
     [CreateAssetMenu(fileName = "ArrangmentOfPieces", menuName = "Chess2D/ArrangmentOfPieces")]
     public class ArrangmentOfPieces : ScriptableObject {

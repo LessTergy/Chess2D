@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Lesster.Math {
+namespace Lesstergy.Math {
 
     [Serializable]
     public class RangeInt {

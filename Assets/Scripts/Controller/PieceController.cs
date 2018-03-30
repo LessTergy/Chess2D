@@ -1,41 +1,61 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections.Generic;
+using Lesstergy.UI;
 
-namespace Lesster.Chess2D {
+namespace Lesstergy.Chess2D {
 
     public class PieceController : MonoBehaviour, IController {
 
-        public PiecePrefabContainer piecePrefabContainer;
+        public PiecePrefabBuilder piecePrefabContainer;
         public ArrangmentOfPieces arrangmentOfPieces;
 
         public IBoardContoller boardController;
         public GameObject piecesParent;
 
-        public Color whiteSideColor;
-        public Color blackSideColor;
+        public Color whiteTeamColor;
+        public Color blackTeamColor;
 
         public void Initialize() {
             piecePrefabContainer.Init();
 
-            CreatePieces(arrangmentOfPieces.whitePieceCells, ChessSide.Type.White, whiteSideColor);
-            CreatePieces(arrangmentOfPieces.blackPieceCells, ChessSide.Type.Black, blackSideColor);
+            CreateTeamPieces(arrangmentOfPieces.whitePieceCells, ChessTeam.Type.White, whiteTeamColor);
+            CreateTeamPieces(arrangmentOfPieces.blackPieceCells, ChessTeam.Type.Black, blackTeamColor);
         }
 
-        private void CreatePieces(List<CellInfo> cellInfoList, ChessSide.Type sideType, Color sideColor) {
+        private void CreateTeamPieces(List<CellInfo> cellInfoList, ChessTeam.Type teamType, Color teamColor) {
             foreach (var cellInfo in cellInfoList) {
                 Cell actualCell = boardController.GetCell(cellInfo.coord.x, cellInfo.coord.y);
 
+                //Init
                 Piece piece = piecePrefabContainer.CreatePiece(cellInfo.pieceType);
-                piece.name = sideType.ToString() + " " + cellInfo.pieceType.ToString();
-                piece.Initialize(sideType, sideColor);
+                piece.name = teamType.ToString() + " " + cellInfo.pieceType.ToString();
+                piece.InitChessTeam(teamType, teamColor);
 
+                //Size and position
                 RectTransform pieceRect = piece.transform as RectTransform;
                 pieceRect.sizeDelta = actualCell.rectT.sizeDelta;
                 piece.transform.SetParent(piecesParent.transform);
                 piece.transform.position = actualCell.transform.position;
                 piece.transform.localScale = Vector3.one;
+
+                //Events
+                piece.interactive.OnTouchDown += delegate { Piece_OnTouchDown(piece); };
+                piece.interactive.OnTouchUp += delegate { Piece_OnTouchDown(piece); };
+                piece.interactive.OnMove += delegate (InteractiveEventArgs args) { Piece_OnMove(args, piece); };
             }
+        }
+
+        private void Piece_OnTouchDown(Piece piece) {
+
+        }
+
+        private void Piece_OnTouchUp(Piece piece) {
+
+        }
+
+        private void Piece_OnMove(InteractiveEventArgs eventArgs, Piece piece) {
+            eventArgs.sender.transform.position += (Vector3) eventArgs.data.delta;
         }
     }
 }

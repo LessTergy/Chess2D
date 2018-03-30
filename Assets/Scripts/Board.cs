@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Lesster.Chess2D {
+namespace Lesstergy.Chess2D {
     public class Board : MonoBehaviour {
 
         public const int CELL_COUNT = 8;
