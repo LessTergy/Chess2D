@@ -21,6 +21,17 @@ namespace Lesster.Chess2D {
         private Type _type;
         public Type type { get { return _type; } }
 
+        public ChessSide.Type sideType { get; private set; }
 
+        private Image image;
+
+        private void Awake() {
+            image = GetComponent<Image>();
+        }
+
+        public void Initialize(ChessSide.Type sideType, Color sideColor) {
+            this.sideType = sideType;
+            image.color = sideColor;
+        }
     }
 }

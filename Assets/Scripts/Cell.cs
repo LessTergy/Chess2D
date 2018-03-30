@@ -8,6 +8,10 @@ namespace Lesster.Chess2D {
     [RequireComponent(typeof(Image))]
     public class Cell : MonoBehaviour {
 
-    }
+        public RectTransform rectT { get; private set; }
 
+        private void Awake() {
+            rectT = transform as RectTransform;
+        }
+    }
 }

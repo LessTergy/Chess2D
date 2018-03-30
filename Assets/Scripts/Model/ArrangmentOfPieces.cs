@@ -4,8 +4,8 @@ using System.Collections.Generic;
 
 namespace Lesster.Chess2D {
 
-    [CreateAssetMenu(fileName = "MapModel", menuName = "Chess2D/MapModel")]
-    public class BoardMapModel : ScriptableObject {
+    [CreateAssetMenu(fileName = "ArrangmentOfPieces", menuName = "Chess2D/ArrangmentOfPieces")]
+    public class ArrangmentOfPieces : ScriptableObject {
         public List<CellInfo> whitePieceCells;
         public List<CellInfo> blackPieceCells;
     }

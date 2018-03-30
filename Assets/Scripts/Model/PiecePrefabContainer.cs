@@ -5,14 +5,14 @@ using System;
 
 namespace Lesster.Chess2D {
 
-    [CreateAssetMenu(fileName = "PieceContainer", menuName = "Chess2D/PieceContainer")]
-    public class PieceContainer : ScriptableObject {
+    [CreateAssetMenu(fileName = "PiecePrefabContainer", menuName = "Chess2D/PiecePrefabContainer")]
+    public class PiecePrefabContainer : ScriptableObject {
 
         [SerializeField]
         private List<PiecePair> pieces;
         private Dictionary<Piece.Type, Piece> piecesPrefabDict;
-
-        private void Awake() {
+        
+        public void Init() {
             piecesPrefabDict = new Dictionary<Piece.Type, Piece>();
 
             foreach (var piecePair in pieces) {
@@ -20,7 +20,7 @@ namespace Lesster.Chess2D {
             }
         }
 
-        public Piece GetNewPiece(Piece.Type type) {
+        public Piece CreatePiece(Piece.Type type) {
             return Instantiate(piecesPrefabDict[type]);
         }
         

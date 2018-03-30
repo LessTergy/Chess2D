@@ -6,22 +6,25 @@ using RangeInt = Lesster.Math.RangeInt;
 
 namespace Lesster.Chess2D {
 
-    [CustomEditor(typeof(BoardMapModel))]
-    public class BoardMapModelEditor : Editor {
+    [CustomEditor(typeof(ArrangmentOfPieces))]
+    public class ArrangmentOfPiecesEditor : Editor {
 
         public override void OnInspectorGUI() {
             base.OnInspectorGUI();
 
-            CheckBoardOnCorrect();
+            CheckArrangment();
         }
 
-        private void CheckBoardOnCorrect() {
-            BoardMapModel mapModel = (BoardMapModel)target;
+        private void CheckArrangment() {
+            ArrangmentOfPieces arrangment = (ArrangmentOfPieces)target;
 
-            CheckChessCount(mapModel.whitePieceCells);
-            CheckChessCount(mapModel.blackPieceCells);
+            CheckChessCount(arrangment.whitePieceCells);
+            CheckChessCount(arrangment.blackPieceCells);
 
-            CheckSameCells(mapModel.whitePieceCells, mapModel.blackPieceCells);
+            CheckSameCells(arrangment.whitePieceCells, arrangment.blackPieceCells);
+
+            CheckCoordBounds(arrangment.whitePieceCells);
+            CheckCoordBounds(arrangment.blackPieceCells);
         }
 
         private void CheckChessCount(List<CellInfo> cells) {
@@ -65,7 +68,18 @@ namespace Lesster.Chess2D {
 
             foreach (var pair in sameCellCount) {
                 if (pair.Value > 1) {
-                    EditorGUILayout.HelpBox("Coord " + pair.Key.ToString() + " have incorrect count value", MessageType.Error);
+                    EditorGUILayout.HelpBox("Coord " + pair.Key.ToString() + " have duplicates", MessageType.Error);
+                }
+            }
+        }
+
+        private void CheckCoordBounds(List<CellInfo> cells) {
+            foreach (var cell in cells) {
+                bool xIsIncorrect = cell.coord.x < 0 || cell.coord.x >= Board.CELL_COUNT;
+                bool yIsIncorrect = cell.coord.y < 0 || cell.coord.y >= Board.CELL_COUNT;
+
+                if (xIsIncorrect || yIsIncorrect) {
+                    EditorGUILayout.HelpBox("Coord " + cell.coord.ToString() + " have incorrect value", MessageType.Error);
                 }
             }
         }
