@@ -46,6 +46,8 @@ namespace Lesstergy.Chess2D {
             }
         }
 
+
+        //Piece Move events
         private void Piece_OnTouchDown(Piece piece) {
 
         }

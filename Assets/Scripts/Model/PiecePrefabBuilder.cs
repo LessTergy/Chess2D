@@ -5,7 +5,7 @@ using System;
 
 namespace Lesstergy.Chess2D {
 
-    [CreateAssetMenu(fileName = "PiecePrefabBuilder", menuName = "Chess2D/PiecePrefabBuilder")]
+    [CreateAssetMenu(fileName = "PiecePrefabBuilder", menuName = "Chess2D/Piece Prefab Builder")]
     public class PiecePrefabBuilder : ScriptableObject {
 
         [SerializeField]

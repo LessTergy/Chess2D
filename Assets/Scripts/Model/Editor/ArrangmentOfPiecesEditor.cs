@@ -18,6 +18,10 @@ namespace Lesstergy.Chess2D {
         private void CheckArrangment() {
             ArrangmentOfPieces arrangment = (ArrangmentOfPieces)target;
 
+            if (arrangment.whitePieceCells == null || arrangment.blackPieceCells == null) {
+                return;
+            }
+
             CheckChessCount(arrangment.whitePieceCells);
             CheckChessCount(arrangment.blackPieceCells);
 

@@ -19,9 +19,9 @@ namespace Lesstergy.Chess2D {
         }
         
         public Type type { get; private set; }
-
         public ChessTeam.Type sideType { get; private set; }
 
+        //Components
         private Image image;
         public InteractiveObject interactive;
 
