@@ -154,6 +154,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   boardController: {fileID: 1876080209}
   pieceController: {fileID: 1888821275}
+  chessboard: {fileID: 1734279528}
+  cellPrefab: {fileID: 114657569288288960, guid: 915a149bb2b1f0848801e5f8471a4f7b,
+    type: 2}
+  piecePrefabBuilder: {fileID: 11400000, guid: c7c264af98f39f04c9f2d7746dba892c, type: 2}
+  arrangment: {fileID: 11400000, guid: 1a75eab406d726b4aa4ebb1e6da4d543, type: 2}
+  whiteTeamColor: {r: 1, g: 1, b: 1, a: 1}
+  blackTeamColor: {r: 0.18382353, g: 0.18382353, b: 0.18382353, a: 1}
+  pieceGroupParent: {fileID: 1152494345}
+  cellGroupParent: {fileID: 456302139}
 --- !u!1 &367491670
 GameObject:
   m_ObjectHideFlags: 0
@@ -645,10 +654,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 266cf62d905130240a2d37dce6f060e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cellsParent: {fileID: 456302139}
-  cellPrefab: {fileID: 114657569288288960, guid: 915a149bb2b1f0848801e5f8471a4f7b,
-    type: 2}
-  board: {fileID: 1734279528}
 --- !u!1 &1888821273
 GameObject:
   m_ObjectHideFlags: 0
@@ -689,13 +694,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de7dab502a4d4eb40949f0b252b873e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  piecePrefabContainer: {fileID: 11400000, guid: c7c264af98f39f04c9f2d7746dba892c,
-    type: 2}
-  arrangmentOfPieces: {fileID: 11400000, guid: 1a75eab406d726b4aa4ebb1e6da4d543, type: 2}
-  boardController: {fileID: 1876080209}
-  piecesParent: {fileID: 1152494345}
-  whiteTeamColor: {r: 1, g: 1, b: 1, a: 1}
-  blackTeamColor: {r: 0.20588237, g: 0.20588237, b: 0.20588237, a: 1}
 --- !u!1 &1914472312
 GameObject:
   m_ObjectHideFlags: 0

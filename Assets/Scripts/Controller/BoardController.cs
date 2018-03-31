@@ -5,23 +5,23 @@ using UnityEngine;
 
 namespace Lesstergy.Chess2D {
 
-    public abstract class IBoardContoller : MonoBehaviour {
-
-        public abstract Cell GetCell(int x, int y);
-    }
-
     public class BoardController : IBoardContoller, IController {
 
-        [SerializeField]
-        private GameObject cellsParent;
-
-        [SerializeField]
-        private Cell cellPrefab;
-
-        [SerializeField]
+        #region Injections
         private Board board;
+        
+        private Cell cellPrefab;
+        private GameObject cellParent;
+        #endregion
 
         private Cell[,] cells;
+
+
+        public void Inject(Board board, Cell cellPrefab, GameObject cellParent) {
+            this.board = board;
+            this.cellPrefab = cellPrefab;
+            this.cellParent = cellParent;
+        }
         
         public void Initialize() {
             CreateCells();
@@ -43,7 +43,7 @@ namespace Lesstergy.Chess2D {
         }
 
         private Cell InitCell(int xIndex, int yIndex, float width, float height) {
-            Cell cell = Instantiate(cellPrefab, cellsParent.transform);
+            Cell cell = Instantiate(cellPrefab, cellParent.transform);
             cell.name = "Cell " + xIndex + ":" + yIndex; 
             cell.transform.localScale = Vector3.one;
 

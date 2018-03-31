@@ -5,19 +5,33 @@ using Lesstergy.UI;
 
 namespace Lesstergy.Chess2D {
 
-    public class PieceController : MonoBehaviour, IController {
+    public class PieceController : IPieceController, IController {
 
-        public PiecePrefabBuilder piecePrefabContainer;
-        public ArrangmentOfPieces arrangmentOfPieces;
+        #region Injections
+        private IBoardContoller boardController;
 
-        public IBoardContoller boardController;
-        public GameObject piecesParent;
+        private ArrangmentOfPieces arrangmentOfPieces;
+        
+        private PiecePrefabBuilder piecePrefabBuilder;
+        private GameObject piecesParent;
 
-        public Color whiteTeamColor;
-        public Color blackTeamColor;
+        //Colors
+        private Color whiteTeamColor;
+        private Color blackTeamColor;
+        #endregion
+
+        public void Inject(IBoardContoller bc, ArrangmentOfPieces aop, PiecePrefabBuilder ppb, GameObject pieceParent, Color whiteTeam, Color blackTeam) {
+            boardController = bc;
+            arrangmentOfPieces = aop;
+            piecePrefabBuilder = ppb;
+            piecesParent = pieceParent;
+
+            whiteTeamColor = whiteTeam;
+            blackTeamColor = blackTeam;
+        }
 
         public void Initialize() {
-            piecePrefabContainer.Init();
+            piecePrefabBuilder.Init();
 
             CreateTeamPieces(arrangmentOfPieces.whitePieceCells, ChessTeam.Type.White, whiteTeamColor);
             CreateTeamPieces(arrangmentOfPieces.blackPieceCells, ChessTeam.Type.Black, blackTeamColor);
@@ -28,7 +42,7 @@ namespace Lesstergy.Chess2D {
                 Cell actualCell = boardController.GetCell(cellInfo.coord.x, cellInfo.coord.y);
 
                 //Init
-                Piece piece = piecePrefabContainer.CreatePiece(cellInfo.pieceType);
+                Piece piece = piecePrefabBuilder.CreatePiece(cellInfo.pieceType);
                 piece.name = teamType.ToString() + " " + cellInfo.pieceType.ToString();
                 piece.InitChessTeam(teamType, teamColor);
 
