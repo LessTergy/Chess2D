@@ -16,8 +16,12 @@ MonoBehaviour:
     pieceType: 0
   - coord: {x: 3, y: 4}
     pieceType: 5
+  - coord: {x: 6, y: 1}
+    pieceType: 5
   blackPieceCells:
   - coord: {x: 4, y: 7}
     pieceType: 0
   - coord: {x: 2, y: 6}
+    pieceType: 5
+  - coord: {x: 5, y: 3}
     pieceType: 5
