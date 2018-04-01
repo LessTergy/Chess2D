@@ -9,6 +9,7 @@ namespace Lesstergy.Chess2D {
 
         #region Injections
         private IBoardContoller boardController;
+        private PieceMoveController pieceMoveController;
 
         private ArrangmentOfPieces arrangmentOfPieces;
         
@@ -20,8 +21,9 @@ namespace Lesstergy.Chess2D {
         private Color blackTeamColor;
         #endregion
 
-        public void Inject(IBoardContoller bc, ArrangmentOfPieces aop, PiecePrefabBuilder ppb, GameObject pieceParent, Color whiteTeam, Color blackTeam) {
+        public void Inject(IBoardContoller bc, PieceMoveController pmc, ArrangmentOfPieces aop, PiecePrefabBuilder ppb, GameObject pieceParent, Color whiteTeam, Color blackTeam) {
             boardController = bc;
+            pieceMoveController = pmc;
             arrangmentOfPieces = aop;
             piecePrefabBuilder = ppb;
             piecesParent = pieceParent;
@@ -45,6 +47,9 @@ namespace Lesstergy.Chess2D {
                 Piece piece = piecePrefabBuilder.CreatePiece(cellInfo.pieceType);
                 piece.name = teamType.ToString() + " " + cellInfo.pieceType.ToString();
                 piece.InitChessTeam(teamType, teamColor);
+                piece.cellCoord = cellInfo.coord;
+
+                actualCell.currentPiece = piece;
 
                 //Size and position
                 RectTransform pieceRect = piece.transform as RectTransform;
@@ -53,25 +58,11 @@ namespace Lesstergy.Chess2D {
                 piece.transform.position = actualCell.transform.position;
                 piece.transform.localScale = Vector3.one;
 
-                //Events
-                piece.interactive.OnTouchDown += delegate { Piece_OnTouchDown(piece); };
-                piece.interactive.OnTouchUp += delegate { Piece_OnTouchDown(piece); };
-                piece.interactive.OnMove += delegate (InteractiveEventArgs args) { Piece_OnMove(args, piece); };
+                pieceMoveController.InitPiece(piece);
             }
         }
 
 
-        //Piece Move events
-        private void Piece_OnTouchDown(Piece piece) {
-
-        }
-
-        private void Piece_OnTouchUp(Piece piece) {
-
-        }
-
-        private void Piece_OnMove(InteractiveEventArgs eventArgs, Piece piece) {
-            eventArgs.sender.transform.position += (Vector3) eventArgs.data.delta;
-        }
+        
     }
 }

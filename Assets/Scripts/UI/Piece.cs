@@ -21,6 +21,10 @@ namespace Lesstergy.Chess2D {
         public Type type { get; private set; }
         public ChessTeam.Type sideType { get; private set; }
 
+        public List<PieceMoveAlgorithm> moves { get; private set; }
+
+        public Vector2Int cellCoord;
+
         //Components
         private Image image;
         public InteractiveObject interactive;
@@ -30,9 +34,11 @@ namespace Lesstergy.Chess2D {
             interactive = GetComponent<InteractiveObject>();
         }
 
-        public void Initialize(Type type, Sprite sprite) {
+        public void Initialize(Type type, Sprite sprite, List<PieceMoveAlgorithm> moves) {
             this.type = type;
             image.sprite = sprite;
+
+            this.moves = moves;
         }
 
         public void InitChessTeam(ChessTeam.Type teamType, Color teamColor) {

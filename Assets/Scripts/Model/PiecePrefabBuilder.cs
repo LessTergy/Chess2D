@@ -27,7 +27,7 @@ namespace Lesstergy.Chess2D {
             Piece piece = Instantiate(piecePrefab);
 
             PiecePrefs prefs = piecesPrefsDict[type];
-            piece.Initialize(prefs.type, prefs.sprite);
+            piece.Initialize(prefs.type, prefs.sprite, new List<PieceMoveAlgorithm>());
             return piece;
         }
 

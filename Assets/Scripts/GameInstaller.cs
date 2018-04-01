@@ -9,6 +9,7 @@ namespace Lesstergy.Chess2D {
         [Header("Controllers")]
         public BoardController boardController;
         public PieceController pieceController;
+        public PieceMoveController pieceMoveController;
 
         [Space(10)]
         [Header("Objects")]
@@ -40,7 +41,7 @@ namespace Lesstergy.Chess2D {
 
         private void Inject() {
             boardController.Inject(chessboard, cellPrefab, cellGroupParent);
-            pieceController.Inject(boardController, arrangment, piecePrefabBuilder, pieceGroupParent, whiteTeamColor, blackTeamColor);
+            pieceController.Inject(boardController, pieceMoveController, arrangment, piecePrefabBuilder, pieceGroupParent, whiteTeamColor, blackTeamColor);
         }
 
         private void Initialize() {

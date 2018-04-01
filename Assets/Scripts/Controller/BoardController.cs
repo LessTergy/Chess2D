@@ -44,9 +44,10 @@ namespace Lesstergy.Chess2D {
 
         private Cell InitCell(int xIndex, int yIndex, float width, float height) {
             Cell cell = Instantiate(cellPrefab, cellParent.transform);
-            cell.name = "Cell " + xIndex + ":" + yIndex; 
-            cell.transform.localScale = Vector3.one;
+            cell.name = "Cell " + xIndex + ":" + yIndex;
+            cell.Init(new Vector2Int(xIndex, yIndex));
 
+            cell.transform.localScale = Vector3.one;
             Vector3 position = new Vector3(xIndex * width, yIndex * height);
 
             position.x -= (board.width * board.rectT.pivot.x - board.xOffset);
