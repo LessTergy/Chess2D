@@ -63,6 +63,25 @@ namespace Lesstergy.Chess2D {
         public override Cell GetCell(int x, int y) {
             return cells[x, y];
         }
+
+        public override Cell.State GetCellStateForPiece(int x, int y, Piece piece) {
+            if ((x < 0 || x > 7) || (y < 0 || y > 7)) {
+                return Cell.State.OutOfBounds;
+            }
+
+            Cell targetCell = GetCell(x, y);
+
+            if (targetCell.currentPiece != null) {
+
+                if (piece.teamType == targetCell.currentPiece.teamType) {
+                    return Cell.State.Friendly;
+                } else if (piece.teamType != targetCell.currentPiece.teamType) {
+                    return Cell.State.Enemy;
+                }
+            }
+
+            return Cell.State.Free;
+        }
     }
 
 }

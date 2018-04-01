@@ -1,15 +1,19 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Lesstergy.UI;
-using System;
 
 namespace Lesstergy.Chess2D {
 
     public class PieceMoveController : MonoBehaviour, IController {
 
-        private List<Cell> availableCellForMove;
+        private List<MoveInfo> availableMoves;
         private Cell targetCell;
+
+        private BoardController boardController;
+
+        public void Inject(BoardController bc) {
+            this.boardController = bc;
+        }
 
         public void Initialize() {
         }
@@ -19,35 +23,44 @@ namespace Lesstergy.Chess2D {
             piece.interactive.OnTouchUp += delegate { Piece_OnTouchDown(piece); };
             piece.interactive.OnMove += delegate (InteractiveEventArgs args) { Piece_OnMove(args, piece); };
         }
-        
 
+        //Start moving
         private void Piece_OnTouchDown(Piece piece) {
-            GetAvailableCellsForMove(piece);
+            GetAvailableMoves(piece);
+            SetHighlightCells(true);
         }
 
-        private void GetAvailableCellsForMove(Piece piece) {
-            availableCellForMove = new List<Cell>();
+        private void GetAvailableMoves(Piece piece) {
+            availableMoves = new List<MoveInfo>();
 
             foreach (PieceMoveAlgorithm move in piece.moves) {
-
+                availableMoves.AddRange(move.GetAvailableMoves(piece, boardController));
             }
         }
 
-        private void Piece_OnTouchUp(Piece piece) {
-            targetCell = null;
-        }
-
+        //Move
         private void Piece_OnMove(InteractiveEventArgs eventArgs, Piece piece) {
             eventArgs.sender.transform.position += (Vector3)eventArgs.data.delta;
 
-            foreach (Cell cell in availableCellForMove) {
-                if (RectTransformUtility.RectangleContainsScreenPoint(cell.rectT, Input.mousePosition)) {
-                    targetCell = cell;
+            foreach (MoveInfo moveInfo in availableMoves) {
+                if (RectTransformUtility.RectangleContainsScreenPoint(moveInfo.cell.rectT, Input.mousePosition)) {
+                    targetCell = moveInfo.cell;
                     break;
                 }
             }
         }
 
+        //Finish move
+        private void Piece_OnTouchUp(Piece piece) {
+            targetCell = null;
+        }
+        
+        //Other
+        private void SetHighlightCells(bool flag) {
+            foreach (var move in availableMoves) {
+                move.cell.enabled = flag;
+            }
+        }
     }
 
 }

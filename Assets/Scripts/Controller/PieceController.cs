@@ -47,9 +47,9 @@ namespace Lesstergy.Chess2D {
                 Piece piece = piecePrefabBuilder.CreatePiece(cellInfo.pieceType);
                 piece.name = teamType.ToString() + " " + cellInfo.pieceType.ToString();
                 piece.InitChessTeam(teamType, teamColor);
-                piece.cellCoord = cellInfo.coord;
+                piece.coord = cellInfo.coord;
 
-                actualCell.currentPiece = piece;
+                actualCell.SetPiece(piece);
 
                 //Size and position
                 RectTransform pieceRect = piece.transform as RectTransform;

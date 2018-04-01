@@ -42,6 +42,7 @@ namespace Lesstergy.Chess2D {
         private void Inject() {
             boardController.Inject(chessboard, cellPrefab, cellGroupParent);
             pieceController.Inject(boardController, pieceMoveController, arrangment, piecePrefabBuilder, pieceGroupParent, whiteTeamColor, blackTeamColor);
+            pieceMoveController.Inject(boardController);
         }
 
         private void Initialize() {

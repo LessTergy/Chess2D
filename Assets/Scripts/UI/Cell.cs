@@ -7,13 +7,12 @@ namespace Lesstergy.Chess2D {
 
     [RequireComponent(typeof(Image))]
     public class Cell : MonoBehaviour {
-
-        [HideInInspector]
-        public Piece currentPiece;
+        
+        public Piece currentPiece { get; private set; }
         public Vector2Int coord { get; private set; }
 
         //Components
-        private Image image;
+        public Image image { get; private set; }
         public RectTransform rectT { get; private set; }
 
         private void Awake() {
@@ -23,6 +22,14 @@ namespace Lesstergy.Chess2D {
 
         public void Init(Vector2Int coord) {
             this.coord = coord;
+        }
+
+        public void SetPiece(Piece piece) {
+            if (currentPiece == null) {
+                currentPiece = piece;
+            } else {
+                Debug.Log("Can't set piece if not empty");
+            }
         }
 
         public enum State {

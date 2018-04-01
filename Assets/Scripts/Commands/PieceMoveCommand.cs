@@ -5,6 +5,10 @@ using UnityEngine;
 
 public class PieceMoveCommand : ICommand {
 
+    public void Init() {
+
+    }
+
     public void Execute() {
     }
 
