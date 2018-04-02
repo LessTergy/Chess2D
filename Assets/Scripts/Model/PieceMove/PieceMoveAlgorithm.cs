@@ -85,8 +85,8 @@ namespace Lesstergy.Chess2D {
             
         }
 
-        protected Vector3Int InvertVectorMoveByTeam(Vector3Int move, ChessTeam.Type teamType) {
-            return (teamType == ChessTeam.Type.White) ? move : (move * -1);
+        protected Vector3Int InvertVectorMoveByTeam(Vector3Int moveVec, ChessTeam.Type teamType) {
+            return (teamType == ChessTeam.Type.White) ? moveVec : (moveVec * -1);
         }
     }
 }

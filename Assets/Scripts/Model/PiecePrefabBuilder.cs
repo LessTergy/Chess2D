@@ -45,6 +45,7 @@ namespace Lesstergy.Chess2D {
             if (pieceType == Piece.Type.Pawn) {
                 moves.Add(new PawnNormalMove());
                 moves.Add(new PawnKillMove());
+                moves.Add(new PawnEnPassantMove());
             } else
             if (pieceType == Piece.Type.Rook) {
                 moves.Add(new RookMove());

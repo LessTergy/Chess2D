@@ -14,16 +14,16 @@ namespace Lesstergy.Chess2D {
             moveVector = new Vector3Int(0, 1, 0);
         }
 
-        public override List<MoveInfo> GetAvailableMoves(Piece piece, IBoardContoller boardController) {
+        public override List<MoveInfo> GetAvailableMoves(Piece movingPiece, IBoardContoller boardController) {
             List<MoveInfo> moves = new List<MoveInfo>();
 
-            Vector3Int pMoveVector = InvertVectorMoveByTeam(moveVector, piece.teamType);
+            Vector3Int pMoveVector = InvertVectorMoveByTeam(moveVector, movingPiece.teamType);
 
-            int startRow = (piece.teamType == ChessTeam.Type.White) ? whiteStartRow : blackStartRow;
-            bool standAtStart = (piece.coord.y == startRow);
+            int startRow = (movingPiece.teamType == ChessTeam.Type.White) ? whiteStartRow : blackStartRow;
+            bool standAtStart = (movingPiece.coord.y == startRow);
 
             int movement = (standAtStart) ? 2 : 1;
-            FillCellPath(moves, piece, boardController, pMoveVector.y, movement);
+            FillCellPath(moves, movingPiece, boardController, pMoveVector.y, movement);
 
             return moves;
         }

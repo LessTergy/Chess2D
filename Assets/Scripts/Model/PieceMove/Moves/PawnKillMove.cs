@@ -10,13 +10,15 @@ namespace Lesstergy.Chess2D {
             moveVector = new Vector3Int(0, 0, 1);
         }
 
-        public override List<MoveInfo> GetAvailableMoves(Piece piece, IBoardContoller boardController) {
+        public override List<MoveInfo> GetAvailableMoves(Piece movingPiece, IBoardContoller boardController) {
             List<MoveInfo> moves = new List<MoveInfo>();
 
-            Vector3Int pMoveVector = InvertVectorMoveByTeam(moveVector, piece.teamType);
+            Vector3Int pMoveVector = InvertVectorMoveByTeam(moveVector, movingPiece.teamType);
 
-            FillKillMove(moves, boardController, piece, piece.coord.x - pMoveVector.z, piece.coord.y + pMoveVector.z);
-            FillKillMove(moves, boardController, piece, piece.coord.x + pMoveVector.z, piece.coord.y + pMoveVector.z);
+            Vector2Int coord = movingPiece.coord;
+
+            FillKillMove(moves, boardController, movingPiece, coord.x - pMoveVector.z, coord.y + pMoveVector.z);
+            FillKillMove(moves, boardController, movingPiece, coord.x + pMoveVector.z, coord.y + pMoveVector.z);
 
             return moves;
         }

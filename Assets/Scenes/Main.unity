@@ -159,7 +159,7 @@ MonoBehaviour:
   cellPrefab: {fileID: 114657569288288960, guid: 915a149bb2b1f0848801e5f8471a4f7b,
     type: 2}
   piecePrefabBuilder: {fileID: 11400000, guid: c7c264af98f39f04c9f2d7746dba892c, type: 2}
-  arrangment: {fileID: 11400000, guid: 1a75eab406d726b4aa4ebb1e6da4d543, type: 2}
+  arrangment: {fileID: 11400000, guid: 943a7f76b2c2d2f40afe8830663c4b6d, type: 2}
   pieceGroupParent: {fileID: 1152494345}
   cellGroupParent: {fileID: 456302139}
 --- !u!1 &367491670
