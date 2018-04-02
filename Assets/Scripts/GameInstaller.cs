@@ -33,6 +33,7 @@ namespace Lesstergy.Chess2D {
         private void Awake() {
             Inject();
             Initialize();
+            StartGame();
         }
 
         private void Inject() {
@@ -48,6 +49,10 @@ namespace Lesstergy.Chess2D {
             teamController.Initialize();
 
             pieceController.Initialize();
+        }
+
+        private void StartGame() {
+            teamController.StartGame();
         }
     }
 

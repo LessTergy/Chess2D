@@ -28,7 +28,9 @@ namespace Lesstergy.Chess2D {
 
             pieceController.OnPieceCreated += PieceController_OnPieceCreated;
             pieceMoveController.OnFinishMove += PieceMoveController_OnFinishMove;
+        }
 
+        public void StartGame() {
             SetTeamMove(whiteTeam);
         }
 
@@ -55,6 +57,7 @@ namespace Lesstergy.Chess2D {
         private void SetTeamMove(ChessTeam team) {
             currentTeamMove = team;
 
+            UpdateKingCheck();
             currentTeamMove.SetPieceInteractive(true);
             currentTeamMove.PrepareForMove();
 
@@ -62,6 +65,7 @@ namespace Lesstergy.Chess2D {
         }
 
         private void UpdateKingCheck() {
+            currentTeamMove.king.isTarget = false;
             ChessTeam enenmyTeam = GetEnemyTeam();
 
             foreach (Piece piece in enenmyTeam.pieces) {
@@ -77,7 +81,6 @@ namespace Lesstergy.Chess2D {
             //King under check, you can't move
             if (currentTeamMove.king.isTarget) {
                 pieceMoveController.CancelMove();
-                currentTeamMove.king.isTarget = false;
             } else {
                 pieceMoveController.ApplyMove();
                 SwitchTeam();
