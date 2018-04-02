@@ -90,7 +90,7 @@ namespace Lesstergy.Chess2D {
         }
         
 
-        //Other
+        //Help logic
         public void ApplyMove() {
             lastMovePiece.isWasMoving = true;
             lastMovePiece.isLastMoving = true;

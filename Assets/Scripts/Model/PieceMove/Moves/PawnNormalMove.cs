@@ -49,7 +49,6 @@ namespace Lesstergy.Chess2D {
             }
         }
 
-
     }
 
 }

@@ -21,8 +21,8 @@ namespace Lesstergy.Chess2D {
             if (movingPiece.coord.y == enemyRow) {
                 Vector3Int pMoveVector = InvertVectorMoveByTeam(moveVector, movingPiece.teamType);
 
-                FillCellMove(moves, boardController, movingPiece, -1, moveVector.y);
-                FillCellMove(moves, boardController, movingPiece, 1, moveVector.y);
+                FillCellMove(moves, boardController, movingPiece, -1, pMoveVector.y);
+                FillCellMove(moves, boardController, movingPiece, 1, pMoveVector.y);
             }
 
             return moves;

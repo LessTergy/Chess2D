@@ -23,6 +23,18 @@ namespace Lesstergy.Chess2D {
         public void SetKing(Piece piece) {
             king = piece;
         }
+
+        public void SetPieceInteractive(bool value) {
+            foreach (var piece in pieces) {
+                piece.isInteractive = value;
+            }
+        }
+
+        public void PrepareForMove() {
+            foreach (var piece in pieces) {
+                piece.isLastMoving = false;
+            }
+        }
     }
 
 }

@@ -52,6 +52,23 @@ namespace Lesstergy.Chess2D {
                 OnPieceCreated(piece);
             }
         }
-        
+
+        public void UpdatePieceTargetByEnenmy(Piece friendlyPiece, Piece enemyPiece) {
+            if (!enemyPiece.isEnable) {
+                return;
+            }
+
+            foreach (PieceMoveAlgorithm moveAlgorithm in enemyPiece.moves) {
+                List<MoveInfo> moves = moveAlgorithm.GetAvailableMoves(enemyPiece, boardController);
+
+                foreach (MoveInfo moveInfo in moves) {
+                    if (moveInfo.cell.coord == friendlyPiece.coord) {
+                        friendlyPiece.isTarget = true;
+                        return;
+                    }
+                }
+            }
+        }
+
     }
 }

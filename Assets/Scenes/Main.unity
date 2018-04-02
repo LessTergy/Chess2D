@@ -155,6 +155,7 @@ MonoBehaviour:
   boardController: {fileID: 1876080209}
   pieceController: {fileID: 1888821275}
   pieceMoveController: {fileID: 819049395}
+  teamController: {fileID: 1174199133}
   chessboard: {fileID: 1734279528}
   cellPrefab: {fileID: 114657569288288960, guid: 915a149bb2b1f0848801e5f8471a4f7b,
     type: 2}

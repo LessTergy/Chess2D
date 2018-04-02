@@ -32,6 +32,11 @@ namespace Lesstergy.Chess2D {
             set { gameObject.SetActive(value); }
         }
 
+        public bool isInteractive {
+            get { return image.raycastTarget; }
+            set { image.raycastTarget = value; }
+        }
+
         //Components
         private Image image;
         public InteractiveObject interactive;
