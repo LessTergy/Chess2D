@@ -1,8 +1,7 @@
-﻿using System.Collections;
+﻿using Lesstergy.UI;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Lesstergy.UI;
 
 namespace Lesstergy.Chess2D {
 
@@ -26,7 +25,7 @@ namespace Lesstergy.Chess2D {
         public Vector2Int coord;
         public bool isTarget;
         public bool isWasMoving;
-        public bool isLastMoving;
+        public bool isLastMoving; //this piece was the last one to make move
 
         public bool isEnable {
             get { return gameObject.activeSelf; }
@@ -42,16 +41,14 @@ namespace Lesstergy.Chess2D {
             interactive = GetComponent<InteractiveObject>();
         }
 
-        public void Initialize(Type type, Sprite sprite, List<PieceMoveAlgorithm> moves) {
+        public void Initialize(Type type, Sprite sprite, List<PieceMoveAlgorithm> moves, ChessTeam.Type teamType, Color color) {
             this.type = type;
             image.sprite = sprite;
 
             this.moves = moves;
-        }
 
-        public void InitChessTeam(ChessTeam.Type teamType, Color teamColor) {
             this.teamType = teamType;
-            image.color = teamColor;
+            image.color = color;
         }
     }
 }

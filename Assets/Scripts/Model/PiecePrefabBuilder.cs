@@ -7,12 +7,18 @@ namespace Lesstergy.Chess2D {
 
     [CreateAssetMenu(fileName = "PiecePrefabBuilder", menuName = "Chess2D/Piece Prefab Builder")]
     public class PiecePrefabBuilder : ScriptableObject {
-
+        
+        [Header("Prefab")]
         [SerializeField]
         private Piece piecePrefab;
-
         [SerializeField]
         private List<PiecePrefs> piecePreferenceList;
+
+        [Space(10)]
+        [Header("Colors")]
+        public Color whiteColor;
+        public Color blackColor;
+
         private Dictionary<Piece.Type, PiecePrefs> piecesPrefsDict;
         
         public void Init() {
@@ -23,11 +29,12 @@ namespace Lesstergy.Chess2D {
             }
         }
 
-        public Piece CreatePiece(Piece.Type type) {
+        public Piece CreatePiece(Piece.Type type, ChessTeam.Type teamType) {
             Piece piece = Instantiate(piecePrefab);
-
             PiecePrefs prefs = piecesPrefsDict[type];
-            piece.Initialize(prefs.type, prefs.sprite, GetMoves(type));
+            Color color = (teamType == ChessTeam.Type.White) ? whiteColor : blackColor;
+
+            piece.Initialize(prefs.type, prefs.sprite, GetMoves(type), teamType, color);
             return piece;
         }
 

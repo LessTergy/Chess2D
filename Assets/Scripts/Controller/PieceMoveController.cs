@@ -1,24 +1,33 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using Lesstergy.UI;
+using System;
 
 namespace Lesstergy.Chess2D {
 
     public class PieceMoveController : MonoBehaviour, IController {
+
+        public event Action<Piece> OnFinishMove = delegate { };
         
         private List<MoveInfo> availableMoves;
         private Cell targetCell;
 
-        private BoardController boardController;
+        private Piece lastMovePiece;
+        private ICommand lastMoveAction;
 
-        public void Inject(BoardController bc) {
+        private BoardController boardController;
+        private PieceController pieceController;
+
+        public void Inject(BoardController bc, PieceController pc) {
             this.boardController = bc;
+            this.pieceController = pc;
         }
 
         public void Initialize() {
+            pieceController.OnPieceCreated += PieceController_OnPieceCreated;
         }
 
-        public void InitPiece(Piece piece) {
+        public void PieceController_OnPieceCreated(Piece piece) {
             piece.interactive.OnTouchDown += delegate { Piece_OnTouchDown(piece); };
             piece.interactive.OnTouchUp += delegate { Piece_OnTouchUp(piece); };
             piece.interactive.OnMove += delegate (InteractiveEventArgs args) { Piece_OnMove(args, piece); };
@@ -26,6 +35,8 @@ namespace Lesstergy.Chess2D {
 
         //Start moving
         private void Piece_OnTouchDown(Piece piece) {
+            piece.transform.SetAsLastSibling();
+
             GetAvailableMoves(piece);
             SetHighlightCells(true);
         }
@@ -66,16 +77,32 @@ namespace Lesstergy.Chess2D {
 
             foreach (MoveInfo moveInfo in availableMoves) {
                 if (moveInfo.cell.Equals(targetCell)) {
+                    lastMovePiece = piece;
+                    lastMoveAction = moveInfo.moveAction;
+
                     moveInfo.moveAction.Execute();
                     break;
                 }
             }
 
+            OnFinishMove(lastMovePiece);
             targetCell = null;
         }
         
 
         //Other
+        public void ApplyMove() {
+            lastMovePiece.isWasMoving = true;
+            lastMovePiece.isLastMoving = true;
+        }
+
+        public void CancelMove() {
+            lastMoveAction.Undo();
+
+            lastMoveAction = null;
+            lastMovePiece = null;
+        }
+
         private void SetHighlightCells(bool flag) {
             foreach (var move in availableMoves) {
                 move.cell.image.enabled = flag;

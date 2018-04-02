@@ -17,14 +17,13 @@ namespace Lesstergy.Chess2D {
         public override List<MoveInfo> GetAvailableMoves(Piece piece, IBoardContoller boardController) {
             List<MoveInfo> moves = new List<MoveInfo>();
 
-            Vector3Int pawnMoveVector = moveVector;
-            pawnMoveVector *= (piece.teamType == ChessTeam.Type.White) ? 1 : -1;
+            Vector3Int pMoveVector = InvertVectorMoveByTeam(moveVector, piece.teamType);
 
             int startRow = (piece.teamType == ChessTeam.Type.White) ? whiteStartRow : blackStartRow;
             bool standAtStart = (piece.coord.y == startRow);
 
             int movement = (standAtStart) ? 2 : 1;
-            FillCellPath(moves, piece, boardController, moveVector.y, movement);
+            FillCellPath(moves, piece, boardController, pMoveVector.y, movement);
 
             return moves;
         }
@@ -48,8 +47,8 @@ namespace Lesstergy.Chess2D {
                     return;
                 }
             }
-
         }
+
 
     }
 

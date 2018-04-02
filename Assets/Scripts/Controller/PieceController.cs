@@ -1,52 +1,43 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using System;
-using System.Collections.Generic;
-using Lesstergy.UI;
 
 namespace Lesstergy.Chess2D {
 
-    public class PieceController : IPieceController, IController {
+    public class PieceController : MonoBehaviour, IController {
+
+        public event Action<Piece> OnPieceCreated = delegate { };
 
         #region Injections
         private IBoardContoller boardController;
-        private PieceMoveController pieceMoveController;
 
         private ArrangmentOfPieces arrangmentOfPieces;
         
         private PiecePrefabBuilder piecePrefabBuilder;
         private GameObject piecesParent;
-
-        //Colors
-        private Color whiteTeamColor;
-        private Color blackTeamColor;
         #endregion
 
-        public void Inject(IBoardContoller bc, PieceMoveController pmc, ArrangmentOfPieces aop, PiecePrefabBuilder ppb, GameObject pieceParent, Color whiteTeam, Color blackTeam) {
+        public void Inject(IBoardContoller bc, ArrangmentOfPieces aop, PiecePrefabBuilder ppb, GameObject pieceParent) {
             boardController = bc;
-            pieceMoveController = pmc;
             arrangmentOfPieces = aop;
             piecePrefabBuilder = ppb;
             piecesParent = pieceParent;
-
-            whiteTeamColor = whiteTeam;
-            blackTeamColor = blackTeam;
         }
 
         public void Initialize() {
             piecePrefabBuilder.Init();
 
-            CreateTeamPieces(arrangmentOfPieces.whitePieceCells, ChessTeam.Type.White, whiteTeamColor);
-            CreateTeamPieces(arrangmentOfPieces.blackPieceCells, ChessTeam.Type.Black, blackTeamColor);
+            CreateTeamPieces(arrangmentOfPieces.whitePieceCells, ChessTeam.Type.White);
+            CreateTeamPieces(arrangmentOfPieces.blackPieceCells, ChessTeam.Type.Black);
         }
 
-        private void CreateTeamPieces(List<CellInfo> cellInfoList, ChessTeam.Type teamType, Color teamColor) {
+        private void CreateTeamPieces(List<CellInfo> cellInfoList, ChessTeam.Type teamType) {
             foreach (var cellInfo in cellInfoList) {
                 Cell actualCell = boardController.GetCell(cellInfo.coord);
 
                 //Init
-                Piece piece = piecePrefabBuilder.CreatePiece(cellInfo.pieceType);
+                Piece piece = piecePrefabBuilder.CreatePiece(cellInfo.pieceType, teamType);
                 piece.name = teamType.ToString() + " " + cellInfo.pieceType.ToString();
-                piece.InitChessTeam(teamType, teamColor);
                 piece.coord = cellInfo.coord;
 
                 actualCell.SetPiece(piece);
@@ -58,11 +49,9 @@ namespace Lesstergy.Chess2D {
                 piece.transform.position = actualCell.transform.position;
                 piece.transform.localScale = Vector3.one;
 
-                pieceMoveController.InitPiece(piece);
+                OnPieceCreated(piece);
             }
         }
-
-
         
     }
 }

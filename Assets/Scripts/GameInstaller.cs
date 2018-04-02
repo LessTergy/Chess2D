@@ -25,11 +25,6 @@ namespace Lesstergy.Chess2D {
         public ArrangmentOfPieces arrangment;
 
         [Space(10)]
-        [Header("Team colors")]
-        public Color whiteTeamColor;
-        public Color blackTeamColor;
-
-        [Space(10)]
         [Header("GameObjects Group Parent")]
         public GameObject pieceGroupParent;
         public GameObject cellGroupParent;
@@ -41,12 +36,14 @@ namespace Lesstergy.Chess2D {
 
         private void Inject() {
             boardController.Inject(chessboard, cellPrefab, cellGroupParent);
-            pieceController.Inject(boardController, pieceMoveController, arrangment, piecePrefabBuilder, pieceGroupParent, whiteTeamColor, blackTeamColor);
-            pieceMoveController.Inject(boardController);
+            pieceController.Inject(boardController, arrangment, piecePrefabBuilder, pieceGroupParent);
+            pieceMoveController.Inject(boardController, pieceController);
         }
 
         private void Initialize() {
             boardController.Initialize();
+            pieceMoveController.Initialize();
+
             pieceController.Initialize();
         }
     }

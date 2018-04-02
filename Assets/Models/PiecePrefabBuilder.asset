@@ -26,3 +26,5 @@ MonoBehaviour:
     sprite: {fileID: 21300004, guid: 8ee939d77af9a6c42bcd1d9b7d64b50c, type: 3}
   - type: 5
     sprite: {fileID: 21300010, guid: 8ee939d77af9a6c42bcd1d9b7d64b50c, type: 3}
+  whiteColor: {r: 1, g: 1, b: 1, a: 1}
+  blackColor: {r: 0.21323532, g: 0.21323532, b: 0.21323532, a: 1}
