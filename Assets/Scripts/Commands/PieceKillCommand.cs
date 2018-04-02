@@ -3,11 +3,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PieceKillCommand : ICommand {
+namespace Lesstergy.Chess2D {
 
-    public void Execute() {
-    }
+    public class PieceKillCommand : ICommand {
 
-    public void Undo() {
+        private IBoardContoller boardController;
+        private Cell cell;
+        private Piece piece;
+
+        public PieceKillCommand(IBoardContoller boardController, Cell cell, Piece piece) {
+            this.boardController = boardController;
+            this.cell = cell;
+            this.piece = piece;
+        }
+        
+        public void Execute() {
+            boardController.HidePiece(cell, piece);
+        }
+
+        public void Undo() {
+            boardController.ShowPiece(cell, piece);
+        }
     }
 }

@@ -31,36 +31,40 @@ namespace Lesstergy.Chess2D {
         }
 
         protected virtual void FillCellPath(List<MoveInfo> moves, Piece piece, IBoardContoller boardController, int xDirection, int yDirection, int movement) {
-            Cell targetCell = boardController.GetCell(piece.coord.x, piece.coord.y);
-
             int currentX = piece.coord.x;
             int currentY = piece.coord.y;
 
             for (int i = 0; i < movement; i++) {
                 currentX += xDirection;
                 currentY += yDirection;
-
-                Cell currentCell = boardController.GetCell(currentX, currentY);
+                
                 Cell.State cellState = boardController.GetCellStateForPiece(currentX, currentY, piece);
 
+                if (cellState == Cell.State.OutOfBounds || cellState == Cell.State.Friendly) {
+                    return;
+                }
+
+                Cell currentCell = boardController.GetCell(currentX, currentY);
+
                 if (cellState == Cell.State.Enemy) {
-                    PieceKillCommand killCommand = new PieceKillCommand();
-                    PieceMoveCommand moveCommand = new PieceMoveCommand();
+                    PieceKillCommand killCommand = new PieceKillCommand(boardController, currentCell, currentCell.currentPiece);
+                    PieceMoveCommand moveCommand = new PieceMoveCommand(boardController, piece.coord, new Vector2Int(currentX, currentY));
 
-                    MoveInfo move = new MoveInfo(currentCell, moveCommand);
+                    CommandContainer container = new CommandContainer(killCommand, moveCommand);
+
+                    MoveInfo move = new MoveInfo(currentCell, container);
                     moves.Add(move);
-                    break;
-                }
+
+                    return;
+                } else
                 if (cellState == Cell.State.Free) {
-                    PieceMoveCommand moveCommand = new PieceMoveCommand();
+                    PieceMoveCommand moveCommand = new PieceMoveCommand(boardController, piece.coord, new Vector2Int(currentX, currentY));
                     MoveInfo move = new MoveInfo(currentCell, moveCommand);
-
                     moves.Add(move);
-                    break;
                 }
+
             }
         }
-
     }
 }
 

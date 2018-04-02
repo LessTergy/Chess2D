@@ -24,6 +24,14 @@ namespace Lesstergy.Chess2D {
         public List<PieceMoveAlgorithm> moves { get; private set; }
 
         public Vector2Int coord;
+        public bool isTarget;
+        public bool isWasMoving;
+        public bool isLastMoving;
+
+        public bool isEnable {
+            get { return gameObject.activeSelf; }
+            set { gameObject.SetActive(value); }
+        }
 
         //Components
         private Image image;

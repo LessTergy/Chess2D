@@ -40,7 +40,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c9b58083a0e61f41af51eaa284b5097, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentPiece: {fileID: 0}
 --- !u!114 &114939251312124778
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -53,7 +52,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.2647059, g: 0.39148095, b: 1, a: 0.684}
   m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:

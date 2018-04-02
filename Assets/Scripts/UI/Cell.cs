@@ -10,6 +10,7 @@ namespace Lesstergy.Chess2D {
         
         public Piece currentPiece { get; private set; }
         public Vector2Int coord { get; private set; }
+        public bool isEmpty { get { return currentPiece == null; } }
 
         //Components
         public Image image { get; private set; }
@@ -25,11 +26,15 @@ namespace Lesstergy.Chess2D {
         }
 
         public void SetPiece(Piece piece) {
-            if (currentPiece == null) {
+            if (isEmpty) {
                 currentPiece = piece;
             } else {
                 Debug.Log("Can't set piece if not empty");
             }
+        }
+
+        public void ClearPiece() {
+            currentPiece = null;
         }
 
         public enum State {

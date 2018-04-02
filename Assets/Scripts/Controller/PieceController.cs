@@ -41,7 +41,7 @@ namespace Lesstergy.Chess2D {
 
         private void CreateTeamPieces(List<CellInfo> cellInfoList, ChessTeam.Type teamType, Color teamColor) {
             foreach (var cellInfo in cellInfoList) {
-                Cell actualCell = boardController.GetCell(cellInfo.coord.x, cellInfo.coord.y);
+                Cell actualCell = boardController.GetCell(cellInfo.coord);
 
                 //Init
                 Piece piece = piecePrefabBuilder.CreatePiece(cellInfo.pieceType);

@@ -608,7 +608,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2f49a82989e8d44989beb45b4def325, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _offset: {x: 0.06, y: 0.06}
+  _offset: {x: 0.061, y: 0.061}
   debugGridTexture: {fileID: 2800000, guid: 3b519e34d8cfacd4a98f2a00f1f2f17a, type: 3}
 --- !u!114 &1734279529
 MonoBehaviour:

@@ -22,7 +22,8 @@ namespace Lesstergy.Chess2D {
             this.cellPrefab = cellPrefab;
             this.cellParent = cellParent;
         }
-        
+
+        #region Initialize
         public void Initialize() {
             CreateCells();
         }
@@ -59,6 +60,7 @@ namespace Lesstergy.Chess2D {
 
             return cell;
         }
+        #endregion
 
         public override Cell GetCell(int x, int y) {
             return cells[x, y];
@@ -71,7 +73,7 @@ namespace Lesstergy.Chess2D {
 
             Cell targetCell = GetCell(x, y);
 
-            if (targetCell.currentPiece != null) {
+            if (!targetCell.isEmpty) {
 
                 if (piece.teamType == targetCell.currentPiece.teamType) {
                     return Cell.State.Friendly;
@@ -81,6 +83,31 @@ namespace Lesstergy.Chess2D {
             }
 
             return Cell.State.Free;
+        }
+
+        public override void ReplacePiece(Vector2Int startPosition, Vector2Int endPosition) {
+            Cell currentCell = GetCell(startPosition);
+            Cell moveCell = GetCell(endPosition);
+
+            Piece movingPiece = currentCell.currentPiece;
+
+            if (movingPiece != null) {
+                movingPiece.coord = endPosition;
+                currentCell.ClearPiece();
+
+                moveCell.SetPiece(movingPiece);
+                movingPiece.transform.position = moveCell.transform.position;
+            }
+        }
+
+        public override void HidePiece(Cell cell, Piece piece) {
+            cell.ClearPiece();
+            piece.isEnable = false;
+        }
+
+        public override void ShowPiece(Cell cell, Piece piece) {
+            cell.SetPiece(piece);
+            piece.isEnable = true;
         }
     }
 

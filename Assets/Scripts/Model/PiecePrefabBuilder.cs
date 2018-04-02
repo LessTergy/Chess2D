@@ -27,8 +27,36 @@ namespace Lesstergy.Chess2D {
             Piece piece = Instantiate(piecePrefab);
 
             PiecePrefs prefs = piecesPrefsDict[type];
-            piece.Initialize(prefs.type, prefs.sprite, new List<PieceMoveAlgorithm>());
+            piece.Initialize(prefs.type, prefs.sprite, GetMoves(type));
             return piece;
+        }
+
+
+        private List<PieceMoveAlgorithm> GetMoves(Piece.Type pieceType) {
+            List<PieceMoveAlgorithm> moves = new List<PieceMoveAlgorithm>();
+            
+            if (pieceType == Piece.Type.Pawn) {
+                moves.Add(new PawnNormalMove());
+                moves.Add(new PawnKillMove());
+            } else
+            if (pieceType == Piece.Type.Rook) {
+                moves.Add(new RookMove());
+            } else
+            if (pieceType == Piece.Type.Knight) {
+                moves.Add(new KnightMove());
+            } else
+            if (pieceType == Piece.Type.Bishop) {
+                moves.Add(new BishopMove());
+            } else
+            if (pieceType == Piece.Type.Queen) {
+                moves.Add(new QueenMove());
+            } else
+            if (pieceType == Piece.Type.King) {
+                moves.Add(new KingNormalMove());
+                moves.Add(new KingCastlingMove());
+            }
+
+            return moves;
         }
 
         
