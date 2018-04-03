@@ -1,6 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.UI;
 
 namespace Lesstergy.Chess2D {
 
@@ -12,11 +11,13 @@ namespace Lesstergy.Chess2D {
         public PieceMoveController pieceMoveController;
         public TeamController teamController;
         public PawnPromotionController pawnPromotionController;
+        public RestartController restartController;
 
         [Space(10)]
         [Header("Objects")]
         public Board chessboard;
         public PieceChooseView pieceChooseView;
+        public Button restartButton;
 
         [Space(10)]
         [Header("Prefabs")]
@@ -44,6 +45,8 @@ namespace Lesstergy.Chess2D {
             pieceMoveController.Inject(boardController, pieceController);
             teamController.Inject(pieceController, pieceMoveController, boardController, pawnPromotionController);
             pawnPromotionController.Inject(pieceChooseView, boardController, pieceController, pieceMoveController, piecePrefabBuilder);
+
+            restartController.Inject(restartButton);
         }
 
         private void Initialize() {
@@ -53,6 +56,8 @@ namespace Lesstergy.Chess2D {
 
             pieceController.Initialize();
             pawnPromotionController.Initialize();
+
+            restartController.Initialize();
         }
 
         private void StartGame() {
