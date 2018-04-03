@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-using Lesstergy.UI;
+﻿using Lesstergy.UI;
 using System;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace Lesstergy.Chess2D {
 

@@ -1,9 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace Lesstergy.Chess2D {
-    
+
     public class PieceMoveAlgorithm {
 
         protected Vector3Int moveVector = new Vector3Int(1, 1, 1);
