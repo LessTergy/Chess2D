@@ -8,21 +8,19 @@ namespace Lesstergy.Chess2D {
     public class PieceKillCommand : ICommand {
 
         private IBoardContoller boardController;
-        private Cell cell;
         private Piece piece;
 
-        public PieceKillCommand(IBoardContoller boardController, Cell cell, Piece piece) {
+        public PieceKillCommand(IBoardContoller boardController, Piece piece) {
             this.boardController = boardController;
-            this.cell = cell;
             this.piece = piece;
         }
         
         public void Execute() {
-            boardController.HidePiece(cell, piece);
+            boardController.HidePiece(piece);
         }
 
         public void Undo() {
-            boardController.ShowPiece(cell, piece);
+            boardController.ShowPiece(piece);
         }
     }
 }

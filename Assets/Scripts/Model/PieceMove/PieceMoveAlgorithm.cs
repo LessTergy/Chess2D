@@ -74,7 +74,7 @@ namespace Lesstergy.Chess2D {
             if (cellState == Cell.State.Enemy) {
                 Cell currentCell = boardController.GetCell(targetX, targetY);
 
-                PieceKillCommand killCommand = new PieceKillCommand(boardController, currentCell, currentCell.currentPiece);
+                PieceKillCommand killCommand = new PieceKillCommand(boardController, currentCell.currentPiece);
                 PieceMoveCommand moveCommand = new PieceMoveCommand(boardController, movingPiece.coord, new Vector2Int(targetX, targetY));
 
                 CommandContainer container = new CommandContainer(killCommand, moveCommand);

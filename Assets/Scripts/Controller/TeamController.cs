@@ -15,11 +15,13 @@ namespace Lesstergy.Chess2D {
         private PieceController pieceController;
         private PieceMoveController pieceMoveController;
         private IBoardContoller boardController;
+        private PawnPromotionController pawnPromotionController;
 
-        public void Inject(PieceController pc, PieceMoveController pmc, IBoardContoller bc) {
+        public void Inject(PieceController pc, PieceMoveController pmc, IBoardContoller bc, PawnPromotionController ppc) {
             this.pieceController = pc;
             this.pieceMoveController = pmc;
             this.boardController = bc;
+            this.pawnPromotionController = ppc;
         }
 
         public void Initialize() {
@@ -27,7 +29,8 @@ namespace Lesstergy.Chess2D {
             blackTeam = new ChessTeam(ChessTeam.Type.Black);
 
             pieceController.OnPieceCreated += PieceController_OnPieceCreated;
-            pieceMoveController.OnFinishMove += PieceMoveController_OnFinishMove;
+            pieceMoveController.OnMakeMove += PieceMoveController_OnFinishMove;
+            pawnPromotionController.OnPawnPromoted += PawnPromotionController_OnPawnPromoted;
         }
 
         public void StartGame() {
@@ -49,6 +52,10 @@ namespace Lesstergy.Chess2D {
             FinishTeamMove();
         }
 
+        private void PawnPromotionController_OnPawnPromoted() {
+            UpdateCurrentTeam();
+        }
+
         //Team turn switch
         private void SwitchTeam() {
             SetTeamMove(GetEnemyTeam());
@@ -56,12 +63,15 @@ namespace Lesstergy.Chess2D {
 
         private void SetTeamMove(ChessTeam team) {
             currentTeamMove = team;
+            UpdateCurrentTeam();
+        }
 
+        private void UpdateCurrentTeam() {
             UpdateKingCheck();
             currentTeamMove.SetPieceInteractive(true);
-            currentTeamMove.PrepareForMove();
-
             GetEnemyTeam().SetPieceInteractive(false);
+
+            currentTeamMove.ResetLastMoving();
         }
 
         private void UpdateKingCheck() {

@@ -41,7 +41,7 @@ namespace Lesstergy.Chess2D {
                 Piece enemyPiece = enemyCell.currentPiece;
 
                 if (enemyPiece.type == Piece.Type.Pawn && enemyPiece.isLastMoving) {
-                    PieceKillCommand killCommand = new PieceKillCommand(boardController, enemyCell, enemyPiece);
+                    PieceKillCommand killCommand = new PieceKillCommand(boardController, enemyPiece);
                     PieceMoveCommand moveCommand = new PieceMoveCommand(boardController, movingPiece.coord, moveCell.coord);
 
                     MoveInfo moveInfo = new MoveInfo(moveCell, new CommandContainer(killCommand, moveCommand));

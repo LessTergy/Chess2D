@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Lesstergy.Chess2D {
 
@@ -62,6 +59,10 @@ namespace Lesstergy.Chess2D {
         }
         #endregion
 
+        public override Board GetBoard() {
+            return board;
+        }
+
         public override Cell GetCell(int x, int y) {
             return cells[x, y];
         }
@@ -100,12 +101,14 @@ namespace Lesstergy.Chess2D {
             }
         }
 
-        public override void HidePiece(Cell cell, Piece piece) {
+        public override void HidePiece(Piece piece) {
+            Cell cell = GetCell(piece.coord);
             cell.ClearPiece();
             piece.isEnable = false;
         }
 
-        public override void ShowPiece(Cell cell, Piece piece) {
+        public override void ShowPiece(Piece piece) {
+            Cell cell = GetCell(piece.coord);
             cell.SetPiece(piece);
             piece.isEnable = true;
         }

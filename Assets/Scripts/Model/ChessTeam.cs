@@ -30,7 +30,7 @@ namespace Lesstergy.Chess2D {
             }
         }
 
-        public void PrepareForMove() {
+        public void ResetLastMoving() {
             foreach (var piece in pieces) {
                 piece.isLastMoving = false;
             }

@@ -12,17 +12,17 @@ namespace Lesstergy.Chess2D {
         [SerializeField]
         private Piece piecePrefab;
         [SerializeField]
-        private List<PiecePrefs> piecePreferenceList;
+        private List<PiecePrefabPrefs> piecePreferenceList;
 
         [Space(10)]
         [Header("Colors")]
         public Color whiteColor;
         public Color blackColor;
 
-        private Dictionary<Piece.Type, PiecePrefs> piecesPrefsDict;
+        private Dictionary<Piece.Type, PiecePrefabPrefs> piecesPrefsDict;
         
         public void Init() {
-            piecesPrefsDict = new Dictionary<Piece.Type, PiecePrefs>();
+            piecesPrefsDict = new Dictionary<Piece.Type, PiecePrefabPrefs>();
 
             foreach (var info in piecePreferenceList) {
                 piecesPrefsDict.Add(info.type, info);
@@ -31,13 +31,21 @@ namespace Lesstergy.Chess2D {
 
         public Piece CreatePiece(Piece.Type type, ChessTeam.Type teamType) {
             Piece piece = Instantiate(piecePrefab);
-            PiecePrefs prefs = piecesPrefsDict[type];
-            Color color = (teamType == ChessTeam.Type.White) ? whiteColor : blackColor;
+            PiecePrefabPrefs prefs = piecesPrefsDict[type];
+            Color color = GetColor(teamType);
 
             piece.Initialize(prefs.type, prefs.sprite, GetMoves(type), teamType, color);
             return piece;
         }
 
+        public PiecePrefabPrefs GetPrefabPrefs(Piece.Type type) {
+            return piecesPrefsDict[type];
+        }
+
+        public Color GetColor(ChessTeam.Type teamType) {
+            Color color = (teamType == ChessTeam.Type.White) ? whiteColor : blackColor;
+            return color;
+        }
 
         private List<PieceMoveAlgorithm> GetMoves(Piece.Type pieceType) {
             List<PieceMoveAlgorithm> moves = new List<PieceMoveAlgorithm>();
@@ -67,12 +75,12 @@ namespace Lesstergy.Chess2D {
             return moves;
         }
 
-        
-        [Serializable]
-        public class PiecePrefs {
-            public Piece.Type type;
-            public Sprite sprite;
-        }
+    }
+
+    [Serializable]
+    public class PiecePrefabPrefs {
+        public Piece.Type type;
+        public Sprite sprite;
     }
 
 }

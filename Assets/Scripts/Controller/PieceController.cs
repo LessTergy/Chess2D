@@ -33,24 +33,28 @@ namespace Lesstergy.Chess2D {
 
         private void CreateTeamPieces(List<CellInfo> cellInfoList, ChessTeam.Type teamType) {
             foreach (var cellInfo in cellInfoList) {
-                Cell actualCell = boardController.GetCell(cellInfo.coord);
-
-                //Init
-                Piece piece = piecePrefabBuilder.CreatePiece(cellInfo.pieceType, teamType);
-                piece.name = teamType.ToString() + " " + cellInfo.pieceType.ToString();
-                piece.coord = cellInfo.coord;
-
-                actualCell.SetPiece(piece);
-
-                //Size and position
-                RectTransform pieceRect = piece.transform as RectTransform;
-                pieceRect.sizeDelta = actualCell.rectT.sizeDelta;
-                piece.transform.SetParent(piecesParent.transform);
-                piece.transform.position = actualCell.transform.position;
-                piece.transform.localScale = Vector3.one;
-
-                OnPieceCreated(piece);
+                CreatePiece(cellInfo.pieceType, teamType, cellInfo.coord);
             }
+        }
+
+        public void CreatePiece(Piece.Type type, ChessTeam.Type teamType, Vector2Int cellCoord) {
+            Cell actualCell = boardController.GetCell(cellCoord);
+
+            //Init
+            Piece piece = piecePrefabBuilder.CreatePiece(type, teamType);
+            piece.name = teamType.ToString() + " " + type.ToString();
+            piece.coord = cellCoord;
+
+            actualCell.SetPiece(piece);
+
+            //Size and position
+            RectTransform pieceRect = piece.transform as RectTransform;
+            pieceRect.sizeDelta = actualCell.rectT.sizeDelta;
+            piece.transform.SetParent(piecesParent.transform);
+            piece.transform.position = actualCell.transform.position;
+            piece.transform.localScale = Vector3.one;
+
+            OnPieceCreated(piece);
         }
 
         public void UpdatePieceTargetByEnenmy(Piece friendlyPiece, Piece enemyPiece) {

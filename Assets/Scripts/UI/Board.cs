@@ -17,12 +17,17 @@ namespace Lesstergy.Chess2D {
 
         public float height { get { return rectT.rect.height; } }
         public float heightOffset { get { return height - (yOffset * 2); } }
-
+        
         public RectTransform rectT { get; private set; }
-
+        private CanvasGroup canvasGroup;
 
         public void Awake() {
             rectT = transform as RectTransform;
+            canvasGroup = GetComponent<CanvasGroup>();
+        }
+
+        public void SetInteractive(bool value) {
+            canvasGroup.blocksRaycasts = value;
         }
 
         #region Debug

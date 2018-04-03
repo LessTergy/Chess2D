@@ -7,8 +7,9 @@ namespace Lesstergy.Chess2D {
 
     public class PieceMoveController : MonoBehaviour, IController {
 
+        public event Action<Piece> OnMakeMove = delegate { };
         public event Action<Piece> OnFinishMove = delegate { };
-        
+
         private List<MoveInfo> availableMoves;
         private Cell targetCell;
 
@@ -85,8 +86,7 @@ namespace Lesstergy.Chess2D {
                 }
             }
 
-            OnFinishMove(lastMovePiece);
-            targetCell = null;
+            OnMakeMove(lastMovePiece);
         }
         
 
@@ -94,6 +94,8 @@ namespace Lesstergy.Chess2D {
         public void ApplyMove() {
             lastMovePiece.isWasMoving = true;
             lastMovePiece.isLastMoving = true;
+
+            OnFinishMove(lastMovePiece);
         }
 
         public void CancelMove() {
