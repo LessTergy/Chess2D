@@ -19,7 +19,7 @@ namespace Lesstergy.Chess2D {
             Vector2Int kingStartPos = new Vector2Int(kingXPosition, yCoord);
 
             //king stand at start position, never was moving and isn't in check
-            if (piece.coord == kingStartPos && !piece.isWasMoving && !piece.isTarget) {
+            if (piece.cellCoord == kingStartPos && !piece.isWasMoving && !piece.isTarget) {
                 FillCellPath(moves, boardController, piece, true);
                 FillCellPath(moves, boardController, piece, false);
             }
@@ -29,7 +29,7 @@ namespace Lesstergy.Chess2D {
 
         private void FillCellPath(List<MoveInfo> moves, IBoardContoller boardController, Piece kingPiece, bool isLeft) {
             int rookXPosition = (isLeft) ? rookLeftXPosition : rookRightXPosition;
-            Vector2Int rookCoord = new Vector2Int(rookXPosition, kingPiece.coord.y);
+            Vector2Int rookCoord = new Vector2Int(rookXPosition, kingPiece.cellCoord.y);
 
             Cell rookCell = boardController.GetCell(rookCoord);
             Cell.State cellState = boardController.GetCellStateForPiece(rookCoord.x, rookCoord.y, kingPiece);
@@ -38,15 +38,15 @@ namespace Lesstergy.Chess2D {
                 Piece rookPiece = rookCell.currentPiece;
 
                 //rook never was moving and doesn't have anything between
-                if (rookPiece.type == Piece.Type.Rook && !rookPiece.isWasMoving && IsEmptyBetweenCoords(boardController, kingPiece.coord, rookPiece.coord)) {
+                if (rookPiece.type == Piece.Type.Rook && !rookPiece.isWasMoving && IsEmptyBetweenCoords(boardController, kingPiece.cellCoord, rookPiece.cellCoord)) {
                     int kingXOffset = (isLeft) ? -2 : 2;
-                    Vector2Int newKingCoord = new Vector2Int(kingPiece.coord.x + kingXOffset, kingPiece.coord.y);
+                    Vector2Int newKingCoord = new Vector2Int(kingPiece.cellCoord.x + kingXOffset, kingPiece.cellCoord.y);
 
                     int rookXOffset = (isLeft) ? 1 : -1;
                     Vector2Int newRookCoord = new Vector2Int(newKingCoord.x + rookXOffset, newKingCoord.y);
 
-                    PieceMoveCommand kingMoveCommand = new PieceMoveCommand(boardController, kingPiece.coord, newKingCoord);
-                    PieceMoveCommand rookMoveCommand = new PieceMoveCommand(boardController, rookPiece.coord, newRookCoord);
+                    PieceMoveCommand kingMoveCommand = new PieceMoveCommand(boardController, kingPiece, newKingCoord);
+                    PieceMoveCommand rookMoveCommand = new PieceMoveCommand(boardController, rookPiece, newRookCoord);
 
                     CommandContainer container = new CommandContainer(kingMoveCommand, rookMoveCommand);
 

@@ -22,7 +22,7 @@ namespace Lesstergy.Chess2D {
 
         public List<PieceMoveAlgorithm> moves { get; private set; }
 
-        public Vector2Int coord;
+        public Vector2Int cellCoord;
         public bool isTarget;
         public bool isWasMoving;
         public bool isLastMoving; //this piece was the last one to make move

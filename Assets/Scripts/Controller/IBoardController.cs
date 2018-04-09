@@ -14,7 +14,7 @@ namespace Lesstergy.Chess2D {
 
         public abstract Cell.State GetCellStateForPiece(int x, int y, Piece piece);
 
-        public abstract void ReplacePiece(Vector2Int startPosition, Vector2Int endPosition);
+        public abstract void ReplacePiece(Piece piece, Vector2Int cellCoord);
 
         public abstract void HidePiece(Piece piece);
         public abstract void ShowPiece(Piece piece);

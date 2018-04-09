@@ -14,7 +14,7 @@ namespace Lesstergy.Chess2D {
 
             Vector3Int pMoveVector = InvertVectorMoveByTeam(moveVector, movingPiece.teamType);
 
-            Vector2Int coord = movingPiece.coord;
+            Vector2Int coord = movingPiece.cellCoord;
 
             FillKillMove(moves, boardController, movingPiece, coord.x - pMoveVector.z, coord.y + pMoveVector.z);
             FillKillMove(moves, boardController, movingPiece, coord.x + pMoveVector.z, coord.y + pMoveVector.z);

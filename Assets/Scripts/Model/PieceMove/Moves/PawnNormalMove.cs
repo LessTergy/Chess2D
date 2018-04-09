@@ -18,7 +18,7 @@ namespace Lesstergy.Chess2D {
             Vector3Int pMoveVector = InvertVectorMoveByTeam(moveVector, movingPiece.teamType);
 
             int startRow = (movingPiece.teamType == ChessTeam.Type.White) ? whiteStartRow : blackStartRow;
-            bool standAtStart = (movingPiece.coord.y == startRow);
+            bool standAtStart = (movingPiece.cellCoord.y == startRow);
 
             int movement = (standAtStart) ? 2 : 1;
             FillCellPath(moves, movingPiece, boardController, pMoveVector.y, movement);
@@ -27,8 +27,8 @@ namespace Lesstergy.Chess2D {
         }
 
         public void FillCellPath(List<MoveInfo> moves, Piece piece, IBoardContoller boardController, int yDirection, int movement) {
-            int currentX = piece.coord.x;
-            int currentY = piece.coord.y;
+            int currentX = piece.cellCoord.x;
+            int currentY = piece.cellCoord.y;
 
             for (int i = 0; i < movement; i++) {
                 currentY += yDirection;
@@ -38,7 +38,7 @@ namespace Lesstergy.Chess2D {
                 if (cellState == Cell.State.Free) {
                     Cell currentCell = boardController.GetCell(currentX, currentY);
 
-                    PieceMoveCommand moveCommand = new PieceMoveCommand(boardController, piece.coord, new Vector2Int(currentX, currentY));
+                    PieceMoveCommand moveCommand = new PieceMoveCommand(boardController, piece, new Vector2Int(currentX, currentY));
                     MoveInfo move = new MoveInfo(currentCell, moveCommand);
                     moves.Add(move);
                 } else {

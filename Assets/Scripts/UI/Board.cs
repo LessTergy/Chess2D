@@ -3,18 +3,21 @@
 namespace Lesstergy.Chess2D {
     public class Board : MonoBehaviour {
 
-        public const int CELL_COUNT = 8;
+        public const int CellCount = 8;
+
+        public const int StartIndex = 0;
+        public const int FinishIndex = CellCount - 1;
 
         [SerializeField]
         private Vector2 _offset;
-        public float xOffset { get { return width * _offset.x; } }
-        public float yOffset { get { return height * _offset.y; } }
+        public float xOffset { get { return rectWidth * _offset.x; } }
+        public float yOffset { get { return rectHeight * _offset.y; } }
         
-        public float width { get { return rectT.rect.width; } }
-        public float widthOffset { get { return width - (xOffset * 2); } }
+        public float rectWidth { get { return rectT.rect.width; } }
+        public float cellsWidth { get { return rectWidth - (xOffset * 2); } }
 
-        public float height { get { return rectT.rect.height; } }
-        public float heightOffset { get { return height - (yOffset * 2); } }
+        public float rectHeight { get { return rectT.rect.height; } }
+        public float cellsHeight { get { return rectHeight - (yOffset * 2); } }
         
         public RectTransform rectT { get; private set; }
         private CanvasGroup canvasGroup;
@@ -38,8 +41,8 @@ namespace Lesstergy.Chess2D {
             rectT = transform as RectTransform;
             Rect rect = rectT.rect;
 
-            rect.width = widthOffset * transform.lossyScale.x;
-            rect.height = heightOffset * transform.lossyScale.y;
+            rect.width = cellsWidth * transform.lossyScale.x;
+            rect.height = cellsHeight * transform.lossyScale.y;
             rect.position = new Vector2(rectT.position.x - rect.width * rectT.pivot.x, rectT.position.y - rect.height * rectT.pivot.y);
 
             Gizmos.DrawGUITexture(rect, debugGridTexture);

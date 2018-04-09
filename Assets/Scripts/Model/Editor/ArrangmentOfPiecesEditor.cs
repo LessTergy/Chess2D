@@ -70,7 +70,8 @@ namespace Lesstergy.Chess2D {
             }
 
             foreach (var pair in sameCellCount) {
-                if (pair.Value > 1) {
+                bool isHaveDuplicates = (pair.Value > 1);
+                if (isHaveDuplicates) {
                     EditorGUILayout.HelpBox("Coord " + pair.Key.ToString() + " have duplicates", MessageType.Error);
                 }
             }
@@ -78,8 +79,8 @@ namespace Lesstergy.Chess2D {
 
         private void CheckCoordBounds(List<CellInfo> cells) {
             foreach (var cell in cells) {
-                bool xIsIncorrect = cell.coord.x < 0 || cell.coord.x >= Board.CELL_COUNT;
-                bool yIsIncorrect = cell.coord.y < 0 || cell.coord.y >= Board.CELL_COUNT;
+                bool xIsIncorrect = cell.coord.x < Board.StartIndex || cell.coord.x >= Board.CellCount;
+                bool yIsIncorrect = cell.coord.y < Board.StartIndex || cell.coord.y >= Board.CellCount;
 
                 if (xIsIncorrect || yIsIncorrect) {
                     EditorGUILayout.HelpBox("Coord " + cell.coord.ToString() + " have incorrect value", MessageType.Error);

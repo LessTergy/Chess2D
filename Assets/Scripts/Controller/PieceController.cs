@@ -43,7 +43,7 @@ namespace Lesstergy.Chess2D {
             //Init
             Piece piece = piecePrefabBuilder.CreatePiece(type, teamType);
             piece.name = teamType.ToString() + " " + type.ToString();
-            piece.coord = cellCoord;
+            piece.cellCoord = cellCoord;
 
             actualCell.SetPiece(piece);
 
@@ -66,7 +66,7 @@ namespace Lesstergy.Chess2D {
                 List<MoveInfo> moves = moveAlgorithm.GetAvailableMoves(enemyPiece, boardController);
 
                 foreach (MoveInfo moveInfo in moves) {
-                    if (moveInfo.cell.coord == friendlyPiece.coord) {
+                    if (moveInfo.cell.coord == friendlyPiece.cellCoord) {
                         friendlyPiece.isTarget = true;
                         return;
                     }

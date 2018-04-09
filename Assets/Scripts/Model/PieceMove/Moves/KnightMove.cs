@@ -12,7 +12,7 @@ namespace Lesstergy.Chess2D {
         public override List<MoveInfo> GetAvailableMoves(Piece movingPiece, IBoardContoller boardController) {
             List<MoveInfo> moves = new List<MoveInfo>();
 
-            Vector2Int coord = movingPiece.coord;
+            Vector2Int coord = movingPiece.cellCoord;
 
             //Up left
             FillCellMove(moves, boardController, movingPiece, coord.x - 1, coord.y + moveVector.y);

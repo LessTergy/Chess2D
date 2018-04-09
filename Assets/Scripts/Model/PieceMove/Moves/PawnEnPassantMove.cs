@@ -17,7 +17,7 @@ namespace Lesstergy.Chess2D {
 
             int enemyRow = (movingPiece.teamType == ChessTeam.Type.White) ? blackEnemyPawnRow : whiteEnemyPawnRow;
 
-            if (movingPiece.coord.y == enemyRow) {
+            if (movingPiece.cellCoord.y == enemyRow) {
                 Vector3Int pMoveVector = InvertVectorMoveByTeam(moveVector, movingPiece.teamType);
 
                 FillCellMove(moves, boardController, movingPiece, -1, pMoveVector.y);
@@ -28,7 +28,7 @@ namespace Lesstergy.Chess2D {
         }
 
         private new void FillCellMove(List<MoveInfo> moves, IBoardContoller boardController, Piece movingPiece, int xOffset, int yOffset) {
-            Vector2Int coord = movingPiece.coord;
+            Vector2Int coord = movingPiece.cellCoord;
 
             Cell.State moveCellState = boardController.GetCellStateForPiece(coord.x + xOffset, coord.y + yOffset, movingPiece);
             Cell.State enemyPawnCellState = boardController.GetCellStateForPiece(coord.x + xOffset, coord.y, movingPiece);
@@ -41,7 +41,7 @@ namespace Lesstergy.Chess2D {
 
                 if (enemyPiece.type == Piece.Type.Pawn && enemyPiece.isLastMoving) {
                     PieceKillCommand killCommand = new PieceKillCommand(boardController, enemyPiece);
-                    PieceMoveCommand moveCommand = new PieceMoveCommand(boardController, movingPiece.coord, moveCell.coord);
+                    PieceMoveCommand moveCommand = new PieceMoveCommand(boardController, movingPiece, moveCell.coord);
 
                     MoveInfo moveInfo = new MoveInfo(moveCell, new CommandContainer(killCommand, moveCommand));
                     moves.Add(moveInfo);

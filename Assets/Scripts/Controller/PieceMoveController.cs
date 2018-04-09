@@ -10,7 +10,10 @@ namespace Lesstergy.Chess2D {
         public event Action<Piece> OnMakeMove = delegate { };
         public event Action<Piece> OnFinishMove = delegate { };
 
-        private List<MoveInfo> availableMoves;
+        private List<MoveInfo> availableMoves = new List<MoveInfo>();
+        private bool isHaveMoves {
+            get { return availableMoves.Count > 0; }
+        }
         private Cell targetCell;
 
         private Piece lastMovePiece;
@@ -52,13 +55,15 @@ namespace Lesstergy.Chess2D {
 
         //Move
         private void Piece_OnMove(InteractiveEventArgs eventArgs, Piece piece) {
-            if (availableMoves.Count == 0) {
-                return;
+            if (isHaveMoves) {
+                eventArgs.sender.transform.position += (Vector3)eventArgs.data.delta;
+                UpdateTargetCell();
             }
+        }
 
-            eventArgs.sender.transform.position += (Vector3)eventArgs.data.delta;
-
+        private void UpdateTargetCell() {
             targetCell = null;
+
             foreach (MoveInfo moveInfo in availableMoves) {
                 if (RectTransformUtility.RectangleContainsScreenPoint(moveInfo.cell.rectT, Input.mousePosition)) {
                     targetCell = moveInfo.cell;
@@ -69,26 +74,28 @@ namespace Lesstergy.Chess2D {
 
         //Finish move
         private void Piece_OnTouchUp(Piece piece) {
+            lastMovePiece = piece;
             SetHighlightCells(false);
 
             if (targetCell == null) {
-                boardController.ReplacePiece(piece.coord, piece.coord);
-                return;
+                //replace piece at own start position
+                boardController.ReplacePiece(piece, piece.cellCoord);
+            } else {
+                MakeMove();
             }
+        }
 
+        private void MakeMove() {
             foreach (MoveInfo moveInfo in availableMoves) {
                 if (moveInfo.cell.Equals(targetCell)) {
-                    lastMovePiece = piece;
                     lastMoveAction = moveInfo.moveAction;
 
                     moveInfo.moveAction.Execute();
+                    OnMakeMove(lastMovePiece);
                     break;
                 }
             }
-
-            OnMakeMove(lastMovePiece);
         }
-        
 
         //Help logic
         public void ApplyMove() {

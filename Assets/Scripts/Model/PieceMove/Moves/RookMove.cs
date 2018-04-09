@@ -5,7 +5,7 @@ namespace Lesstergy.Chess2D {
     public class RookMove : PieceMoveAlgorithm {
 
         public RookMove() {
-            moveVector = new Vector3Int(7, 7, 0);
+            moveVector = new Vector3Int(Board.FinishIndex, Board.FinishIndex, 0);
         }
     }
 

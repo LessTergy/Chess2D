@@ -30,8 +30,8 @@ namespace Lesstergy.Chess2D {
         }
 
         protected void FillCellPath(List<MoveInfo> moves, IBoardContoller boardController, Piece movingPiece, int xDirection, int yDirection, int movement) {
-            int currentX = movingPiece.coord.x;
-            int currentY = movingPiece.coord.y;
+            int currentX = movingPiece.cellCoord.x;
+            int currentY = movingPiece.cellCoord.y;
 
             for (int i = 0; i < movement; i++) {
                 currentX += xDirection;
@@ -59,7 +59,7 @@ namespace Lesstergy.Chess2D {
 
             } else
             if (cellState == Cell.State.Free) {
-                PieceMoveCommand moveCommand = new PieceMoveCommand(boardController, movingPiece.coord, new Vector2Int(targetX, targetY));
+                PieceMoveCommand moveCommand = new PieceMoveCommand(boardController, movingPiece, new Vector2Int(targetX, targetY));
                 MoveInfo move = new MoveInfo(currentCell, moveCommand);
                 moves.Add(move);
             }
@@ -74,7 +74,7 @@ namespace Lesstergy.Chess2D {
                 Cell currentCell = boardController.GetCell(targetX, targetY);
 
                 PieceKillCommand killCommand = new PieceKillCommand(boardController, currentCell.currentPiece);
-                PieceMoveCommand moveCommand = new PieceMoveCommand(boardController, movingPiece.coord, new Vector2Int(targetX, targetY));
+                PieceMoveCommand moveCommand = new PieceMoveCommand(boardController, movingPiece, new Vector2Int(targetX, targetY));
 
                 CommandContainer container = new CommandContainer(killCommand, moveCommand);
                 MoveInfo move = new MoveInfo(currentCell, container);

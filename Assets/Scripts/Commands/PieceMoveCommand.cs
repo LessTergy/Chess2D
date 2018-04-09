@@ -5,21 +5,25 @@ namespace Lesstergy.Chess2D {
     public class PieceMoveCommand : ICommand {
 
         private IBoardContoller boardController;
-        private Vector2Int startPosition;
-        private Vector2Int endPosition;
+        private Piece piece;
+        private Vector2Int cellCoord;
 
-        public PieceMoveCommand(IBoardContoller boardController, Vector2Int startPosition, Vector2Int endPosition) {
+        private Vector2Int prevCellCoord;
+
+        public PieceMoveCommand(IBoardContoller boardController, Piece piece, Vector2Int cellCoord) {
             this.boardController = boardController;
-            this.startPosition = startPosition;
-            this.endPosition = endPosition;
+            this.piece = piece;
+            this.cellCoord = cellCoord;
+
+            prevCellCoord = piece.cellCoord;
         }
     
         public void Execute() {
-            boardController.ReplacePiece(startPosition, endPosition);
+            boardController.ReplacePiece(piece, cellCoord);
         }
 
         public void Undo() {
-            boardController.ReplacePiece(endPosition, startPosition);
+            boardController.ReplacePiece(piece, prevCellCoord);
         }
     }
 

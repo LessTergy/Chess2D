@@ -47,7 +47,7 @@ namespace Lesstergy.Chess2D {
             pieceChooseView.Clear();
 
             boardController.HidePiece(promotedPawn);
-            pieceController.CreatePiece(newPieceType, promotedPawn.teamType, promotedPawn.coord);
+            pieceController.CreatePiece(newPieceType, promotedPawn.teamType, promotedPawn.cellCoord);
 
             boardController.GetBoard().SetInteractive(true);
 
@@ -56,7 +56,7 @@ namespace Lesstergy.Chess2D {
 
         private void PieceMoveController_OnFinishMove(Piece movingPiece) {
             int promotionRow = GetPromotionRowByTeam(movingPiece.teamType);
-            bool isPromotionPawn = (movingPiece.type == Piece.Type.Pawn) && (movingPiece.coord.y == promotionRow);
+            bool isPromotionPawn = (movingPiece.type == Piece.Type.Pawn) && (movingPiece.cellCoord.y == promotionRow);
 
             if (isPromotionPawn) {
                 StartPromotePawn(movingPiece);
@@ -72,7 +72,7 @@ namespace Lesstergy.Chess2D {
         }
 
         private int GetPromotionRowByTeam(ChessTeam.Type teamType) {
-            return (teamType == ChessTeam.Type.White) ? 7 : 0;
+            return (teamType == ChessTeam.Type.White) ? Board.FinishIndex : Board.StartIndex;
         }
     }
 

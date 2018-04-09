@@ -26,11 +26,11 @@ namespace Lesstergy.Chess2D {
         }
 
         private void CreateCells() {
-            int cellCount = Board.CELL_COUNT;
+            int cellCount = Board.CellCount;
             cells = new Cell[cellCount, cellCount];
 
-            float cellWidth = board.widthOffset / cellCount;
-            float cellHeight = board.heightOffset / cellCount;
+            float cellWidth = board.cellsWidth / cellCount;
+            float cellHeight = board.cellsHeight / cellCount;
 
             for (int xIndex = 0; xIndex < cellCount; xIndex++) {
                 for (int yIndex = 0; yIndex < cellCount; yIndex++) {
@@ -48,8 +48,8 @@ namespace Lesstergy.Chess2D {
             cell.transform.localScale = Vector3.one;
             Vector3 position = new Vector3(xIndex * width, yIndex * height);
 
-            position.x -= (board.width * board.rectT.pivot.x - board.xOffset);
-            position.y -= (board.height * board.rectT.pivot.y - board.yOffset);
+            position.x -= (board.rectWidth * board.rectT.pivot.x - board.xOffset);
+            position.y -= (board.rectHeight * board.rectT.pivot.y - board.yOffset);
             cell.transform.localPosition = position;
 
             RectTransform cellRectT = cell.transform as RectTransform;
@@ -68,7 +68,10 @@ namespace Lesstergy.Chess2D {
         }
 
         public override Cell.State GetCellStateForPiece(int x, int y, Piece piece) {
-            if ((x < 0 || x > 7) || (y < 0 || y > 7)) {
+            bool xIsOutOfBounds = (x < Board.StartIndex || x > Board.FinishIndex);
+            bool yIsOutOfBounds = (y < Board.StartIndex || y > Board.FinishIndex);
+
+            if (xIsOutOfBounds || yIsOutOfBounds) {
                 return Cell.State.OutOfBounds;
             }
 
@@ -86,29 +89,25 @@ namespace Lesstergy.Chess2D {
             return Cell.State.Free;
         }
 
-        public override void ReplacePiece(Vector2Int startPosition, Vector2Int endPosition) {
-            Cell currentCell = GetCell(startPosition);
-            Cell moveCell = GetCell(endPosition);
+        public override void ReplacePiece(Piece piece, Vector2Int cellCoord) {
+            Cell currentCell = GetCell(piece.cellCoord);
+            Cell moveCell = GetCell(cellCoord);
+            
+            piece.cellCoord = moveCell.coord;
+            currentCell.ClearPiece();
 
-            Piece movingPiece = currentCell.currentPiece;
-
-            if (movingPiece != null) {
-                movingPiece.coord = endPosition;
-                currentCell.ClearPiece();
-
-                moveCell.SetPiece(movingPiece);
-                movingPiece.transform.position = moveCell.transform.position;
-            }
+            moveCell.SetPiece(piece);
+            piece.transform.position = moveCell.transform.position;
         }
 
         public override void HidePiece(Piece piece) {
-            Cell cell = GetCell(piece.coord);
+            Cell cell = GetCell(piece.cellCoord);
             cell.ClearPiece();
             piece.isEnable = false;
         }
 
         public override void ShowPiece(Piece piece) {
-            Cell cell = GetCell(piece.coord);
+            Cell cell = GetCell(piece.cellCoord);
             cell.SetPiece(piece);
             piece.isEnable = true;
         }
