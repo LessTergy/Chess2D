@@ -164,7 +164,7 @@ MonoBehaviour:
   cellPrefab: {fileID: 114657569288288960, guid: 915a149bb2b1f0848801e5f8471a4f7b,
     type: 2}
   piecePrefabBuilder: {fileID: 11400000, guid: c7c264af98f39f04c9f2d7746dba892c, type: 2}
-  arrangment: {fileID: 11400000, guid: 943a7f76b2c2d2f40afe8830663c4b6d, type: 2}
+  arrangment: {fileID: 11400000, guid: 1a75eab406d726b4aa4ebb1e6da4d543, type: 2}
   pieceGroupParent: {fileID: 1152494345}
   cellGroupParent: {fileID: 456302139}
 --- !u!114 &26139793 stripped
@@ -412,8 +412,8 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 367491670}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 960, y: 540, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 1024, y: 768, z: 0}
+  m_LocalScale: {x: 1.0666667, y: 1.0666667, z: 1.0666667}
   m_Children:
   - {fileID: 563958873}
   - {fileID: 1734279527}
@@ -493,7 +493,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1922.4, y: 0}
+  m_SizeDelta: {x: 2563.1997, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &563958874
 MonoBehaviour:
@@ -1192,7 +1192,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1372348243}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 940, y: -520, z: 0}
+  m_LocalPosition: {x: 939.9999, y: -699.99994, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 623416057}
@@ -1355,7 +1355,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -1040, y: -200}
+  m_SizeDelta: {x: -680, y: -200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1734279528
 MonoBehaviour:
