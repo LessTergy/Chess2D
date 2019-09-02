@@ -1,14 +1,19 @@
-﻿using Lesstergy.UI;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Chess2D.Model;
+using Chess2D.Model.PieceMove;
+using Lesstergy.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Lesstergy.Chess2D {
+namespace Chess2D.UI
+{
 
     [RequireComponent(typeof(Image))]
-    public class Piece : MonoBehaviour {
+    public class Piece : MonoBehaviour
+    {
 
-        public enum Type {
+        public enum Type
+        {
             King,
             Queen,
             Rook,
@@ -16,7 +21,7 @@ namespace Lesstergy.Chess2D {
             Bishop,
             Pawn
         }
-        
+
         public Type type { get; private set; }
         public ChessTeam.Type teamType { get; private set; }
 
@@ -25,35 +30,39 @@ namespace Lesstergy.Chess2D {
         public Vector2Int cellCoord;
         public bool isTarget;
         public bool isWasMoving;
-        public bool isLastMoving; //this piece was the last one to make move
+        public bool isLastMoving; // this piece was the last one to make move
 
-        public bool isEnable {
-            get { return gameObject.activeSelf; }
-            set { gameObject.SetActive(value); }
+        public bool isEnable
+        {
+            get => gameObject.activeSelf;
+            set => gameObject.SetActive(value);
         }
 
-        public bool isInteractive {
-            get { return image.raycastTarget; }
-            set { image.raycastTarget = value; }
+        public bool isInteractive
+        {
+            get => _image.raycastTarget;
+            set => _image.raycastTarget = value;
         }
 
-        //Components
-        private Image image;
+        // Components
+        private Image _image;
         public InteractiveObject interactive;
 
-        private void Awake() {
-            image = GetComponent<Image>();
+        private void Awake()
+        {
+            _image = GetComponent<Image>();
             interactive = GetComponent<InteractiveObject>();
         }
 
-        public void Initialize(Type type, Sprite sprite, List<PieceMoveAlgorithm> moves, ChessTeam.Type teamType, Color color) {
+        public void Initialize(Type type, Sprite sprite, List<PieceMoveAlgorithm> moves, ChessTeam.Type teamType, Color color)
+        {
             this.type = type;
-            image.sprite = sprite;
+            _image.sprite = sprite;
 
             this.moves = moves;
 
             this.teamType = teamType;
-            image.color = color;
+            _image.color = color;
         }
     }
 }

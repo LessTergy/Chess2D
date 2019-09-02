@@ -1,3 +1,7 @@
-﻿public interface IController {
-    void Initialize();
+﻿namespace Chess2D.Controller
+{
+    public interface IController
+    {
+        void Initialize();
+    }
 }

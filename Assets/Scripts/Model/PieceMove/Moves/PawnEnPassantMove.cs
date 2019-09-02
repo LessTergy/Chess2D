@@ -1,4 +1,9 @@
 ﻿using System.Collections.Generic;
+using Chess2D.Commands;
+using Chess2D.Controller;
+using Chess2D.Model;
+using Chess2D.Model.PieceMove;
+using Chess2D.UI;
 using UnityEngine;
 
 namespace Lesstergy.Chess2D {
@@ -12,7 +17,7 @@ namespace Lesstergy.Chess2D {
             moveVector = new Vector3Int(0, 1, 0);
         }
 
-        public override List<MoveInfo> GetAvailableMoves(Piece movingPiece, IBoardContoller boardController) {
+        public override List<MoveInfo> GetAvailableMoves(Piece movingPiece, IBoardController boardController) {
             List<MoveInfo> moves = new List<MoveInfo>();
 
             int enemyRow = (movingPiece.teamType == ChessTeam.Type.White) ? blackEnemyPawnRow : whiteEnemyPawnRow;
@@ -27,7 +32,7 @@ namespace Lesstergy.Chess2D {
             return moves;
         }
 
-        private new void FillCellMove(List<MoveInfo> moves, IBoardContoller boardController, Piece movingPiece, int xOffset, int yOffset) {
+        private new void FillCellMove(List<MoveInfo> moves, IBoardController boardController, Piece movingPiece, int xOffset, int yOffset) {
             Vector2Int coord = movingPiece.cellCoord;
 
             Cell.State moveCellState = boardController.GetCellStateForPiece(coord.x + xOffset, coord.y + yOffset, movingPiece);

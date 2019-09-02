@@ -1,17 +1,21 @@
 ﻿using System.Collections.Generic;
-using RangeInt = Lesstergy.Math.RangeInt;
+using Chess2D.UI;
+using Lesstergy.Chess2D;
+using RangeInteger = Lesstergy.Math.RangeInt;
 
-namespace Lesstergy.Chess2D {
+namespace Chess2D.Model
+{
 
-    public static class GameInfo {
-        
-        public static Dictionary<Piece.Type, RangeInt> pieceCountDict = new Dictionary<Piece.Type, RangeInt> {
-            { Piece.Type.King, new RangeInt(1, 1) },
-            { Piece.Type.Queen, new RangeInt(0, 1) },
-            { Piece.Type.Knight, new RangeInt(0, 2) },
-            { Piece.Type.Bishop, new RangeInt(0, 2) },
-            { Piece.Type.Rook, new RangeInt(0, 2) },
-            { Piece.Type.Pawn, new RangeInt(0, 8) }
+    public static class GameInfo
+    {
+        public static Dictionary<Piece.Type, RangeInteger> pieceCountDict = new Dictionary<Piece.Type, RangeInteger>
+        {
+            { Piece.Type.King, new RangeInteger(1, 1) },
+            { Piece.Type.Queen, new RangeInteger(0, 1) },
+            { Piece.Type.Knight, new RangeInteger(0, 2) },
+            { Piece.Type.Bishop, new RangeInteger(0, 2) },
+            { Piece.Type.Rook, new RangeInteger(0, 2) },
+            { Piece.Type.Pawn, new RangeInteger(0, 8) }
         };
     }
 

@@ -1,26 +1,25 @@
-﻿using UnityEngine;
+﻿namespace Lesstergy.Time
+{
 
-namespace Lesstergy.Time {
-
-    public class TimeSince {
+    public class TimeSince
+    {
 
         public float lastValue { get; private set; }
 
-        public float delta {
-            get {
-                return UnityEngine.Time.timeSinceLevelLoad - lastValue;
-            }
-        }
+        public float delta => UnityEngine.Time.timeSinceLevelLoad - lastValue;
 
-        public void Fixate() {
+        public void Fixate()
+        {
             lastValue = UnityEngine.Time.timeSinceLevelLoad;
         }
 
-        public void Increase() {
+        public void Increase()
+        {
             lastValue += UnityEngine.Time.deltaTime;
         }
 
-        public void Reset() {
+        public void Reset()
+        {
             lastValue = 0f;
         }
     }

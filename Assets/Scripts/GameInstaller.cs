@@ -1,9 +1,12 @@
-﻿using UnityEngine;
+﻿using Chess2D.Controller;
+using Chess2D.Model;
+using UnityEngine;
 using UnityEngine.UI;
 
-namespace Lesstergy.Chess2D {
-
-    public class GameInstaller : MonoBehaviour {
+namespace Lesstergy.Chess2D
+{
+    public class GameInstaller : MonoBehaviour
+    {
 
         [Header("Controllers")]
         public BoardController boardController;
@@ -25,31 +28,34 @@ namespace Lesstergy.Chess2D {
         public PiecePrefabBuilder piecePrefabBuilder;
 
         [Space(10)]
-        [Header("Arrangment")]
-        public ArrangmentOfPieces arrangment;
+        [Header("Arrangement")]
+        public ArrangementOfPieces arrangement;
 
         [Space(10)]
         [Header("GameObjects Group Parent")]
         public GameObject pieceGroupParent;
         public GameObject cellGroupParent;
 
-        private void Awake() {
-            Inject();
+        private void Awake()
+        {
+            Install();
             Initialize();
             StartGame();
         }
 
-        private void Inject() {
-            boardController.Inject(chessboard, cellPrefab, cellGroupParent);
-            pieceController.Inject(boardController, arrangment, piecePrefabBuilder, pieceGroupParent);
-            pieceMoveController.Inject(boardController, pieceController);
-            teamController.Inject(pieceController, pieceMoveController, boardController, pawnPromotionController);
-            pawnPromotionController.Inject(pieceChooseView, boardController, pieceController, pieceMoveController, piecePrefabBuilder);
+        private void Install()
+        {
+            boardController.Construct(chessboard, cellPrefab, cellGroupParent);
+            pieceController.Construct(boardController, arrangement, piecePrefabBuilder, pieceGroupParent);
+            pieceMoveController.Construct(boardController, pieceController);
+            teamController.Construct(pieceController, pieceMoveController, boardController, pawnPromotionController);
+            pawnPromotionController.Construct(pieceChooseView, boardController, pieceController, pieceMoveController, piecePrefabBuilder);
 
-            restartController.Inject(restartButton);
+            restartController.Construct(restartButton);
         }
 
-        private void Initialize() {
+        private void Initialize()
+        {
             boardController.Initialize();
             pieceMoveController.Initialize();
             teamController.Initialize();
@@ -60,7 +66,8 @@ namespace Lesstergy.Chess2D {
             restartController.Initialize();
         }
 
-        private void StartGame() {
+        private void StartGame()
+        {
             teamController.StartGame();
         }
     }

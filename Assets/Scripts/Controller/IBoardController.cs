@@ -1,14 +1,19 @@
-﻿using UnityEngine;
+﻿using Chess2D.UI;
+using Lesstergy.Chess2D;
+using UnityEngine;
 
-namespace Lesstergy.Chess2D {
+namespace Chess2D.Controller
+{
 
-    public abstract class IBoardContoller : MonoBehaviour {
+    public abstract class IBoardController : MonoBehaviour
+    {
 
         public abstract Board GetBoard();
 
         public abstract Cell GetCell(int x, int y);
 
-        public Cell GetCell(Vector2Int coord) {
+        public Cell GetCell(Vector2Int coord)
+        {
             return GetCell(coord.x, coord.y);
         }
 

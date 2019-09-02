@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Chess2D.Controller;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -6,7 +7,7 @@ public class RestartController : MonoBehaviour, IController {
 
     private Button restartButton;
 
-    public void Inject(Button restartButton) {
+    public void Construct(Button restartButton) {
         this.restartButton = restartButton;
     }
 

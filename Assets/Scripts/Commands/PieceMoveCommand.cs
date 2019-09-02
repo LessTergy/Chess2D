@@ -1,29 +1,37 @@
-﻿using UnityEngine;
+﻿using Chess2D.Controller;
+using Chess2D.UI;
+using Lesstergy.Chess2D;
+using UnityEngine;
 
-namespace Lesstergy.Chess2D {
+namespace Chess2D.Commands
+{
 
-    public class PieceMoveCommand : ICommand {
+    public class PieceMoveCommand : ICommand
+    {
 
-        private IBoardContoller boardController;
-        private Piece piece;
-        private Vector2Int cellCoord;
+        private IBoardController _boardController;
+        private Piece _piece;
+        private Vector2Int _cellCoord;
 
-        private Vector2Int prevCellCoord;
+        private Vector2Int _prevCellCoord;
 
-        public PieceMoveCommand(IBoardContoller boardController, Piece piece, Vector2Int cellCoord) {
-            this.boardController = boardController;
-            this.piece = piece;
-            this.cellCoord = cellCoord;
+        public PieceMoveCommand(IBoardController boardController, Piece piece, Vector2Int cellCoord)
+        {
+            _boardController = boardController;
+            _piece = piece;
+            _cellCoord = cellCoord;
 
-            prevCellCoord = piece.cellCoord;
+            _prevCellCoord = piece.cellCoord;
         }
-    
-        public void Execute() {
-            boardController.ReplacePiece(piece, cellCoord);
+
+        public void Execute()
+        {
+            _boardController.ReplacePiece(_piece, _cellCoord);
         }
 
-        public void Undo() {
-            boardController.ReplacePiece(piece, prevCellCoord);
+        public void Undo()
+        {
+            _boardController.ReplacePiece(_piece, _prevCellCoord);
         }
     }
 

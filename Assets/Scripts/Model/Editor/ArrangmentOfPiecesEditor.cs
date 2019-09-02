@@ -1,89 +1,117 @@
 ﻿using System.Collections.Generic;
+using Chess2D.UI;
+using Lesstergy.Chess2D;
 using UnityEditor;
 using UnityEngine;
 using RangeInt = Lesstergy.Math.RangeInt;
 
-namespace Lesstergy.Chess2D {
+namespace Chess2D.Model.Editor
+{
 
-    [CustomEditor(typeof(ArrangmentOfPieces))]
-    public class ArrangmentOfPiecesEditor : Editor {
+    [CustomEditor(typeof(ArrangementOfPieces))]
+    public class ArrangementOfPiecesEditor : UnityEditor.Editor
+    {
 
-        public override void OnInspectorGUI() {
+        public override void OnInspectorGUI()
+        {
             base.OnInspectorGUI();
 
-            CheckArrangment();
+            CheckArrangement();
         }
 
-        private void CheckArrangment() {
-            ArrangmentOfPieces arrangment = (ArrangmentOfPieces)target;
+        private void CheckArrangement()
+        {
+            var arrangement = (ArrangementOfPieces) target;
 
-            if (arrangment.whitePieceCells == null || arrangment.blackPieceCells == null) {
+            if (arrangement.whitePieceCells == null || arrangement.blackPieceCells == null)
+            {
                 return;
             }
 
-            CheckChessCount(arrangment.whitePieceCells);
-            CheckChessCount(arrangment.blackPieceCells);
+            CheckChessCount(arrangement.whitePieceCells);
+            CheckChessCount(arrangement.blackPieceCells);
 
-            CheckSameCells(arrangment.whitePieceCells, arrangment.blackPieceCells);
+            CheckSameCells(arrangement.whitePieceCells, arrangement.blackPieceCells);
 
-            CheckCoordBounds(arrangment.whitePieceCells);
-            CheckCoordBounds(arrangment.blackPieceCells);
+            CheckCoordBounds(arrangement.whitePieceCells);
+            CheckCoordBounds(arrangement.blackPieceCells);
         }
 
-        private void CheckChessCount(List<CellInfo> cells) {
-            Dictionary<Piece.Type, int> chessCountDict = new Dictionary<Piece.Type, int>();
+        private void CheckChessCount(List<CellInfo> cells)
+        {
+            var chessCountDict = new Dictionary<Piece.Type, int>();
 
-            foreach (var cell in cells) {
-                if (!chessCountDict.ContainsKey(cell.pieceType)) {
+            foreach (CellInfo cell in cells)
+            {
+                if (!chessCountDict.ContainsKey(cell.pieceType))
+                {
                     chessCountDict.Add(cell.pieceType, 1);
-                } else {
+                }
+                else
+                {
                     chessCountDict[cell.pieceType] += 1;
                 }
             }
 
-            foreach (var pair in chessCountDict) {
+            foreach (KeyValuePair<Piece.Type, int> pair in chessCountDict)
+            {
                 RangeInt pieceCountRange = GameInfo.pieceCountDict[pair.Key];
-                if (!pieceCountRange.IsInRange(pair.Value)) {
-                    EditorGUILayout.HelpBox("Piece " + pair.Key.ToString() + " have incorrect count value", MessageType.Error);
+                if (!pieceCountRange.IsInRange(pair.Value))
+                {
+                    EditorGUILayout.HelpBox($"Piece {pair.Key} ave incorrect count value", MessageType.Error);
                 }
             }
         }
 
         //On one cell should be only one piece
-        private void CheckSameCells(List<CellInfo> whiteCells, List<CellInfo> blackCells) {
-            Dictionary<Vector2Int, int> sameCellCount = new Dictionary<Vector2Int, int>();
+        private void CheckSameCells(List<CellInfo> whiteCells, List<CellInfo> blackCells)
+        {
+            var sameCellCount = new Dictionary<Vector2Int, int>();
 
-            foreach (var cell in whiteCells) {
-                if (!sameCellCount.ContainsKey(cell.coord)) {
+            foreach (CellInfo cell in whiteCells)
+            {
+                if (!sameCellCount.ContainsKey(cell.coord))
+                {
                     sameCellCount.Add(cell.coord, 1);
-                } else {
+                }
+                else
+                {
                     sameCellCount[cell.coord] += 1;
                 }
             }
 
-            foreach (var cell in blackCells) {
-                if (!sameCellCount.ContainsKey(cell.coord)) {
+            foreach (CellInfo cell in blackCells)
+            {
+                if (!sameCellCount.ContainsKey(cell.coord))
+                {
                     sameCellCount.Add(cell.coord, 1);
-                } else {
+                }
+                else
+                {
                     sameCellCount[cell.coord] += 1;
                 }
             }
 
-            foreach (var pair in sameCellCount) {
+            foreach (KeyValuePair<Vector2Int, int> pair in sameCellCount)
+            {
                 bool isHaveDuplicates = (pair.Value > 1);
-                if (isHaveDuplicates) {
-                    EditorGUILayout.HelpBox("Coord " + pair.Key.ToString() + " have duplicates", MessageType.Error);
+                if (isHaveDuplicates)
+                {
+                    EditorGUILayout.HelpBox($"coord {pair.Key} have duplicates", MessageType.Error);
                 }
             }
         }
 
-        private void CheckCoordBounds(List<CellInfo> cells) {
-            foreach (var cell in cells) {
+        private void CheckCoordBounds(List<CellInfo> cells)
+        {
+            foreach (CellInfo cell in cells)
+            {
                 bool xIsIncorrect = cell.coord.x < Board.StartIndex || cell.coord.x >= Board.CellCount;
                 bool yIsIncorrect = cell.coord.y < Board.StartIndex || cell.coord.y >= Board.CellCount;
 
-                if (xIsIncorrect || yIsIncorrect) {
-                    EditorGUILayout.HelpBox("Coord " + cell.coord.ToString() + " have incorrect value", MessageType.Error);
+                if (xIsIncorrect || yIsIncorrect)
+                {
+                    EditorGUILayout.HelpBox($"coord {cell.coord} have incorrect value", MessageType.Error);
                 }
             }
         }

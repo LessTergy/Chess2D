@@ -1,21 +1,30 @@
-﻿namespace Lesstergy.Chess2D {
+﻿using Chess2D.Controller;
+using Chess2D.UI;
+using Lesstergy.Chess2D;
 
-    public class PieceKillCommand : ICommand {
+namespace Chess2D.Commands
+{
 
-        private IBoardContoller boardController;
-        private Piece piece;
+    public class PieceKillCommand : ICommand
+    {
 
-        public PieceKillCommand(IBoardContoller boardController, Piece piece) {
-            this.boardController = boardController;
-            this.piece = piece;
+        private IBoardController _boardController;
+        private Piece _piece;
+
+        public PieceKillCommand(IBoardController boardController, Piece piece)
+        {
+            _boardController = boardController;
+            _piece = piece;
         }
-        
-        public void Execute() {
-            boardController.HidePiece(piece);
+
+        public void Execute()
+        {
+            _boardController.HidePiece(_piece);
         }
 
-        public void Undo() {
-            boardController.ShowPiece(piece);
+        public void Undo()
+        {
+            _boardController.ShowPiece(_piece);
         }
     }
 }

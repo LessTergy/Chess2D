@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using Chess2D.Controller;
+using Chess2D.Model;
+using Chess2D.UI;
+using UnityEngine;
 
 namespace Lesstergy.Chess2D {
 
@@ -11,10 +14,10 @@ namespace Lesstergy.Chess2D {
 
         private PieceController pieceController;
         private PieceMoveController pieceMoveController;
-        private IBoardContoller boardController;
+        private IBoardController boardController;
         private PawnPromotionController pawnPromotionController;
 
-        public void Inject(PieceController pc, PieceMoveController pmc, IBoardContoller bc, PawnPromotionController ppc) {
+        public void Construct(PieceController pc, PieceMoveController pmc, IBoardController bc, PawnPromotionController ppc) {
             this.pieceController = pc;
             this.pieceMoveController = pmc;
             this.boardController = bc;
@@ -65,10 +68,10 @@ namespace Lesstergy.Chess2D {
 
         private void UpdateCurrentTeam() {
             UpdateKingCheck();
-            currentTeamMove.SetPieceInteractive(true);
-            GetEnemyTeam().SetPieceInteractive(false);
+            currentTeamMove.SetInteractive(true);
+            GetEnemyTeam().SetInteractive(false);
 
-            currentTeamMove.ResetLastMoving();
+            currentTeamMove.ResetLastMove();
         }
 
         private void UpdateKingCheck() {
@@ -76,7 +79,7 @@ namespace Lesstergy.Chess2D {
             ChessTeam enenmyTeam = GetEnemyTeam();
 
             foreach (Piece piece in enenmyTeam.pieces) {
-                pieceController.UpdatePieceTargetByEnenmy(currentTeamMove.king, piece);
+                pieceController.UpdatePieceTargetByEnemy(currentTeamMove.king, piece);
 
                 if (currentTeamMove.king.isTarget) {
                     return;

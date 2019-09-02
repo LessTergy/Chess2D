@@ -1,10 +1,15 @@
 ﻿using System.Collections.Generic;
+using Chess2D.UI;
+using Lesstergy.Chess2D;
 
-namespace Lesstergy.Chess2D {
+namespace Chess2D.Model
+{
 
-    public class ChessTeam {
+    public class ChessTeam
+    {
 
-        public enum Type {
+        public enum Type
+        {
             White,
             Black
         }
@@ -14,22 +19,28 @@ namespace Lesstergy.Chess2D {
 
         public Piece king { get; private set; }
 
-        public ChessTeam(Type type) {
+        public ChessTeam(Type type)
+        {
             this.type = type;
         }
 
-        public void SetKing(Piece piece) {
+        public void SetKing(Piece piece)
+        {
             king = piece;
         }
 
-        public void SetPieceInteractive(bool value) {
-            foreach (var piece in pieces) {
+        public void SetInteractive(bool value)
+        {
+            foreach (Piece piece in pieces)
+            {
                 piece.isInteractive = value;
             }
         }
 
-        public void ResetLastMoving() {
-            foreach (var piece in pieces) {
+        public void ResetLastMove()
+        {
+            foreach (Piece piece in pieces)
+            {
                 piece.isLastMoving = false;
             }
         }

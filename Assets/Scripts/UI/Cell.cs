@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Chess2D.UI;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Lesstergy.Chess2D {

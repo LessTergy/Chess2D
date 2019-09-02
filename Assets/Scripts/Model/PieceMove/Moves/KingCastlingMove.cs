@@ -1,4 +1,9 @@
 ﻿using System.Collections.Generic;
+using Chess2D.Commands;
+using Chess2D.Controller;
+using Chess2D.Model;
+using Chess2D.Model.PieceMove;
+using Chess2D.UI;
 using UnityEngine;
 
 namespace Lesstergy.Chess2D {
@@ -12,7 +17,7 @@ namespace Lesstergy.Chess2D {
         private int whiteYRow = 0;
         private int blackYRow = 7;
 
-        public override List<MoveInfo> GetAvailableMoves(Piece piece, IBoardContoller boardController) {
+        public override List<MoveInfo> GetAvailableMoves(Piece piece, IBoardController boardController) {
             List<MoveInfo> moves = new List<MoveInfo>();
 
             int yCoord = (piece.teamType == ChessTeam.Type.White) ? whiteYRow : blackYRow;
@@ -27,7 +32,7 @@ namespace Lesstergy.Chess2D {
             return moves;
         }
 
-        private void FillCellPath(List<MoveInfo> moves, IBoardContoller boardController, Piece kingPiece, bool isLeft) {
+        private void FillCellPath(List<MoveInfo> moves, IBoardController boardController, Piece kingPiece, bool isLeft) {
             int rookXPosition = (isLeft) ? rookLeftXPosition : rookRightXPosition;
             Vector2Int rookCoord = new Vector2Int(rookXPosition, kingPiece.cellCoord.y);
 
@@ -57,7 +62,7 @@ namespace Lesstergy.Chess2D {
         }
 
 
-        private bool IsEmptyBetweenCoords(IBoardContoller boardController, Vector2Int coordA, Vector2Int coordB) {
+        private bool IsEmptyBetweenCoords(IBoardController boardController, Vector2Int coordA, Vector2Int coordB) {
             int yCoord = coordA.y;
             int xStart = Mathf.Min(coordA.x, coordB.x);
             int xEnd = Mathf.Max(coordA.x, coordB.x);

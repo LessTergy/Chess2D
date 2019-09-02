@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using Chess2D.Controller;
+using Chess2D.Model.PieceMove;
+using Chess2D.UI;
 using UnityEngine;
 
 namespace Lesstergy.Chess2D {
@@ -9,7 +12,7 @@ namespace Lesstergy.Chess2D {
             moveVector = new Vector3Int(2, 2, 0);
         }
 
-        public override List<MoveInfo> GetAvailableMoves(Piece movingPiece, IBoardContoller boardController) {
+        public override List<MoveInfo> GetAvailableMoves(Piece movingPiece, IBoardController boardController) {
             List<MoveInfo> moves = new List<MoveInfo>();
 
             Vector2Int coord = movingPiece.cellCoord;

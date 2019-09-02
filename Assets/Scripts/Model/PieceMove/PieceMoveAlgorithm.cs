@@ -1,13 +1,20 @@
 ﻿using System.Collections.Generic;
+using Chess2D.Commands;
+using Chess2D.Controller;
+using Chess2D.UI;
+using Lesstergy.Chess2D;
 using UnityEngine;
 
-namespace Lesstergy.Chess2D {
+namespace Chess2D.Model.PieceMove
+{
 
-    public class PieceMoveAlgorithm {
+    public class PieceMoveAlgorithm
+    {
 
         protected Vector3Int moveVector = new Vector3Int(1, 1, 1);
 
-        public virtual List<MoveInfo> GetAvailableMoves(Piece movingPiece, IBoardContoller boardController) {
+        public virtual List<MoveInfo> GetAvailableMoves(Piece movingPiece, IBoardController boardController)
+        {
             List<MoveInfo> moves = new List<MoveInfo>();
 
             //Horizontal
@@ -29,36 +36,44 @@ namespace Lesstergy.Chess2D {
             return moves;
         }
 
-        protected void FillCellPath(List<MoveInfo> moves, IBoardContoller boardController, Piece movingPiece, int xDirection, int yDirection, int movement) {
+        protected void FillCellPath(List<MoveInfo> moves, IBoardController boardController, Piece movingPiece, int xDirection, int yDirection, int movement)
+        {
             int currentX = movingPiece.cellCoord.x;
             int currentY = movingPiece.cellCoord.y;
 
-            for (int i = 0; i < movement; i++) {
+            for (int i = 0; i < movement; i++)
+            {
                 currentX += xDirection;
                 currentY += yDirection;
-                
-                if (!FillCellMove(moves, boardController, movingPiece, currentX, currentY)) {
+
+                if (!FillCellMove(moves, boardController, movingPiece, currentX, currentY))
+                {
                     return;
                 }
             }
         }
 
         //return true, if can continue cell path
-        protected bool FillCellMove(List<MoveInfo> moves, IBoardContoller boardController, Piece movingPiece, int targetX, int targetY) {
+        protected bool FillCellMove(List<MoveInfo> moves, IBoardController boardController, Piece movingPiece, int targetX, int targetY)
+        {
             Cell.State cellState = boardController.GetCellStateForPiece(targetX, targetY, movingPiece);
 
-            if (cellState == Cell.State.OutOfBounds || cellState == Cell.State.Friendly) {
+            if (cellState == Cell.State.OutOfBounds || cellState == Cell.State.Friendly)
+            {
                 return false;
             }
 
             Cell currentCell = boardController.GetCell(targetX, targetY);
 
-            if (cellState == Cell.State.Enemy) {
+            if (cellState == Cell.State.Enemy)
+            {
                 FillKillMove(moves, boardController, movingPiece, targetX, targetY);
                 return false;
 
-            } else
-            if (cellState == Cell.State.Free) {
+            }
+            else
+            if (cellState == Cell.State.Free)
+            {
                 PieceMoveCommand moveCommand = new PieceMoveCommand(boardController, movingPiece, new Vector2Int(targetX, targetY));
                 MoveInfo move = new MoveInfo(currentCell, moveCommand);
                 moves.Add(move);
@@ -67,10 +82,12 @@ namespace Lesstergy.Chess2D {
             return true;
         }
 
-        protected void FillKillMove(List<MoveInfo> moves, IBoardContoller boardController, Piece movingPiece, int targetX, int targetY) {
+        protected void FillKillMove(List<MoveInfo> moves, IBoardController boardController, Piece movingPiece, int targetX, int targetY)
+        {
             Cell.State cellState = boardController.GetCellStateForPiece(targetX, targetY, movingPiece);
 
-            if (cellState == Cell.State.Enemy) {
+            if (cellState == Cell.State.Enemy)
+            {
                 Cell currentCell = boardController.GetCell(targetX, targetY);
 
                 PieceKillCommand killCommand = new PieceKillCommand(boardController, currentCell.currentPiece);
@@ -81,12 +98,12 @@ namespace Lesstergy.Chess2D {
 
                 moves.Add(move);
             }
-            
+
         }
 
-        protected Vector3Int InvertVectorMoveByTeam(Vector3Int moveVec, ChessTeam.Type teamType) {
+        protected Vector3Int InvertVectorMoveByTeam(Vector3Int moveVec, ChessTeam.Type teamType)
+        {
             return (teamType == ChessTeam.Type.White) ? moveVec : (moveVec * -1);
         }
     }
 }
-

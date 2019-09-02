@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using Chess2D.Model;
+using UnityEditor;
 using UnityEngine;
 
 namespace Lesstergy.Chess2D {

@@ -1,27 +1,37 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-public class CommandContainer : ICommand {
+namespace Chess2D.Commands
+{
+    public class CommandContainer : ICommand
+    {
 
-    private List<ICommand> commands;
+        private readonly List<ICommand> _commands;
 
-    public CommandContainer(params ICommand[] list) {
-        commands = list.ToList();
-    }
-
-    public void Add(ICommand command) {
-        commands.Add(command);
-    }
-
-    public void Execute() {
-        for (int i = 0; i < commands.Count; i++) {
-            commands[i].Execute();
+        public CommandContainer(params ICommand[] list)
+        {
+            _commands = list.ToList();
         }
-    }
 
-    public void Undo() {
-        for (int i = commands.Count; i > 0; i--) {
-            commands[i - 1].Undo();
+        public void Add(ICommand command)
+        {
+            _commands.Add(command);
+        }
+
+        public void Execute()
+        {
+            for (var i = 0; i < _commands.Count; i++)
+            {
+                _commands[i].Execute();
+            }
+        }
+
+        public void Undo()
+        {
+            for (int i = _commands.Count; i > 0; i--)
+            {
+                _commands[i - 1].Undo();
+            }
         }
     }
 }

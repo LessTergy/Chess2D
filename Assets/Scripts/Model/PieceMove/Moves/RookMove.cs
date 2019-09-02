@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Chess2D.Model.PieceMove;
+using UnityEngine;
 
 namespace Lesstergy.Chess2D {
 
