@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 
-namespace Lesstergy.Chess2D {
-    public class Board : MonoBehaviour {
-
+namespace Chess2D.UI
+{
+    public class Board : MonoBehaviour
+    {
         public const int CellCount = 8;
 
         public const int StartIndex = 0;
@@ -10,25 +11,27 @@ namespace Lesstergy.Chess2D {
 
         [SerializeField]
         private Vector2 _offset;
-        public float xOffset { get { return rectWidth * _offset.x; } }
-        public float yOffset { get { return rectHeight * _offset.y; } }
-        
-        public float rectWidth { get { return rectT.rect.width; } }
-        public float cellsWidth { get { return rectWidth - (xOffset * 2); } }
+        public float xOffset => rectWidth * _offset.x;
+        public float yOffset => rectHeight * _offset.y;
 
-        public float rectHeight { get { return rectT.rect.height; } }
-        public float cellsHeight { get { return rectHeight - (yOffset * 2); } }
-        
+        public float rectWidth => rectT.rect.width;
+        public float cellsWidth => rectWidth - (xOffset * 2);
+
+        public float rectHeight => rectT.rect.height;
+        public float cellsHeight => rectHeight - (yOffset * 2);
+
         public RectTransform rectT { get; private set; }
-        private CanvasGroup canvasGroup;
+        private CanvasGroup _canvasGroup;
 
-        public void Awake() {
+        public void Awake()
+        {
             rectT = transform as RectTransform;
-            canvasGroup = GetComponent<CanvasGroup>();
+            _canvasGroup = GetComponent<CanvasGroup>();
         }
 
-        public void SetInteractive(bool value) {
-            canvasGroup.blocksRaycasts = value;
+        public void SetInteractive(bool value)
+        {
+            _canvasGroup.blocksRaycasts = value;
         }
 
         #region Debug
@@ -36,7 +39,8 @@ namespace Lesstergy.Chess2D {
         [SerializeField]
         private Texture debugGridTexture;
 
-        private void OnDrawGizmosSelected() {
+        private void OnDrawGizmosSelected()
+        {
             //Look at grid interactive
             rectT = transform as RectTransform;
             Rect rect = rectT.rect;
