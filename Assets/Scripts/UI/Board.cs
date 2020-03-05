@@ -2,6 +2,7 @@
 
 namespace Chess2D.UI
 {
+    [RequireComponent(typeof(RectTransform), typeof(CanvasGroup))]
     public class Board : MonoBehaviour
     {
         public const int CellCount = 8;

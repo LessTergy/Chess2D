@@ -4,7 +4,7 @@ using Chess2D.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Lesstergy.Chess2D
+namespace Chess2D
 {
     public class GameInstaller : MonoBehaviour
     {
@@ -49,7 +49,7 @@ namespace Lesstergy.Chess2D
             boardController.Construct(chessboard, cellPrefab, cellGroupParent);
             pieceController.Construct(boardController, arrangement, piecePrefabBuilder, pieceGroupParent);
             pieceMoveController.Construct(boardController, pieceController);
-            teamController.Construct(pieceController, pieceMoveController, boardController, pawnPromotionController);
+            teamController.Construct(pieceController, pieceMoveController, pawnPromotionController);
             pawnPromotionController.Construct(pieceChooseView, boardController, pieceController, pieceMoveController, piecePrefabBuilder);
 
             restartController.Construct(restartButton);

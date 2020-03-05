@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Chess2D.Model;
 using Chess2D.Model.PieceMove;
 using Chess2D.UI;
-using Lesstergy.Chess2D;
 using UnityEngine;
 
 namespace Chess2D.Controller

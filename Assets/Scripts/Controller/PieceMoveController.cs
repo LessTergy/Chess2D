@@ -1,6 +1,5 @@
 ﻿using Chess2D.Commands;
 using Chess2D.Model.PieceMove;
-using Lesstergy.Chess2D;
 using System;
 using System.Collections.Generic;
 using Chess2D.UI;
@@ -128,8 +127,8 @@ namespace Chess2D.Controller
                     continue;
                 }
 
-                _lastMoveAction = moveInfo.moveAction;
-                moveInfo.moveAction.Execute();
+                _lastMoveAction = moveInfo.moveCommand;
+                moveInfo.moveCommand.Execute();
                 OnMakeMove(_lastMovePiece);
                 break;
             }

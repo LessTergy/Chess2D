@@ -1,23 +1,28 @@
-﻿using Chess2D.Controller;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class RestartController : MonoBehaviour, IController {
+namespace Chess2D.Controller
+{
+    public class RestartController : MonoBehaviour, IController
+    {
+        private Button _restartButton;
 
-    private Button restartButton;
+        public void Construct(Button restartButton)
+        {
+            _restartButton = restartButton;
+        }
 
-    public void Construct(Button restartButton) {
-        this.restartButton = restartButton;
-    }
+        public void Initialize()
+        {
+            _restartButton.onClick.AddListener(RestartHandler);
+        }
 
-    public void Initialize() {
-        restartButton.onClick.AddListener(RestartHandler);
-    }
-
-    private void RestartHandler() {
-        Scene scene = SceneManager.GetActiveScene();
-        SceneManager.LoadScene(scene.name);
+        private void RestartHandler()
+        {
+            Scene scene = SceneManager.GetActiveScene();
+            SceneManager.LoadScene(scene.name);
+        }
     }
 }
 

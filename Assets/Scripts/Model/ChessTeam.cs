@@ -1,13 +1,10 @@
-﻿using System.Collections.Generic;
-using Chess2D.UI;
-using Lesstergy.Chess2D;
+﻿using Chess2D.UI;
+using System.Collections.Generic;
 
 namespace Chess2D.Model
 {
-
     public class ChessTeam
     {
-
         public enum Type
         {
             White,
@@ -45,5 +42,4 @@ namespace Chess2D.Model
             }
         }
     }
-
 }

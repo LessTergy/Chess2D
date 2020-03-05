@@ -1,18 +1,19 @@
 ﻿using System.Collections.Generic;
 using Chess2D.Controller;
-using Chess2D.Model.PieceMove;
 using Chess2D.UI;
 using UnityEngine;
 
-namespace Lesstergy.Chess2D {
-
-    public class PawnKillMove : PieceMoveAlgorithm {
-
-        public PawnKillMove() {
-            moveVector = new Vector3Int(0, 0, 1);
+namespace Chess2D.Model.PieceMove
+{
+    public class PawnKillMove : PieceMoveAlgorithm
+    {
+        protected override Vector3Int GetMoveVector()
+        {
+            return new Vector3Int(0, 0, 1);
         }
 
-        public override List<MoveInfo> GetAvailableMoves(Piece movingPiece, IBoardController boardController) {
+        public override List<MoveInfo> GetAvailableMoves(Piece movingPiece, IBoardController boardController)
+        {
             List<MoveInfo> moves = new List<MoveInfo>();
 
             Vector3Int pMoveVector = InvertVectorMoveByTeam(moveVector, movingPiece.teamType);
@@ -24,6 +25,5 @@ namespace Lesstergy.Chess2D {
 
             return moves;
         }
-
     }
 }

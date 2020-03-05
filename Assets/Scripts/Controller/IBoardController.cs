@@ -1,5 +1,4 @@
 ﻿using Chess2D.UI;
-using Lesstergy.Chess2D;
 using UnityEngine;
 
 namespace Chess2D.Controller

@@ -1,19 +1,17 @@
 ﻿using Chess2D.Commands;
-using Lesstergy.Chess2D;
+using Chess2D.UI;
 
 namespace Chess2D.Model.PieceMove
 {
-
     public class MoveInfo
     {
-
-        public Cell cell;
-        public ICommand moveAction;
+        public readonly Cell cell;
+        public readonly ICommand moveCommand;
 
         public MoveInfo(Cell cell, ICommand command)
         {
             this.cell = cell;
-            this.moveAction = command;
+            moveCommand = command;
         }
     }
 }

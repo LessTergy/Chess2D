@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using Chess2D.UI;
-using Lesstergy.Chess2D;
+﻿using Chess2D.UI;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using RangeInt = Lesstergy.Math.RangeInt;
@@ -55,7 +54,7 @@ namespace Chess2D.Model.Editor
 
             foreach (KeyValuePair<Piece.Type, int> pair in chessCountDict)
             {
-                RangeInt pieceCountRange = GameInfo.pieceCountDict[pair.Key];
+                RangeInt pieceCountRange = GameInfo.PieceCountDict[pair.Key];
                 if (!pieceCountRange.IsInRange(pair.Value))
                 {
                     EditorGUILayout.HelpBox($"Piece {pair.Key} ave incorrect count value", MessageType.Error);

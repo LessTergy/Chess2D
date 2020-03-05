@@ -1,18 +1,19 @@
 ﻿using System.Collections.Generic;
 using Chess2D.Controller;
-using Chess2D.Model.PieceMove;
 using Chess2D.UI;
 using UnityEngine;
 
-namespace Lesstergy.Chess2D {
-
-    public class KnightMove : PieceMoveAlgorithm {
-
-        public KnightMove() {
-            moveVector = new Vector3Int(2, 2, 0);
+namespace Chess2D.Model.PieceMove
+{
+    public class KnightMove : PieceMoveAlgorithm
+    {
+        protected override Vector3Int GetMoveVector()
+        {
+            return new Vector3Int(2, 2, 0);
         }
 
-        public override List<MoveInfo> GetAvailableMoves(Piece movingPiece, IBoardController boardController) {
+        public override List<MoveInfo> GetAvailableMoves(Piece movingPiece, IBoardController boardController)
+        {
             List<MoveInfo> moves = new List<MoveInfo>();
 
             Vector2Int coord = movingPiece.cellCoord;
@@ -36,7 +37,7 @@ namespace Lesstergy.Chess2D {
             FillCellMove(moves, boardController, movingPiece, coord.x + moveVector.x, coord.y - 1);
             //Right right
             FillCellMove(moves, boardController, movingPiece, coord.x + moveVector.x, coord.y + 1);
-            
+
             return moves;
         }
     }

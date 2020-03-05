@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using Chess2D.Model.PieceMove;
+﻿using Chess2D.Model.PieceMove;
 using Chess2D.UI;
-using Lesstergy.Chess2D;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Chess2D.Model
 {
-
     [CreateAssetMenu(fileName = "PiecePrefabBuilder", menuName = "Chess2D/Piece Prefab Builder")]
     public class PiecePrefabBuilder : ScriptableObject
     {

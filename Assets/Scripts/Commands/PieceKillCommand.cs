@@ -1,6 +1,5 @@
 ﻿using Chess2D.Controller;
 using Chess2D.UI;
-using Lesstergy.Chess2D;
 
 namespace Chess2D.Commands
 {

@@ -1,13 +1,12 @@
-﻿using Chess2D.Model.PieceMove;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Lesstergy.Chess2D {
-
-    public class KingNormalMove : PieceMoveAlgorithm {
-
-        public KingNormalMove() {
-            moveVector = new Vector3Int(1, 1, 1);
+namespace Chess2D.Model.PieceMove
+{
+    public class KingNormalMove : PieceMoveAlgorithm
+    {
+        protected override Vector3Int GetMoveVector()
+        {
+            return Vector3Int.one;
         }
     }
-
 }

@@ -1,13 +1,15 @@
-﻿using Chess2D.Model;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
-namespace Lesstergy.Chess2D {
+namespace Chess2D.Model.Editor
+{
 
     [CustomPropertyDrawer(typeof(CellInfo))]
-    public class CellInfoPropertyDrawer : PropertyDrawer {
+    public class CellInfoPropertyDrawer : PropertyDrawer
+    {
 
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        {
             label = EditorGUI.BeginProperty(position, label, property);
             Rect contentPosition = EditorGUI.PrefixLabel(position, label);
 

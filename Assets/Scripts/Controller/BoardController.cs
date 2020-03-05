@@ -1,8 +1,7 @@
-﻿using Chess2D.Controller;
-using Chess2D.UI;
+﻿using Chess2D.UI;
 using UnityEngine;
 
-namespace Lesstergy.Chess2D
+namespace Chess2D.Controller
 {
 
     public class BoardController : IBoardController, IController

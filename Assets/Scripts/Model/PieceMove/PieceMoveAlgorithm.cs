@@ -2,16 +2,26 @@
 using Chess2D.Commands;
 using Chess2D.Controller;
 using Chess2D.UI;
-using Lesstergy.Chess2D;
 using UnityEngine;
 
 namespace Chess2D.Model.PieceMove
 {
-
-    public class PieceMoveAlgorithm
+    public abstract class PieceMoveAlgorithm
     {
+        private Vector3Int ?cachedMoveVector;
+        protected Vector3Int moveVector
+        {
+            get
+            {
+                if (cachedMoveVector == null)
+                {
+                    cachedMoveVector = GetMoveVector();
+                }
+                return cachedMoveVector.Value;
+            }
+        }
 
-        protected Vector3Int moveVector = new Vector3Int(1, 1, 1);
+        protected abstract Vector3Int GetMoveVector();
 
         public virtual List<MoveInfo> GetAvailableMoves(Piece movingPiece, IBoardController boardController)
         {
@@ -98,12 +108,11 @@ namespace Chess2D.Model.PieceMove
 
                 moves.Add(move);
             }
-
         }
 
-        protected Vector3Int InvertVectorMoveByTeam(Vector3Int moveVec, ChessTeam.Type teamType)
+        protected Vector3Int InvertVectorMoveByTeam(Vector3Int moveVector, ChessTeam.Type teamType)
         {
-            return (teamType == ChessTeam.Type.White) ? moveVec : (moveVec * -1);
+            return (teamType == ChessTeam.Type.White) ? moveVector : (moveVector * -1);
         }
     }
 }
