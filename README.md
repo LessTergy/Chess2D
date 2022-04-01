@@ -1,8 +1,8 @@
 # Chess2D
 
 Classic chess for two players.
-This project serves as proof of my Unity Developer skills.
-This was a test assignment when applying for a job. The conditions were not to use third-party frameworks and libraries, to use UI.
+
+This was a test assignment when applying for a job in 2018. The conditions were not to use third-party frameworks and libraries, to use UI.
 
 # Game features
 - All types of chess piece can move according to the rules.
