@@ -1,42 +1,42 @@
 ﻿using Chess2D.UI;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Chess2D.Model
 {
     public class ChessTeam
     {
-        public enum Type
+        public readonly TeamType teamType;
+        public readonly List<PieceView> pieces = new();
+
+        public PieceView King { get; private set; }
+
+        public ChessTeam(TeamType teamType)
         {
-            White,
-            Black
+            this.teamType = teamType;
         }
 
-        public readonly Type type;
-        public List<Piece> pieces = new List<Piece>();
-
-        public Piece king { get; private set; }
-
-        public ChessTeam(Type type)
+        public void SetKing(PieceView pieceView)
         {
-            this.type = type;
-        }
-
-        public void SetKing(Piece piece)
-        {
-            king = piece;
+            if (pieceView.Type != PieceType.King)
+            {
+                Debug.LogError("PieceView is not King type");
+                return;
+            }
+            King = pieceView;
         }
 
         public void SetInteractive(bool value)
         {
-            foreach (Piece piece in pieces)
+            foreach (PieceView piece in pieces)
             {
-                piece.isInteractive = value;
+                piece.IsInteractive = value;
             }
         }
 
         public void ResetLastMove()
         {
-            foreach (Piece piece in pieces)
+            foreach (PieceView piece in pieces)
             {
                 piece.isLastMoving = false;
             }

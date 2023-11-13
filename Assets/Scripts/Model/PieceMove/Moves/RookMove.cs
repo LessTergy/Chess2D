@@ -7,7 +7,7 @@ namespace Chess2D.Model.PieceMove
     {
         protected override Vector3Int GetMoveVector()
         {
-            return new Vector3Int(Board.FinishIndex, Board.FinishIndex, 0);
+            return new Vector3Int(GameConstants.FinishIndex, GameConstants.FinishIndex, 0);
         }
     }
 }

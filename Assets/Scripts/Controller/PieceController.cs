@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Chess2D.Model;
 using Chess2D.Model.PieceMove;
 using Chess2D.UI;
@@ -7,35 +6,32 @@ using UnityEngine;
 
 namespace Chess2D.Controller
 {
-
-    public class PieceController : MonoBehaviour, IController
+    public class PieceController : MonoBehaviour
     {
-
-        public event Action<Piece> OnPieceCreated = delegate { };
+        public event PieceViewDelegate OnPieceCreated;
         
         // Inject
         private IBoardController _boardController;
-        private ArrangementOfPieces _arrangementOfPieces;
-        private PiecePrefabBuilder _piecePrefabBuilder;
+        private ArrangementConfig _arrangementConfig;
+        private PieceConfig _pieceConfig;
         private GameObject _piecesParent;
 
-        public void Construct(IBoardController bc, ArrangementOfPieces aop, PiecePrefabBuilder ppb, GameObject pieceParent)
+        public void Construct(IBoardController boardController, ArrangementConfig arrangementConfig, 
+            PieceConfig pieceConfig, GameObject pieceParent)
         {
-            _boardController = bc;
-            _arrangementOfPieces = aop;
-            _piecePrefabBuilder = ppb;
+            _boardController = boardController;
+            _arrangementConfig = arrangementConfig;
+            _pieceConfig = pieceConfig;
             _piecesParent = pieceParent;
         }
 
         public void Initialize()
         {
-            _piecePrefabBuilder.Init();
-
-            CreateTeamPieces(_arrangementOfPieces.whitePieceCells, ChessTeam.Type.White);
-            CreateTeamPieces(_arrangementOfPieces.blackPieceCells, ChessTeam.Type.Black);
+            CreateTeamPieces(_arrangementConfig.whitePieceCells, TeamType.White);
+            CreateTeamPieces(_arrangementConfig.blackPieceCells, TeamType.Black);
         }
 
-        private void CreateTeamPieces(List<CellInfo> cellInfoList, ChessTeam.Type teamType)
+        private void CreateTeamPieces(List<CellInfo> cellInfoList, TeamType teamType)
         {
             foreach (CellInfo cellInfo in cellInfoList)
             {
@@ -43,49 +39,46 @@ namespace Chess2D.Controller
             }
         }
 
-        public void CreatePiece(Piece.Type type, ChessTeam.Type teamType, Vector2Int cellCoord)
+        public void CreatePiece(PieceType type, TeamType teamType, Vector2Int cellCoord)
         {
-            Cell actualCell = _boardController.GetCell(cellCoord);
+            // Create
+            PieceView pieceView = _pieceConfig.CreatePieceView(type, teamType, _piecesParent.transform);
+            pieceView.name = $"{teamType} {type}";
+            pieceView.cellCoord = cellCoord;
 
-            //Init
-            Piece piece = _piecePrefabBuilder.CreatePiece(type, teamType);
-            piece.name = $"{teamType} {type}";
-            piece.cellCoord = cellCoord;
 
-            actualCell.SetPiece(piece);
+            // Cell setup
+            CellView cellView = _boardController.GetCell(cellCoord);
+            cellView.SetPiece(pieceView);
+            
+            var pieceRect = pieceView.transform as RectTransform;
+            pieceRect.sizeDelta = cellView.RectT.sizeDelta;
+            pieceView.transform.position = cellView.transform.position;
 
-            //Size and position
-            RectTransform pieceRect = piece.transform as RectTransform;
-            pieceRect.sizeDelta = actualCell.rectT.sizeDelta;
-
-            piece.transform.SetParent(_piecesParent.transform);
-            piece.transform.position = actualCell.transform.position;
-            piece.transform.localScale = Vector3.one;
-
-            OnPieceCreated(piece);
+            OnPieceCreated?.Invoke(pieceView);
         }
 
-        public void UpdatePieceTargetByEnemy(Piece friendlyPiece, Piece enemyPiece)
+        public void UpdatePieceTargetByEnemy(PieceView friendlyPiece, PieceView enemyPiece)
         {
-            if (!enemyPiece.isEnable)
+            if (!enemyPiece.IsActive)
             {
                 return;
             }
 
-            foreach (PieceMoveAlgorithm moveAlgorithm in enemyPiece.moves)
+            foreach (PieceMoveAlgorithm moveAlgorithm in enemyPiece.Moves)
             {
                 List<MoveInfo> moves = moveAlgorithm.GetAvailableMoves(enemyPiece, _boardController);
 
                 foreach (MoveInfo moveInfo in moves)
                 {
-                    if (moveInfo.cell.coord == friendlyPiece.cellCoord)
+                    if (moveInfo.cellView.Coord != friendlyPiece.cellCoord)
                     {
-                        friendlyPiece.isTarget = true;
-                        return;
+                        continue;
                     }
+                    friendlyPiece.isTarget = true;
+                    return;
                 }
             }
         }
-
     }
 }

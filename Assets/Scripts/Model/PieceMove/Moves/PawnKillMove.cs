@@ -12,11 +12,11 @@ namespace Chess2D.Model.PieceMove
             return new Vector3Int(0, 0, 1);
         }
 
-        public override List<MoveInfo> GetAvailableMoves(Piece movingPiece, IBoardController boardController)
+        public override List<MoveInfo> GetAvailableMoves(PieceView movingPiece, IBoardController boardController)
         {
-            List<MoveInfo> moves = new List<MoveInfo>();
+            var moves = new List<MoveInfo>();
 
-            Vector3Int pMoveVector = InvertVectorMoveByTeam(moveVector, movingPiece.teamType);
+            Vector3Int pMoveVector = InvertVectorMoveByTeam(MoveVector, movingPiece.TeamType);
 
             Vector2Int coord = movingPiece.cellCoord;
 

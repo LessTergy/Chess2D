@@ -3,24 +3,17 @@ using UnityEngine;
 
 namespace Chess2D.Controller
 {
-
-    public abstract class IBoardController : MonoBehaviour
+    public interface IBoardController
     {
+        public BoardView BoardView { get; }
 
-        public abstract Board GetBoard();
+        public CellView GetCell(int x, int y);
 
-        public abstract Cell GetCell(int x, int y);
+        public CellState GetCellStateForPiece(int x, int y, PieceView piece);
 
-        public Cell GetCell(Vector2Int coord)
-        {
-            return GetCell(coord.x, coord.y);
-        }
+        public void ReplacePiece(PieceView piece, Vector2Int cellCoord);
 
-        public abstract Cell.State GetCellStateForPiece(int x, int y, Piece piece);
-
-        public abstract void ReplacePiece(Piece piece, Vector2Int cellCoord);
-
-        public abstract void HidePiece(Piece piece);
-        public abstract void ShowPiece(Piece piece);
+        public void HidePiece(PieceView piece);
+        public void ShowPiece(PieceView piece);
     }
 }

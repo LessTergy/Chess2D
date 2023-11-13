@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace Chess2D.Controller
 {
-    public class RestartController : MonoBehaviour, IController
+    public class RestartController : MonoBehaviour
     {
         private Button _restartButton;
 

@@ -6,11 +6,10 @@ namespace Chess2D.Commands
 
     public class PieceKillCommand : ICommand
     {
+        private readonly IBoardController _boardController;
+        private readonly PieceView _piece;
 
-        private IBoardController _boardController;
-        private Piece _piece;
-
-        public PieceKillCommand(IBoardController boardController, Piece piece)
+        public PieceKillCommand(IBoardController boardController, PieceView piece)
         {
             _boardController = boardController;
             _piece = piece;

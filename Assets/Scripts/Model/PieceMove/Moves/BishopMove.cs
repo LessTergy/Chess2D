@@ -1,5 +1,4 @@
-﻿using Chess2D.UI;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Chess2D.Model.PieceMove
 {
@@ -7,7 +6,7 @@ namespace Chess2D.Model.PieceMove
     {
         protected override Vector3Int GetMoveVector()
         {
-            return new Vector3Int(0, 0, Board.FinishIndex);
+            return new Vector3Int(0, 0, GameConstants.FinishIndex);
         }
     }
 }

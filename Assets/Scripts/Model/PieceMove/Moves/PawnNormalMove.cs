@@ -16,12 +16,12 @@ namespace Chess2D.Model.PieceMove
             return new Vector3Int(0, 1, 0);
         }
 
-        public override List<MoveInfo> GetAvailableMoves(Piece movingPiece, IBoardController boardController)
+        public override List<MoveInfo> GetAvailableMoves(PieceView movingPiece, IBoardController boardController)
         {
-            List<MoveInfo> moves = new List<MoveInfo>();
-            Vector3Int pMoveVector = InvertVectorMoveByTeam(moveVector, movingPiece.teamType);
+            var moves = new List<MoveInfo>();
+            Vector3Int pMoveVector = InvertVectorMoveByTeam(MoveVector, movingPiece.TeamType);
 
-            int startRow = (movingPiece.teamType == ChessTeam.Type.White) ? WhiteStartRow : BlackStartRow;
+            int startRow = (movingPiece.TeamType == TeamType.White) ? WhiteStartRow : BlackStartRow;
             bool standAtStart = (movingPiece.cellCoord.y == startRow);
 
             int movement = (standAtStart) ? 2 : 1;
@@ -30,23 +30,23 @@ namespace Chess2D.Model.PieceMove
             return moves;
         }
 
-        public void FillCellPath(List<MoveInfo> moves, Piece piece, IBoardController boardController, int yDirection, int movement)
+        public void FillCellPath(List<MoveInfo> moves, PieceView piece, IBoardController boardController, int yDirection, int movement)
         {
             int currentX = piece.cellCoord.x;
             int currentY = piece.cellCoord.y;
 
-            for (int i = 0; i < movement; i++)
+            for (var i = 0; i < movement; i++)
             {
                 currentY += yDirection;
 
-                Cell.State cellState = boardController.GetCellStateForPiece(currentX, currentY, piece);
+                CellState cellState = boardController.GetCellStateForPiece(currentX, currentY, piece);
 
-                if (cellState == Cell.State.Free)
+                if (cellState == CellState.Free)
                 {
-                    Cell currentCell = boardController.GetCell(currentX, currentY);
+                    CellView currentCell = boardController.GetCell(currentX, currentY);
 
-                    PieceMoveCommand moveCommand = new PieceMoveCommand(boardController, piece, new Vector2Int(currentX, currentY));
-                    MoveInfo move = new MoveInfo(currentCell, moveCommand);
+                    var moveCommand = new PieceMoveCommand(boardController, piece, new Vector2Int(currentX, currentY));
+                    var move = new MoveInfo(currentCell, moveCommand);
                     moves.Add(move);
                 }
                 else

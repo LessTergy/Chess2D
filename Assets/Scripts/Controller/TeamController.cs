@@ -5,9 +5,8 @@ using UnityEngine;
 namespace Chess2D.Controller
 {
 
-    public class TeamController : MonoBehaviour, IController
+    public class TeamController : MonoBehaviour
     {
-
         private ChessTeam _whiteTeam;
         private ChessTeam _blackTeam;
 
@@ -26,8 +25,8 @@ namespace Chess2D.Controller
 
         public void Initialize()
         {
-            _whiteTeam = new ChessTeam(ChessTeam.Type.White);
-            _blackTeam = new ChessTeam(ChessTeam.Type.Black);
+            _whiteTeam = new ChessTeam(TeamType.White);
+            _blackTeam = new ChessTeam(TeamType.Black);
 
             _pieceController.OnPieceCreated += PieceController_OnPieceCreated;
             _pieceMoveController.OnMakeMove += PieceMoveController_OnFinishMove;
@@ -40,18 +39,18 @@ namespace Chess2D.Controller
         }
 
         //Events
-        private void PieceController_OnPieceCreated(Piece piece)
+        private void PieceController_OnPieceCreated(PieceView piece)
         {
-            ChessTeam team = GetTeam(piece.teamType);
+            ChessTeam team = GetTeam(piece.TeamType);
             team.pieces.Add(piece);
 
-            if (piece.type == Piece.Type.King)
+            if (piece.Type == PieceType.King)
             {
                 team.SetKing(piece);
             }
         }
 
-        private void PieceMoveController_OnFinishMove(Piece movingPiece)
+        private void PieceMoveController_OnFinishMove(PieceView movingPiece)
         {
             UpdateKingCheck();
             FinishTeamMove();
@@ -85,14 +84,14 @@ namespace Chess2D.Controller
 
         private void UpdateKingCheck()
         {
-            _currentTeamMove.king.isTarget = false;
-            ChessTeam enenmyTeam = GetEnemyTeam();
+            _currentTeamMove.King.isTarget = false;
+            ChessTeam enemyTeam = GetEnemyTeam();
 
-            foreach (Piece piece in enenmyTeam.pieces)
+            foreach (PieceView piece in enemyTeam.pieces)
             {
-                _pieceController.UpdatePieceTargetByEnemy(_currentTeamMove.king, piece);
+                _pieceController.UpdatePieceTargetByEnemy(_currentTeamMove.King, piece);
 
-                if (_currentTeamMove.king.isTarget)
+                if (_currentTeamMove.King.isTarget)
                 {
                     return;
                 }
@@ -102,7 +101,7 @@ namespace Chess2D.Controller
         private void FinishTeamMove()
         {
             //King under check, you can't move
-            if (_currentTeamMove.king.isTarget)
+            if (_currentTeamMove.King.isTarget)
             {
                 _pieceMoveController.CancelMove();
             }
@@ -116,12 +115,12 @@ namespace Chess2D.Controller
         //Team Getters
         private ChessTeam GetEnemyTeam()
         {
-            return (_currentTeamMove.type == ChessTeam.Type.White) ? _blackTeam : _whiteTeam;
+            return (_currentTeamMove.teamType == TeamType.White) ? _blackTeam : _whiteTeam;
         }
 
-        private ChessTeam GetTeam(ChessTeam.Type teamType)
+        private ChessTeam GetTeam(TeamType teamType)
         {
-            return (teamType == ChessTeam.Type.White) ? _whiteTeam : _blackTeam;
+            return (teamType == TeamType.White) ? _whiteTeam : _blackTeam;
         }
     }
 

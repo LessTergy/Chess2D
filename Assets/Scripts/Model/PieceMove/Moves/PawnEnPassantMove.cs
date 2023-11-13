@@ -17,15 +17,15 @@ namespace Chess2D.Model.PieceMove
             return new Vector3Int(0, 1, 0);
         }
 
-        public override List<MoveInfo> GetAvailableMoves(Piece movingPiece, IBoardController boardController)
+        public override List<MoveInfo> GetAvailableMoves(PieceView movingPiece, IBoardController boardController)
         {
-            List<MoveInfo> moves = new List<MoveInfo>();
+            var moves = new List<MoveInfo>();
 
-            int enemyRow = (movingPiece.teamType == ChessTeam.Type.White) ? BlackEnemyPawnRow : WhiteEnemyPawnRow;
+            int enemyRow = (movingPiece.TeamType == TeamType.White) ? BlackEnemyPawnRow : WhiteEnemyPawnRow;
 
             if (movingPiece.cellCoord.y == enemyRow)
             {
-                Vector3Int pMoveVector = InvertVectorMoveByTeam(moveVector, movingPiece.teamType);
+                Vector3Int pMoveVector = InvertVectorMoveByTeam(MoveVector, movingPiece.TeamType);
 
                 FillCellMove(moves, boardController, movingPiece, -1, pMoveVector.y);
                 FillCellMove(moves, boardController, movingPiece, 1, pMoveVector.y);
@@ -34,26 +34,26 @@ namespace Chess2D.Model.PieceMove
             return moves;
         }
 
-        private new void FillCellMove(List<MoveInfo> moves, IBoardController boardController, Piece movingPiece, int xOffset, int yOffset)
+        private new void FillCellMove(List<MoveInfo> moves, IBoardController boardController, PieceView movingPiece, int xOffset, int yOffset)
         {
             Vector2Int coord = movingPiece.cellCoord;
 
-            Cell.State moveCellState = boardController.GetCellStateForPiece(coord.x + xOffset, coord.y + yOffset, movingPiece);
-            Cell.State enemyPawnCellState = boardController.GetCellStateForPiece(coord.x + xOffset, coord.y, movingPiece);
+            CellState moveCellState = boardController.GetCellStateForPiece(coord.x + xOffset, coord.y + yOffset, movingPiece);
+            CellState enemyPawnCellState = boardController.GetCellStateForPiece(coord.x + xOffset, coord.y, movingPiece);
 
-            if (moveCellState == Cell.State.Free && enemyPawnCellState == Cell.State.Enemy)
+            if (moveCellState == CellState.Free && enemyPawnCellState == CellState.Enemy)
             {
-                Cell moveCell = boardController.GetCell(coord.x + xOffset, coord.y + yOffset);
-                Cell enemyCell = boardController.GetCell(coord.x + xOffset, coord.y);
+                CellView moveCell = boardController.GetCell(coord.x + xOffset, coord.y + yOffset);
+                CellView enemyCell = boardController.GetCell(coord.x + xOffset, coord.y);
 
-                Piece enemyPiece = enemyCell.currentPiece;
+                PieceView enemyPiece = enemyCell.CurrentPiece;
 
-                if (enemyPiece.type == Piece.Type.Pawn && enemyPiece.isLastMoving)
+                if (enemyPiece.Type == PieceType.Pawn && enemyPiece.isLastMoving)
                 {
-                    PieceKillCommand killCommand = new PieceKillCommand(boardController, enemyPiece);
-                    PieceMoveCommand moveCommand = new PieceMoveCommand(boardController, movingPiece, moveCell.coord);
+                    var killCommand = new PieceKillCommand(boardController, enemyPiece);
+                    var moveCommand = new PieceMoveCommand(boardController, movingPiece, moveCell.Coord);
 
-                    MoveInfo moveInfo = new MoveInfo(moveCell, new CommandContainer(killCommand, moveCommand));
+                    var moveInfo = new MoveInfo(moveCell, new CommandContainer(killCommand, moveCommand));
                     moves.Add(moveInfo);
                 }
             }

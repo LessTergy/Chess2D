@@ -3,21 +3,20 @@ using UnityEngine;
 
 namespace Chess2D.Controller
 {
-
-    public class BoardController : IBoardController, IController
+    public class BoardController : MonoBehaviour, IBoardController
     {
-
         // fields
-        private Cell[,] _cells;
+        private CellView[,] _cells;
 
         // Inject
-        private Board _board;
-        private Cell _cellPrefab;
+        private CellView _cellPrefab;
         private GameObject _cellParent;
 
-        public void Construct(Board board, Cell cellPrefab, GameObject cellParent)
+        public BoardView BoardView { get; private set; }
+
+        public void Construct(BoardView boardView, CellView cellPrefab, GameObject cellParent)
         {
-            _board = board;
+            BoardView = boardView;
             _cellPrefab = cellPrefab;
             _cellParent = cellParent;
         }
@@ -30,105 +29,93 @@ namespace Chess2D.Controller
 
         private void CreateCells()
         {
-            const int cellCount = Board.CellCount;
-            _cells = new Cell[cellCount, cellCount];
+            const int cellCount = GameConstants.CellCount;
+            _cells = new CellView[cellCount, cellCount];
 
-            float cellWidth = _board.cellsWidth / cellCount;
-            float cellHeight = _board.cellsHeight / cellCount;
+            float cellWidth = BoardView.Layout.CellWidth;
+            float cellHeight = BoardView.Layout.CellHeight;
 
             for (var xIndex = 0; xIndex < cellCount; xIndex++)
             {
                 for (var yIndex = 0; yIndex < cellCount; yIndex++)
                 {
-                    Cell cell = InitCell(xIndex, yIndex, cellWidth, cellHeight);
+                    CellView cell = CreateCell(xIndex, yIndex, cellWidth, cellHeight);
                     _cells[xIndex, yIndex] = cell;
                 }
             }
         }
 
-        private Cell InitCell(int xIndex, int yIndex, float width, float height)
+        private CellView CreateCell(int xIndex, int yIndex, float width, float height)
         {
-            Cell cell = Instantiate(_cellPrefab, _cellParent.transform);
-            cell.name = $"Cell {xIndex}:{yIndex}";
-            cell.Init(new Vector2Int(xIndex, yIndex));
+            CellView cell = Instantiate(_cellPrefab, _cellParent.transform);
+            cell.Construct(xIndex, yIndex, width, height);
 
-            cell.transform.localScale = Vector3.one;
-            Vector3 position = new Vector3(xIndex * width, yIndex * height);
-
-            position.x -= (_board.rectWidth * _board.rectT.pivot.x - _board.xOffset);
-            position.y -= (_board.rectHeight * _board.rectT.pivot.y - _board.yOffset);
+            var position = new Vector2(xIndex * width, yIndex * height);
+            position -= BoardView.Layout.CellPositionOffset;
             cell.transform.localPosition = position;
-
-            var cellRectT = cell.transform as RectTransform;
-            cellRectT.sizeDelta = new Vector2(width, height);
 
             return cell;
         }
         #endregion
 
-        public override Board GetBoard()
-        {
-            return _board;
-        }
-
-        public override Cell GetCell(int x, int y)
+        public CellView GetCell(int x, int y)
         {
             return _cells[x, y];
         }
 
-        public override Cell.State GetCellStateForPiece(int x, int y, Piece piece)
+        public CellState GetCellStateForPiece(int x, int y, PieceView piece)
         {
-            bool xIsOutOfBounds = (x < Board.StartIndex || x > Board.FinishIndex);
-            bool yIsOutOfBounds = (y < Board.StartIndex || y > Board.FinishIndex);
+            bool xIsOutOfBounds = (x < GameConstants.StartIndex || x > GameConstants.FinishIndex);
+            bool yIsOutOfBounds = (y < GameConstants.StartIndex || y > GameConstants.FinishIndex);
 
             if (xIsOutOfBounds || yIsOutOfBounds)
             {
-                return Cell.State.OutOfBounds;
+                return CellState.OutOfBounds;
             }
 
-            Cell targetCell = GetCell(x, y);
+            CellView targetCell = GetCell(x, y);
 
-            if (!targetCell.isEmpty)
+            if (!targetCell.IsEmpty)
             {
 
-                if (piece.teamType == targetCell.currentPiece.teamType)
+                if (piece.TeamType == targetCell.CurrentPiece.TeamType)
                 {
-                    return Cell.State.Friendly;
+                    return CellState.Friendly;
                 }
 
-                if (piece.teamType != targetCell.currentPiece.teamType)
+                if (piece.TeamType != targetCell.CurrentPiece.TeamType)
                 {
-                    return Cell.State.Enemy;
+                    return CellState.Enemy;
                 }
             }
 
-            return Cell.State.Free;
+            return CellState.Free;
         }
 
-        public override void ReplacePiece(Piece piece, Vector2Int cellCoord)
+        public void ReplacePiece(PieceView piece, Vector2Int cellCoord)
         {
-            Cell currentCell = GetCell(piece.cellCoord);
-            Cell moveCell = GetCell(cellCoord);
+            CellView currentCell = this.GetCell(piece.cellCoord);
+            CellView moveCell = this.GetCell(cellCoord);
 
-            piece.cellCoord = moveCell.coord;
+            piece.cellCoord = moveCell.Coord;
             currentCell.ClearPiece();
 
             moveCell.SetPiece(piece);
             piece.transform.position = moveCell.transform.position;
         }
 
-        public override void HidePiece(Piece piece)
+        public void HidePiece(PieceView piece)
         {
-            Cell cell = GetCell(piece.cellCoord);
+            CellView cell = this.GetCell(piece.cellCoord);
             cell.ClearPiece();
-            piece.isEnable = false;
+            piece.IsActive = false;
         }
 
-        public override void ShowPiece(Piece piece)
+        public void ShowPiece(PieceView piece)
         {
-            Cell cell = GetCell(piece.cellCoord);
+            CellView cell = this.GetCell(piece.cellCoord);
             cell.SetPiece(piece);
-            piece.isEnable = true;
+            piece.IsActive = true;
         }
     }
 

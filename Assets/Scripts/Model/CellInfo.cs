@@ -4,12 +4,10 @@ using UnityEngine;
 
 namespace Chess2D.Model
 {
-
     [Serializable]
     public class CellInfo
     {
         public Vector2Int coord;
-        public Piece.Type pieceType;
+        public PieceType pieceType;
     }
-
 }

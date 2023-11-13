@@ -12,31 +12,31 @@ namespace Chess2D.Model.PieceMove
             return new Vector3Int(2, 2, 0);
         }
 
-        public override List<MoveInfo> GetAvailableMoves(Piece movingPiece, IBoardController boardController)
+        public override List<MoveInfo> GetAvailableMoves(PieceView movingPiece, IBoardController boardController)
         {
-            List<MoveInfo> moves = new List<MoveInfo>();
+            var moves = new List<MoveInfo>();
 
             Vector2Int coord = movingPiece.cellCoord;
 
             //Up left
-            FillCellMove(moves, boardController, movingPiece, coord.x - 1, coord.y + moveVector.y);
+            FillCellMove(moves, boardController, movingPiece, coord.x - 1, coord.y + MoveVector.y);
             //Up right
-            FillCellMove(moves, boardController, movingPiece, coord.x + 1, coord.y + moveVector.y);
+            FillCellMove(moves, boardController, movingPiece, coord.x + 1, coord.y + MoveVector.y);
 
             //Down left
-            FillCellMove(moves, boardController, movingPiece, coord.x - 1, coord.y - moveVector.y);
+            FillCellMove(moves, boardController, movingPiece, coord.x - 1, coord.y - MoveVector.y);
             //Down right
-            FillCellMove(moves, boardController, movingPiece, coord.x + 1, coord.y - moveVector.y);
+            FillCellMove(moves, boardController, movingPiece, coord.x + 1, coord.y - MoveVector.y);
 
             //Left left
-            FillCellMove(moves, boardController, movingPiece, coord.x - moveVector.x, coord.y - 1);
+            FillCellMove(moves, boardController, movingPiece, coord.x - MoveVector.x, coord.y - 1);
             //Left right
-            FillCellMove(moves, boardController, movingPiece, coord.x - moveVector.x, coord.y + 1);
+            FillCellMove(moves, boardController, movingPiece, coord.x - MoveVector.x, coord.y + 1);
 
             //Right left
-            FillCellMove(moves, boardController, movingPiece, coord.x + moveVector.x, coord.y - 1);
+            FillCellMove(moves, boardController, movingPiece, coord.x + MoveVector.x, coord.y - 1);
             //Right right
-            FillCellMove(moves, boardController, movingPiece, coord.x + moveVector.x, coord.y + 1);
+            FillCellMove(moves, boardController, movingPiece, coord.x + MoveVector.x, coord.y + 1);
 
             return moves;
         }

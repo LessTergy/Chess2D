@@ -21,12 +21,12 @@ namespace Chess2D.Model.PieceMove
             return Vector3Int.one;
         }
 
-        public override List<MoveInfo> GetAvailableMoves(Piece piece, IBoardController boardController)
+        public override List<MoveInfo> GetAvailableMoves(PieceView piece, IBoardController boardController)
         {
-            List<MoveInfo> moves = new List<MoveInfo>();
+            var moves = new List<MoveInfo>();
 
-            int yCoord = (piece.teamType == ChessTeam.Type.White) ? WhiteYRow : BlackYRow;
-            Vector2Int kingStartPos = new Vector2Int(KingXPosition, yCoord);
+            int yCoord = (piece.TeamType == TeamType.White) ? WhiteYRow : BlackYRow;
+            var kingStartPos = new Vector2Int(KingXPosition, yCoord);
 
             //king stand at start position, never was moving and isn't in check
             if (piece.cellCoord == kingStartPos && !piece.isWasMoving && !piece.isTarget)
@@ -38,36 +38,36 @@ namespace Chess2D.Model.PieceMove
             return moves;
         }
 
-        private void FillCellPath(List<MoveInfo> moves, IBoardController boardController, Piece kingPiece, bool isLeft)
+        private void FillCellPath(List<MoveInfo> moves, IBoardController boardController, PieceView kingPiece, bool isLeft)
         {
             int rookXPosition = (isLeft) ? RookLeftXPosition : RookRightXPosition;
-            Vector2Int rookCoord = new Vector2Int(rookXPosition, kingPiece.cellCoord.y);
+            var rookCoord = new Vector2Int(rookXPosition, kingPiece.cellCoord.y);
 
-            Cell rookCell = boardController.GetCell(rookCoord);
-            Cell.State cellState = boardController.GetCellStateForPiece(rookCoord.x, rookCoord.y, kingPiece);
+            CellView rookCell = boardController.GetCell(rookCoord);
+            CellState cellState = boardController.GetCellStateForPiece(rookCoord.x, rookCoord.y, kingPiece);
 
-            if (cellState != Cell.State.Friendly)
+            if (cellState != CellState.Friendly)
             {
                 return;
             }
 
-            Piece rookPiece = rookCell.currentPiece;
+            PieceView rookPiece = rookCell.CurrentPiece;
 
             //rook never was moving and doesn't have anything between
-            if (rookPiece.type == Piece.Type.Rook && !rookPiece.isWasMoving && IsEmptyBetweenCoords(boardController, kingPiece.cellCoord, rookPiece.cellCoord))
+            if (rookPiece.Type == PieceType.Rook && !rookPiece.isWasMoving && IsEmptyBetweenCoords(boardController, kingPiece.cellCoord, rookPiece.cellCoord))
             {
                 int kingXOffset = (isLeft) ? -2 : 2;
-                Vector2Int newKingCoord = new Vector2Int(kingPiece.cellCoord.x + kingXOffset, kingPiece.cellCoord.y);
+                var newKingCoord = new Vector2Int(kingPiece.cellCoord.x + kingXOffset, kingPiece.cellCoord.y);
 
                 int rookXOffset = (isLeft) ? 1 : -1;
-                Vector2Int newRookCoord = new Vector2Int(newKingCoord.x + rookXOffset, newKingCoord.y);
+                var newRookCoord = new Vector2Int(newKingCoord.x + rookXOffset, newKingCoord.y);
 
-                PieceMoveCommand kingMoveCommand = new PieceMoveCommand(boardController, kingPiece, newKingCoord);
-                PieceMoveCommand rookMoveCommand = new PieceMoveCommand(boardController, rookPiece, newRookCoord);
+                var kingMoveCommand = new PieceMoveCommand(boardController, kingPiece, newKingCoord);
+                var rookMoveCommand = new PieceMoveCommand(boardController, rookPiece, newRookCoord);
 
-                CommandContainer container = new CommandContainer(kingMoveCommand, rookMoveCommand);
+                var container = new CommandContainer(kingMoveCommand, rookMoveCommand);
 
-                MoveInfo move = new MoveInfo(boardController.GetCell(newKingCoord), container);
+                var move = new MoveInfo(boardController.GetCell(newKingCoord), container);
                 moves.Add(move);
             }
         }
@@ -81,8 +81,8 @@ namespace Chess2D.Model.PieceMove
 
             for (int xCoord = xStart + 1; xCoord < xEnd; xCoord++)
             {
-                Cell cell = boardController.GetCell(xCoord, yCoord);
-                if (!cell.isEmpty)
+                CellView cell = boardController.GetCell(xCoord, yCoord);
+                if (!cell.IsEmpty)
                 {
                     return false;
                 }

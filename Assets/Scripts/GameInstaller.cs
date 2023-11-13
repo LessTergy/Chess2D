@@ -2,13 +2,13 @@
 using Chess2D.Model;
 using Chess2D.UI;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Chess2D
 {
     public class GameInstaller : MonoBehaviour
     {
-
         [Header("Controllers")]
         public BoardController boardController;
         public PieceController pieceController;
@@ -19,18 +19,18 @@ namespace Chess2D
 
         [Space(10)]
         [Header("Objects")]
-        public Board chessboard;
-        public PieceChooseView pieceChooseView;
+        [SerializeField] private BoardView _boardView;
+        [SerializeField] private PawnPromotionPopup _pawnPromotionPopup;
         public Button restartButton;
 
         [Space(10)]
         [Header("Prefabs")]
-        public Cell cellPrefab;
-        public PiecePrefabBuilder piecePrefabBuilder;
+        public CellView cellPrefab;
+        public PieceConfig pieceConfig;
 
         [Space(10)]
         [Header("Arrangement")]
-        public ArrangementOfPieces arrangement;
+        public ArrangementConfig arrangement;
 
         [Space(10)]
         [Header("GameObjects Group Parent")]
@@ -46,11 +46,12 @@ namespace Chess2D
 
         private void Install()
         {
-            boardController.Construct(chessboard, cellPrefab, cellGroupParent);
-            pieceController.Construct(boardController, arrangement, piecePrefabBuilder, pieceGroupParent);
+            boardController.Construct(_boardView, cellPrefab, cellGroupParent);
+            pieceController.Construct(boardController, arrangement, pieceConfig, pieceGroupParent);
             pieceMoveController.Construct(boardController, pieceController);
             teamController.Construct(pieceController, pieceMoveController, pawnPromotionController);
-            pawnPromotionController.Construct(pieceChooseView, boardController, pieceController, pieceMoveController, piecePrefabBuilder);
+            pawnPromotionController.Construct(_pawnPromotionPopup, boardController, pieceController, pieceMoveController);
+            _pawnPromotionPopup.Construct(pieceConfig, GameConstants.PromotionPieces);
 
             restartController.Construct(restartButton);
         }

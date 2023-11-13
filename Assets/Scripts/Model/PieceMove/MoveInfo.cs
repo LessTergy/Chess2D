@@ -5,12 +5,12 @@ namespace Chess2D.Model.PieceMove
 {
     public class MoveInfo
     {
-        public readonly Cell cell;
+        public readonly CellView cellView;
         public readonly ICommand moveCommand;
 
-        public MoveInfo(Cell cell, ICommand command)
+        public MoveInfo(CellView cellView, ICommand command)
         {
-            this.cell = cell;
+            this.cellView = cellView;
             moveCommand = command;
         }
     }

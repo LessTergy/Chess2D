@@ -9,12 +9,12 @@ namespace Chess2D.Commands
     {
 
         private IBoardController _boardController;
-        private Piece _piece;
+        private PieceView _piece;
         private Vector2Int _cellCoord;
 
         private Vector2Int _prevCellCoord;
 
-        public PieceMoveCommand(IBoardController boardController, Piece piece, Vector2Int cellCoord)
+        public PieceMoveCommand(IBoardController boardController, PieceView piece, Vector2Int cellCoord)
         {
             _boardController = boardController;
             _piece = piece;
