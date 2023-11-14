@@ -8,29 +8,30 @@ using UnityEngine.EventSystems;
 
 namespace Chess2D.Controller
 {
-    public class PieceMoveController : MonoBehaviour
+    public class PieceMoveController
     {
         public event Action<PieceView> OnMakeMove = delegate { };
         public event Action<PieceView> OnFinishMove = delegate { };
 
-        private List<MoveInfo> _availableMoves = new();
-        private bool IsHaveMoves => _availableMoves.Count > 0;
+        // fields
+        private Camera _camera;
+        private List<MoveData> _availableMoves = new();
         private CellView _targetCell;
 
-        private Camera _camera;
         private PieceView _lastMovePiece;
         private ICommand _lastMoveAction;
         private Vector2 _startMovePosition;
+        
+        // getters
+        private bool HasMoves => _availableMoves.Count > 0;
 
         // Inject
-        private BoardController _boardController;
-        private BoardView _boardView;
-        private PieceController _pieceController;
+        private readonly BoardController _boardController;
+        private readonly PieceController _pieceController;
 
-        public void Construct(BoardController boardController, PieceController pieceController)
+        public PieceMoveController(BoardController boardController, PieceController pieceController)
         {
             _boardController = boardController;
-            _boardView = _boardController.BoardView;
             _pieceController = pieceController;
         }
 
@@ -40,7 +41,7 @@ namespace Chess2D.Controller
             _pieceController.OnPieceCreated += PieceController_OnPieceCreated;
         }
 
-        public void PieceController_OnPieceCreated(PieceView pieceView)
+        private void PieceController_OnPieceCreated(PieceView pieceView)
         {
             pieceView.OnPointerDown += PieceView_OnPointerDown;
             pieceView.OnPointerUp += PieceView_OnTouchUp;
@@ -51,9 +52,7 @@ namespace Chess2D.Controller
         private void PieceView_OnPointerDown(PieceView pieceView, PointerEventData eventData)
         {
             pieceView.transform.SetAsLastSibling();
-            
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(_boardView.RectTransform,
-                eventData.position, _camera, out _startMovePosition);
+            _startMovePosition = GetLocalPosition(eventData);
 
             GetAvailableMoves(pieceView);
             SetHighlightCells(true);
@@ -61,7 +60,7 @@ namespace Chess2D.Controller
 
         private void GetAvailableMoves(PieceView piece)
         {
-            _availableMoves = new List<MoveInfo>();
+            _availableMoves = new List<MoveData>();
 
             foreach (PieceMoveAlgorithm move in piece.Moves)
             {
@@ -71,14 +70,12 @@ namespace Chess2D.Controller
 
         private void Piece_OnMove(PieceView pieceView, PointerEventData eventData)
         {
-            if (!IsHaveMoves)
+            if (!HasMoves)
             {
                 return;
             }
 
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(_boardView.RectTransform, 
-                eventData.position, _camera, out Vector2 currentPosition);
-            
+            Vector2 currentPosition = GetLocalPosition(eventData);
             Vector3 delta = currentPosition - _startMovePosition;
             Vector3 startPosition = _boardController.GetCell(pieceView.cellCoord).transform.localPosition;
 
@@ -86,9 +83,16 @@ namespace Chess2D.Controller
             _targetCell = GetTargetCell(eventData.position);
         }
 
+        private Vector2 GetLocalPosition(PointerEventData eventData)
+        {
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(_boardController.BoardRect,
+                eventData.position, _camera, out Vector2 localPoint);
+            return localPoint;
+        }
+
         private CellView GetTargetCell(Vector2 screenPosition)
         {
-            foreach (MoveInfo moveInfo in _availableMoves)
+            foreach (MoveData moveInfo in _availableMoves)
             {
                 bool pieceOnCell = RectTransformUtility.RectangleContainsScreenPoint(moveInfo.cellView.RectT, screenPosition, _camera);
                 if (!pieceOnCell)
@@ -102,7 +106,7 @@ namespace Chess2D.Controller
             return null;
         }
 
-        // Finish move
+        // Move Logic
         private void PieceView_OnTouchUp(PieceView pieceView)
         {
             _lastMovePiece = pieceView;
@@ -121,7 +125,7 @@ namespace Chess2D.Controller
 
         private void MakeMove()
         {
-            foreach (MoveInfo moveInfo in _availableMoves)
+            foreach (MoveData moveInfo in _availableMoves)
             {
                 if (!moveInfo.cellView.Equals(_targetCell))
                 {
@@ -134,8 +138,7 @@ namespace Chess2D.Controller
                 break;
             }
         }
-
-        // Help logic
+        
         public void ApplyMove()
         {
             _lastMovePiece.isWasMoving = true;
@@ -154,11 +157,10 @@ namespace Chess2D.Controller
 
         private void SetHighlightCells(bool flag)
         {
-            foreach (MoveInfo move in _availableMoves)
+            foreach (MoveData move in _availableMoves)
             {
                 move.cellView.Image.enabled = flag;
             }
         }
     }
-
 }

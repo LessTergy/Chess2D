@@ -1,24 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
 using Chess2D.Model;
 using Chess2D.UI;
-using UnityEngine;
 
 namespace Chess2D.Controller
 {
-    public class PawnPromotionController : MonoBehaviour
+    public class PawnPromotionController
     {
         public event Action OnPawnPromoted = delegate { };
 
         private PieceView _promotedPawn;
 
         // Inject
-        private PawnPromotionPopup _pawnPromotionPopup;
-        private IBoardController _boardController;
-        private PieceController _pieceController;
-        private PieceMoveController _pieceMoveController;
+        private readonly PawnPromotionPopup _pawnPromotionPopup;
+        private readonly BoardController _boardController;
+        private readonly PieceController _pieceController;
+        private readonly PieceMoveController _pieceMoveController;
 
-        public void Construct(PawnPromotionPopup pawnPromotionPopup, IBoardController boardController, 
+        public PawnPromotionController(PawnPromotionPopup pawnPromotionPopup, BoardController boardController, 
             PieceController pieceController, PieceMoveController pieceMoveController)
         {
             _pawnPromotionPopup = pawnPromotionPopup;
@@ -29,28 +27,33 @@ namespace Chess2D.Controller
 
         public void Initialize()
         {
-            _pawnPromotionPopup.OnPieceChoose += PawnPromotionPopupOnPieceChoose;
+            _pawnPromotionPopup.OnPieceSelected += PawnPromotionPopup_OnPieceSelected;
             _pieceMoveController.OnFinishMove += PieceMoveController_OnFinishMove;
         }
 
-        private void PawnPromotionPopupOnPieceChoose(PieceType newPieceType)
+        private void PawnPromotionPopup_OnPieceSelected(PieceType newPieceType)
         {
-            _pawnPromotionPopup.IsOpen = false;
+            _pawnPromotionPopup.Visible = false;
 
             _boardController.HidePiece(_promotedPawn);
-            _pieceController.CreatePiece(newPieceType, _promotedPawn.TeamType, _promotedPawn.cellCoord);
+            _pieceController.CreatePiece(newPieceType, _promotedPawn.PlayerType, _promotedPawn.cellCoord);
 
-            _boardController.BoardView.SetInteractive(true);
+            _boardController.SetInteractive(true);
 
             OnPawnPromoted();
         }
 
         private void PieceMoveController_OnFinishMove(PieceView movingPiece)
         {
-            int promotionRow = GetPromotionRowByTeam(movingPiece.TeamType);
-            bool isPromotionPawn = (movingPiece.Type == PieceType.Pawn) && (movingPiece.cellCoord.y == promotionRow);
+            if (movingPiece.Type != PieceType.Pawn)
+            {
+                return;
+            }
+            
+            int promotionYIndex = GetPromotionYIndex(movingPiece.PlayerType);
+            bool isPromotion = movingPiece.cellCoord.y == promotionYIndex;
 
-            if (isPromotionPawn)
+            if (isPromotion)
             {
                 StartPromotePawn(movingPiece);
             }
@@ -59,16 +62,15 @@ namespace Chess2D.Controller
         private void StartPromotePawn(PieceView pawn)
         {
             _promotedPawn = pawn;
-            _pawnPromotionPopup.SetContent(pawn.TeamType);
+            _pawnPromotionPopup.SetContent(pawn.PlayerType);
 
-            _pawnPromotionPopup.IsOpen = true;
-            _boardController.BoardView.SetInteractive(false);
+            _pawnPromotionPopup.Visible = true;
+            _boardController.SetInteractive(false);
         }
 
-        private int GetPromotionRowByTeam(TeamType teamType)
+        private int GetPromotionYIndex(PlayerType playerType)
         {
-            return (teamType == TeamType.White) ? GameConstants.FinishIndex : GameConstants.StartIndex;
+            return (playerType == PlayerType.White) ? GameConstants.FinishIndex : GameConstants.StartIndex;
         }
     }
-
 }

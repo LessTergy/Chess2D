@@ -7,14 +7,11 @@ namespace Chess2D.Model.PieceMove
 {
     public class KnightMove : PieceMoveAlgorithm
     {
-        protected override Vector3Int GetMoveVector()
-        {
-            return new Vector3Int(2, 2, 0);
-        }
+        protected override Vector3Int MoveVector => new(2, 2, 0);
 
-        public override List<MoveInfo> GetAvailableMoves(PieceView movingPiece, IBoardController boardController)
+        public override List<MoveData> GetAvailableMoves(PieceView movingPiece, BoardController boardController)
         {
-            var moves = new List<MoveInfo>();
+            var moves = new List<MoveData>();
 
             Vector2Int coord = movingPiece.cellCoord;
 

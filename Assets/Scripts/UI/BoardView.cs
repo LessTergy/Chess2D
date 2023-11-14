@@ -7,10 +7,9 @@ namespace Chess2D.UI
     {
         [Header("Components")] 
         [SerializeField] private BoardLayout _layout;
+        public BoardLayout Layout => _layout;
 
         public RectTransform RectTransform { get; private set; }
-        public BoardLayout Layout => _layout;
-        
         private CanvasGroup _canvasGroup;
 
         public void Awake()

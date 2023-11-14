@@ -28,7 +28,7 @@ namespace Chess2D.UI
         
         // getters
         public PieceType Type { get; private set; }
-        public TeamType TeamType { get; private set; }
+        public PlayerType PlayerType { get; private set; }
 
         public IReadOnlyList<PieceMoveAlgorithm> Moves { get; private set; }
 
@@ -66,14 +66,14 @@ namespace Chess2D.UI
             OnDrag?.Invoke(this, e);
         }
 
-        public void Initialize(PieceType type, Sprite sprite, List<PieceMoveAlgorithm> moves, TeamType teamType, Color color)
+        public void Initialize(PieceType type, Sprite sprite, List<PieceMoveAlgorithm> moves, PlayerType playerType, Color color)
         {
             Type = type;
             _image.sprite = sprite;
 
             Moves = moves;
 
-            TeamType = teamType;
+            PlayerType = playerType;
             _image.color = color;
         }
     }

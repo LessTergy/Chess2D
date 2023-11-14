@@ -7,16 +7,13 @@ namespace Chess2D.Model.PieceMove
 {
     public class PawnKillMove : PieceMoveAlgorithm
     {
-        protected override Vector3Int GetMoveVector()
-        {
-            return new Vector3Int(0, 0, 1);
-        }
+        protected override Vector3Int MoveVector => new(0, 0, 1);
 
-        public override List<MoveInfo> GetAvailableMoves(PieceView movingPiece, IBoardController boardController)
+        public override List<MoveData> GetAvailableMoves(PieceView movingPiece, BoardController boardController)
         {
-            var moves = new List<MoveInfo>();
+            var moves = new List<MoveData>();
 
-            Vector3Int pMoveVector = InvertVectorMoveByTeam(MoveVector, movingPiece.TeamType);
+            Vector3Int pMoveVector = InvertMoveVector(MoveVector, movingPiece.PlayerType);
 
             Vector2Int coord = movingPiece.cellCoord;
 

@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Chess2D.Model
 {
-    [CreateAssetMenu(fileName = "PiecePrefabBuilder", menuName = "Chess2D/Piece Prefab Builder")]
+    [CreateAssetMenu(fileName = "PieceConfig", menuName = "Chess2D/Piece Config")]
     public class PieceConfig : ScriptableObject
     {
         [Header("Prefab")]
@@ -19,14 +19,14 @@ namespace Chess2D.Model
         [SerializeField] private Color whiteColor;
         [SerializeField] private Color blackColor;
 
-        public PieceView CreatePieceView(PieceType type, TeamType teamType, Transform parent)
+        public PieceView CreatePieceView(PieceType type, PlayerType playerType, Transform parent)
         {
             PieceView pieceView = Instantiate(piecePrefab, parent);
             Sprite sprite = GetSprite(type);
-            Color color = GetColor(teamType);
+            Color color = GetColor(playerType);
             List<PieceMoveAlgorithm> moves = GetMoves(type);
 
-            pieceView.Initialize(type, sprite, moves, teamType, color);
+            pieceView.Initialize(type, sprite, moves, playerType, color);
             return pieceView;
         }
 
@@ -40,9 +40,9 @@ namespace Chess2D.Model
             return pieceSprites.FirstOrDefault(p => p.type == type);
         }
 
-        public Color GetColor(TeamType teamType)
+        public Color GetColor(PlayerType playerType)
         {
-            Color color = (teamType == TeamType.White) ? whiteColor : blackColor;
+            Color color = (playerType == PlayerType.White) ? whiteColor : blackColor;
             return color;
         }
 
@@ -53,7 +53,7 @@ namespace Chess2D.Model
 
             if (pieceType == PieceType.Pawn)
             {
-                moves.Add(new PawnNormalMove());
+                moves.Add(new PawnDefaultMove());
                 moves.Add(new PawnKillMove());
                 moves.Add(new PawnEnPassantMove());
             }
@@ -80,7 +80,7 @@ namespace Chess2D.Model
             else
             if (pieceType == PieceType.King)
             {
-                moves.Add(new KingNormalMove());
+                moves.Add(new KingDefaultMove());
                 moves.Add(new KingCastlingMove());
             }
 

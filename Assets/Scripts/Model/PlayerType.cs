@@ -1,6 +1,6 @@
 namespace Chess2D.Model
 {
-    public enum TeamType
+    public enum PlayerType
     {
         White,
         Black

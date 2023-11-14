@@ -22,7 +22,8 @@ namespace Chess2D.Commands
         {
             for (var i = 0; i < _commands.Count; i++)
             {
-                _commands[i].Execute();
+                ICommand command = _commands[i];
+                command.Execute();
             }
         }
 
@@ -30,7 +31,8 @@ namespace Chess2D.Commands
         {
             for (int i = _commands.Count; i > 0; i--)
             {
-                _commands[i - 1].Undo();
+                ICommand command = _commands[i - 1];
+                command.Undo();
             }
         }
     }

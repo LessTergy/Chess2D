@@ -1,14 +1,13 @@
-﻿using UnityEngine;
-using UnityEngine.SceneManagement;
+﻿using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Chess2D.Controller
 {
-    public class RestartController : MonoBehaviour
+    public class RestartController
     {
-        private Button _restartButton;
+        private readonly Button _restartButton;
 
-        public void Construct(Button restartButton)
+        public RestartController(Button restartButton)
         {
             _restartButton = restartButton;
         }

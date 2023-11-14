@@ -6,17 +6,17 @@ using UnityEngine;
 
 namespace Chess2D.Controller
 {
-    public class PieceController : MonoBehaviour
+    public class PieceController
     {
         public event PieceViewDelegate OnPieceCreated;
         
         // Inject
-        private IBoardController _boardController;
-        private ArrangementConfig _arrangementConfig;
-        private PieceConfig _pieceConfig;
-        private GameObject _piecesParent;
+        private readonly BoardController _boardController;
+        private readonly ArrangementConfig _arrangementConfig;
+        private readonly PieceConfig _pieceConfig;
+        private readonly GameObject _piecesParent;
 
-        public void Construct(IBoardController boardController, ArrangementConfig arrangementConfig, 
+        public PieceController(BoardController boardController, ArrangementConfig arrangementConfig, 
             PieceConfig pieceConfig, GameObject pieceParent)
         {
             _boardController = boardController;
@@ -27,26 +27,25 @@ namespace Chess2D.Controller
 
         public void Initialize()
         {
-            CreateTeamPieces(_arrangementConfig.whitePieceCells, TeamType.White);
-            CreateTeamPieces(_arrangementConfig.blackPieceCells, TeamType.Black);
+            CreatePlayerPieces(_arrangementConfig.whitePieceCells, PlayerType.White);
+            CreatePlayerPieces(_arrangementConfig.blackPieceCells, PlayerType.Black);
         }
 
-        private void CreateTeamPieces(List<CellInfo> cellInfoList, TeamType teamType)
+        private void CreatePlayerPieces(List<CellInfo> cellInfoList, PlayerType playerType)
         {
             foreach (CellInfo cellInfo in cellInfoList)
             {
-                CreatePiece(cellInfo.pieceType, teamType, cellInfo.coord);
+                CreatePiece(cellInfo.pieceType, playerType, cellInfo.coord);
             }
         }
 
-        public void CreatePiece(PieceType type, TeamType teamType, Vector2Int cellCoord)
+        public void CreatePiece(PieceType type, PlayerType playerType, Vector2Int cellCoord)
         {
             // Create
-            PieceView pieceView = _pieceConfig.CreatePieceView(type, teamType, _piecesParent.transform);
-            pieceView.name = $"{teamType} {type}";
+            PieceView pieceView = _pieceConfig.CreatePieceView(type, playerType, _piecesParent.transform);
+            pieceView.name = $"{playerType} {type}";
             pieceView.cellCoord = cellCoord;
-
-
+            
             // Cell setup
             CellView cellView = _boardController.GetCell(cellCoord);
             cellView.SetPiece(pieceView);
@@ -58,18 +57,18 @@ namespace Chess2D.Controller
             OnPieceCreated?.Invoke(pieceView);
         }
 
-        public void UpdatePieceTargetByEnemy(PieceView friendlyPiece, PieceView enemyPiece)
+        public void UpdatePieceTarget(PieceView friendlyPiece, PieceView opponentPiece)
         {
-            if (!enemyPiece.IsActive)
+            if (!opponentPiece.IsActive)
             {
                 return;
             }
 
-            foreach (PieceMoveAlgorithm moveAlgorithm in enemyPiece.Moves)
+            foreach (PieceMoveAlgorithm moveAlgorithm in opponentPiece.Moves)
             {
-                List<MoveInfo> moves = moveAlgorithm.GetAvailableMoves(enemyPiece, _boardController);
+                List<MoveData> moves = moveAlgorithm.GetAvailableMoves(opponentPiece, _boardController);
 
-                foreach (MoveInfo moveInfo in moves)
+                foreach (MoveData moveInfo in moves)
                 {
                     if (moveInfo.cellView.Coord != friendlyPiece.cellCoord)
                     {

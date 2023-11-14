@@ -8,22 +8,26 @@ namespace Chess2D.UI
     [RequireComponent(typeof(Animator))]
     public class PawnPromotionPopup : MonoBehaviour
     {
-        public event Action<PieceType> OnPieceChoose = delegate { };
+        public event Action<PieceType> OnPieceSelected = delegate { };
 
         [Header("Components")]
         [SerializeField] private PieceViewButton _buttonPrefab;
         [SerializeField] private Transform _content;
         
         private Animator _animator;
-        private static readonly int AnimatorIsOpen = Animator.StringToHash("isOpen");
+        private static readonly int VisibleParam = Animator.StringToHash("Visible");
 
         private PieceConfig _pieceConfig;
         private readonly List<PieceViewButton> _buttons = new();
 
-        public bool IsOpen
+        public bool Visible
         {
-            get => _animator.GetBool(AnimatorIsOpen);
-            set => _animator.SetBool(AnimatorIsOpen, value);
+            get => _animator.GetBool(VisibleParam);
+            set
+            {
+                gameObject.SetActive(true);
+                _animator.SetBool(VisibleParam, value);
+            }
         }
 
         private void Awake()
@@ -50,9 +54,9 @@ namespace Chess2D.UI
             }
         }
 
-        public void SetContent(TeamType teamType)
+        public void SetContent(PlayerType playerType)
         {
-            Color color = _pieceConfig.GetColor(teamType);
+            Color color = _pieceConfig.GetColor(playerType);
             
             foreach (PieceViewButton button in _buttons)
             {
@@ -62,7 +66,7 @@ namespace Chess2D.UI
 
         private void PieceButton_OnClick(PieceType pieceType)
         {
-            OnPieceChoose(pieceType);
+            OnPieceSelected(pieceType);
         }
     }
 }

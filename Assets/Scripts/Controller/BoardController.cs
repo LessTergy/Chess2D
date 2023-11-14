@@ -3,20 +3,22 @@ using UnityEngine;
 
 namespace Chess2D.Controller
 {
-    public class BoardController : MonoBehaviour, IBoardController
+    public class BoardController
     {
         // fields
         private CellView[,] _cells;
+        
+        // getters
+        public RectTransform BoardRect => _boardView.RectTransform;
 
         // Inject
-        private CellView _cellPrefab;
-        private GameObject _cellParent;
+        private readonly BoardView _boardView;
+        private readonly CellView _cellPrefab;
+        private readonly GameObject _cellParent;
 
-        public BoardView BoardView { get; private set; }
-
-        public void Construct(BoardView boardView, CellView cellPrefab, GameObject cellParent)
+        public BoardController(BoardView boardView, CellView cellPrefab, GameObject cellParent)
         {
-            BoardView = boardView;
+            _boardView = boardView;
             _cellPrefab = cellPrefab;
             _cellParent = cellParent;
         }
@@ -32,8 +34,8 @@ namespace Chess2D.Controller
             const int cellCount = GameConstants.CellCount;
             _cells = new CellView[cellCount, cellCount];
 
-            float cellWidth = BoardView.Layout.CellWidth;
-            float cellHeight = BoardView.Layout.CellHeight;
+            float cellWidth = _boardView.Layout.CellWidth;
+            float cellHeight = _boardView.Layout.CellHeight;
 
             for (var xIndex = 0; xIndex < cellCount; xIndex++)
             {
@@ -47,11 +49,11 @@ namespace Chess2D.Controller
 
         private CellView CreateCell(int xIndex, int yIndex, float width, float height)
         {
-            CellView cell = Instantiate(_cellPrefab, _cellParent.transform);
+            CellView cell = Object.Instantiate(_cellPrefab, _cellParent.transform);
             cell.Construct(xIndex, yIndex, width, height);
 
             var position = new Vector2(xIndex * width, yIndex * height);
-            position -= BoardView.Layout.CellPositionOffset;
+            position -= _boardView.Layout.CellPositionOffset;
             cell.transform.localPosition = position;
 
             return cell;
@@ -63,7 +65,7 @@ namespace Chess2D.Controller
             return _cells[x, y];
         }
 
-        public CellState GetCellStateForPiece(int x, int y, PieceView piece)
+        public CellState GetCellStateForMove(int x, int y, PieceView movingPiece)
         {
             bool xIsOutOfBounds = (x < GameConstants.StartIndex || x > GameConstants.FinishIndex);
             bool yIsOutOfBounds = (y < GameConstants.StartIndex || y > GameConstants.FinishIndex);
@@ -74,21 +76,17 @@ namespace Chess2D.Controller
             }
 
             CellView targetCell = GetCell(x, y);
-
             if (!targetCell.IsEmpty)
             {
-
-                if (piece.TeamType == targetCell.CurrentPiece.TeamType)
+                if (movingPiece.PlayerType == targetCell.CurrentPiece.PlayerType)
                 {
                     return CellState.Friendly;
                 }
-
-                if (piece.TeamType != targetCell.CurrentPiece.TeamType)
+                if (movingPiece.PlayerType != targetCell.CurrentPiece.PlayerType)
                 {
-                    return CellState.Enemy;
+                    return CellState.Opponent;
                 }
             }
-
             return CellState.Free;
         }
 
@@ -117,6 +115,10 @@ namespace Chess2D.Controller
             cell.SetPiece(piece);
             piece.IsActive = true;
         }
-    }
 
+        public void SetInteractive(bool value)
+        {
+            _boardView.SetInteractive(value);
+        }
+    }
 }

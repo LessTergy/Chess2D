@@ -6,45 +6,44 @@ using UnityEngine;
 
 namespace Chess2D.Model.PieceMove
 {
-
     public class KingCastlingMove : PieceMoveAlgorithm
     {
-        private const int KingXPosition = 4;
-        private const int RookLeftXPosition = 0;
-        private const int RookRightXPosition = 7;
-
-        private const int WhiteYRow = 0;
-        private const int BlackYRow = 7;
+        private const int KingXIndex = 4;
+        private const int WhiteYIndex = GameConstants.StartIndex;
+        private const int BlackYIndex = GameConstants.FinishIndex;
         
-        protected override Vector3Int GetMoveVector()
+        private const int RookLeftXPosition = GameConstants.StartIndex;
+        private const int RookRightXPosition = GameConstants.FinishIndex;
+
+        protected override Vector3Int MoveVector => Vector3Int.one;
+
+        public override List<MoveData> GetAvailableMoves(PieceView piece, BoardController boardController)
         {
-            return Vector3Int.one;
-        }
+            var moves = new List<MoveData>();
 
-        public override List<MoveInfo> GetAvailableMoves(PieceView piece, IBoardController boardController)
-        {
-            var moves = new List<MoveInfo>();
-
-            int yCoord = (piece.TeamType == TeamType.White) ? WhiteYRow : BlackYRow;
-            var kingStartPos = new Vector2Int(KingXPosition, yCoord);
-
-            //king stand at start position, never was moving and isn't in check
-            if (piece.cellCoord == kingStartPos && !piece.isWasMoving && !piece.isTarget)
-            {
-                FillCellPath(moves, boardController, piece, true);
-                FillCellPath(moves, boardController, piece, false);
-            }
-
+            Vector2Int kingStartCoord = GetKingStartCoord(piece.PlayerType);
+            // king stand at start coord, never was moving and isn't in check
+            bool validMove = piece.cellCoord == kingStartCoord && !piece.isWasMoving && !piece.isTarget;
+            if (!validMove) return moves;
+            
+            FillCellPath(moves, boardController, piece, true);
+            FillCellPath(moves, boardController, piece, false);
             return moves;
         }
 
-        private void FillCellPath(List<MoveInfo> moves, IBoardController boardController, PieceView kingPiece, bool isLeft)
+        private Vector2Int GetKingStartCoord(PlayerType playerType)
+        {
+            int yCoord = (playerType == PlayerType.White) ? WhiteYIndex : BlackYIndex;
+            return new Vector2Int(KingXIndex, yCoord);
+        }
+
+        private void FillCellPath(List<MoveData> moves, BoardController boardController, PieceView kingPiece, bool isLeft)
         {
             int rookXPosition = (isLeft) ? RookLeftXPosition : RookRightXPosition;
             var rookCoord = new Vector2Int(rookXPosition, kingPiece.cellCoord.y);
 
             CellView rookCell = boardController.GetCell(rookCoord);
-            CellState cellState = boardController.GetCellStateForPiece(rookCoord.x, rookCoord.y, kingPiece);
+            CellState cellState = boardController.GetCellStateForMove(rookCoord.x, rookCoord.y, kingPiece);
 
             if (cellState != CellState.Friendly)
             {
@@ -67,13 +66,12 @@ namespace Chess2D.Model.PieceMove
 
                 var container = new CommandContainer(kingMoveCommand, rookMoveCommand);
 
-                var move = new MoveInfo(boardController.GetCell(newKingCoord), container);
+                var move = new MoveData(boardController.GetCell(newKingCoord), container);
                 moves.Add(move);
             }
         }
 
-
-        private bool IsEmptyBetweenCoords(IBoardController boardController, Vector2Int coordA, Vector2Int coordB)
+        private bool IsEmptyBetweenCoords(BoardController boardController, Vector2Int coordA, Vector2Int coordB)
         {
             int yCoord = coordA.y;
             int xStart = Mathf.Min(coordA.x, coordB.x);
@@ -87,7 +85,6 @@ namespace Chess2D.Model.PieceMove
                     return false;
                 }
             }
-
             return true;
         }
     }

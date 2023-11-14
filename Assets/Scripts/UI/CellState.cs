@@ -5,6 +5,6 @@ namespace Chess2D.UI
         OutOfBounds,
         Free,
         Friendly,
-        Enemy
+        Opponent
     }
 }

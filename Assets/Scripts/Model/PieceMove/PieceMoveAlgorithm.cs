@@ -8,111 +8,100 @@ namespace Chess2D.Model.PieceMove
 {
     public abstract class PieceMoveAlgorithm
     {
-        private Vector3Int ?_cachedMoveVector;
-        protected Vector3Int MoveVector
-        {
-            get
-            {
-                if (_cachedMoveVector == null)
-                {
-                    _cachedMoveVector = GetMoveVector();
-                }
-                return _cachedMoveVector.Value;
-            }
-        }
+        protected abstract Vector3Int MoveVector { get; }
 
-        protected abstract Vector3Int GetMoveVector();
-
-        public virtual List<MoveInfo> GetAvailableMoves(PieceView movingPiece, IBoardController boardController)
+        public virtual List<MoveData> GetAvailableMoves(PieceView movingPiece, BoardController boardController)
         {
-            var moves = new List<MoveInfo>();
+            var moves = new List<MoveData>();
 
             //Horizontal
-            FillCellPath(moves, boardController, movingPiece, 1, 0, MoveVector.x);
-            FillCellPath(moves, boardController, movingPiece, -1, 0, MoveVector.x);
+            FillCellsPath(moves, boardController, movingPiece, 1, 0, MoveVector.x);
+            FillCellsPath(moves, boardController, movingPiece, -1, 0, MoveVector.x);
 
             //Vertical
-            FillCellPath(moves, boardController, movingPiece, 0, 1, MoveVector.y);
-            FillCellPath(moves, boardController, movingPiece, 0, -1, MoveVector.y);
+            FillCellsPath(moves, boardController, movingPiece, 0, 1, MoveVector.y);
+            FillCellsPath(moves, boardController, movingPiece, 0, -1, MoveVector.y);
 
             //Diagonal 1
-            FillCellPath(moves, boardController, movingPiece, 1, 1, MoveVector.z);
-            FillCellPath(moves, boardController, movingPiece, -1, -1, MoveVector.z);
+            FillCellsPath(moves, boardController, movingPiece, 1, 1, MoveVector.z);
+            FillCellsPath(moves, boardController, movingPiece, -1, -1, MoveVector.z);
 
             //Diagonal 2
-            FillCellPath(moves, boardController, movingPiece, -1, 1, MoveVector.z);
-            FillCellPath(moves, boardController, movingPiece, 1, -1, MoveVector.z);
+            FillCellsPath(moves, boardController, movingPiece, -1, 1, MoveVector.z);
+            FillCellsPath(moves, boardController, movingPiece, 1, -1, MoveVector.z);
 
             return moves;
         }
 
-        protected void FillCellPath(List<MoveInfo> moves, IBoardController boardController, PieceView movingPiece, int xDirection, int yDirection, int movement)
+        private void FillCellsPath(List<MoveData> moves, BoardController boardController, PieceView movingPiece, 
+            int xDirection, int yDirection, int movementCount)
         {
             int currentX = movingPiece.cellCoord.x;
             int currentY = movingPiece.cellCoord.y;
 
-            for (var i = 0; i < movement; i++)
+            for (var i = 0; i < movementCount; i++)
             {
                 currentX += xDirection;
                 currentY += yDirection;
 
-                if (!FillCellMove(moves, boardController, movingPiece, currentX, currentY))
+                bool canMove = FillCellMove(moves, boardController, movingPiece, currentX, currentY);
+                if (!canMove)
                 {
                     return;
                 }
             }
         }
 
-        //return true, if can continue cell path
-        protected bool FillCellMove(List<MoveInfo> moves, IBoardController boardController, PieceView movingPiece, int targetX, int targetY)
+        //return true, if can continue path
+        protected bool FillCellMove(List<MoveData> moves, BoardController boardController, PieceView movingPiece, int targetX, int targetY)
         {
-            CellState cellState = boardController.GetCellStateForPiece(targetX, targetY, movingPiece);
-
+            CellState cellState = boardController.GetCellStateForMove(targetX, targetY, movingPiece);
             if (cellState is CellState.OutOfBounds or CellState.Friendly)
             {
                 return false;
             }
 
             CellView currentCell = boardController.GetCell(targetX, targetY);
-
-            if (cellState == CellState.Enemy)
+            if (cellState == CellState.Opponent)
             {
                 FillKillMove(moves, boardController, movingPiece, targetX, targetY);
                 return false;
-
             }
-            else
+            
             if (cellState == CellState.Free)
             {
                 var moveCommand = new PieceMoveCommand(boardController, movingPiece, new Vector2Int(targetX, targetY));
-                var move = new MoveInfo(currentCell, moveCommand);
+                var move = new MoveData(currentCell, moveCommand);
                 moves.Add(move);
+                return true;
             }
-
-            return true;
+            
+            return false;
         }
 
-        protected void FillKillMove(List<MoveInfo> moves, IBoardController boardController, PieceView movingPiece, int targetX, int targetY)
+        protected void FillKillMove(List<MoveData> moves, BoardController boardController, PieceView movingPiece, int targetX, int targetY)
         {
-            CellState cellState = boardController.GetCellStateForPiece(targetX, targetY, movingPiece);
+            CellState cellState = boardController.GetCellStateForMove(targetX, targetY, movingPiece);
+            if (cellState != CellState.Opponent) return;
+            
+            CellView currentCell = boardController.GetCell(targetX, targetY);
 
-            if (cellState == CellState.Enemy)
+            var killCommand = new PieceKillCommand(boardController, currentCell.CurrentPiece);
+            var moveCommand = new PieceMoveCommand(boardController, movingPiece, new Vector2Int(targetX, targetY));
+
+            var container = new CommandContainer(killCommand, moveCommand);
+            var move = new MoveData(currentCell, container);
+
+            moves.Add(move);
+        }
+
+        protected Vector3Int InvertMoveVector(Vector3Int moveVector, PlayerType playerType)
+        {
+            if (playerType == PlayerType.Black)
             {
-                CellView currentCell = boardController.GetCell(targetX, targetY);
-
-                var killCommand = new PieceKillCommand(boardController, currentCell.CurrentPiece);
-                var moveCommand = new PieceMoveCommand(boardController, movingPiece, new Vector2Int(targetX, targetY));
-
-                var container = new CommandContainer(killCommand, moveCommand);
-                var move = new MoveInfo(currentCell, container);
-
-                moves.Add(move);
+                return moveVector * -1;
             }
-        }
-
-        protected Vector3Int InvertVectorMoveByTeam(Vector3Int moveVector, TeamType teamType)
-        {
-            return (teamType == TeamType.White) ? moveVector : (moveVector * -1);
+            return moveVector;
         }
     }
 }

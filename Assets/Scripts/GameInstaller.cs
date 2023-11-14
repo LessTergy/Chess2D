@@ -2,40 +2,38 @@
 using Chess2D.Model;
 using Chess2D.UI;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Chess2D
 {
     public class GameInstaller : MonoBehaviour
     {
-        [Header("Controllers")]
-        public BoardController boardController;
-        public PieceController pieceController;
-        public PieceMoveController pieceMoveController;
-        public TeamController teamController;
-        public PawnPromotionController pawnPromotionController;
-        public RestartController restartController;
-
         [Space(10)]
-        [Header("Objects")]
+        [Header("UI Elements")]
         [SerializeField] private BoardView _boardView;
         [SerializeField] private PawnPromotionPopup _pawnPromotionPopup;
-        public Button restartButton;
+        [SerializeField] private Button _restartButton;
 
         [Space(10)]
         [Header("Prefabs")]
-        public CellView cellPrefab;
-        public PieceConfig pieceConfig;
+        [SerializeField] private CellView _cellPrefab;
 
         [Space(10)]
-        [Header("Arrangement")]
-        public ArrangementConfig arrangement;
+        [Header("Configs")]
+        [SerializeField] private ArrangementConfig _defaultArrangement;
+        [SerializeField] private PieceConfig _pieceConfig;
 
         [Space(10)]
         [Header("GameObjects Group Parent")]
-        public GameObject pieceGroupParent;
-        public GameObject cellGroupParent;
+        [SerializeField] private GameObject _pieceGroupParent;
+        [SerializeField] private GameObject _cellGroupParent;
+
+        private BoardController _boardController;
+        private PieceController _pieceController;
+        private PieceMoveController _pieceMoveController;
+        private PawnPromotionController _pawnPromotionController;
+        private GameCycleController _gameCycleController;
+        private RestartController _restartController;
 
         private void Awake()
         {
@@ -46,32 +44,32 @@ namespace Chess2D
 
         private void Install()
         {
-            boardController.Construct(_boardView, cellPrefab, cellGroupParent);
-            pieceController.Construct(boardController, arrangement, pieceConfig, pieceGroupParent);
-            pieceMoveController.Construct(boardController, pieceController);
-            teamController.Construct(pieceController, pieceMoveController, pawnPromotionController);
-            pawnPromotionController.Construct(_pawnPromotionPopup, boardController, pieceController, pieceMoveController);
-            _pawnPromotionPopup.Construct(pieceConfig, GameConstants.PromotionPieces);
-
-            restartController.Construct(restartButton);
+            _boardController = new BoardController(_boardView, _cellPrefab, _cellGroupParent);
+            _pieceController = new PieceController(_boardController, _defaultArrangement, _pieceConfig, _pieceGroupParent);
+            _pieceMoveController = new PieceMoveController(_boardController, _pieceController);
+            
+            _pawnPromotionPopup.Construct(_pieceConfig, GameConstants.PromotionPieces);
+            _pawnPromotionController = new PawnPromotionController(_pawnPromotionPopup, _boardController, _pieceController, _pieceMoveController);
+            
+            _gameCycleController = new GameCycleController(_pieceController, _pieceMoveController, _pawnPromotionController);
+            _restartController = new RestartController(_restartButton);
         }
 
         private void Initialize()
         {
-            boardController.Initialize();
-            pieceMoveController.Initialize();
-            teamController.Initialize();
-
-            pieceController.Initialize();
-            pawnPromotionController.Initialize();
-
-            restartController.Initialize();
+            _boardController.Initialize();
+            _pieceMoveController.Initialize();
+            _gameCycleController.Initialize();
+            
+            _pieceController.Initialize();
+            _pawnPromotionController.Initialize();
+            
+            _restartController.Initialize();
         }
 
         private void StartGame()
         {
-            teamController.StartGame();
+            _gameCycleController.StartGame();
         }
     }
-
 }
