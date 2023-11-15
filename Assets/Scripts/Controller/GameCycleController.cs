@@ -5,18 +5,17 @@ namespace Chess2D.Controller
 {
     public class GameCycleController
     {
-        private Player _playerWhite;
-        private Player _playerBlack;
-
-        private Player _currentPlayer;
-
+        private PlayerModel CurrentPlayer => _gameModel.CurrentPlayer;
+        
+        private readonly GameModel _gameModel;
         private readonly PieceController _pieceController;
         private readonly PieceMoveController _pieceMoveController;
         private readonly PawnPromotionController _pawnPromotionController;
 
-        public GameCycleController(PieceController pieceController, PieceMoveController pieceMoveController, 
-            PawnPromotionController pawnPromotionController)
+        public GameCycleController(GameModel gameModel, PieceController pieceController, 
+            PieceMoveController pieceMoveController, PawnPromotionController pawnPromotionController)
         {
+            _gameModel = gameModel;
             _pieceController = pieceController;
             _pieceMoveController = pieceMoveController;
             _pawnPromotionController = pawnPromotionController;
@@ -24,31 +23,16 @@ namespace Chess2D.Controller
 
         public void Initialize()
         {
-            _playerWhite = new Player(PlayerType.White);
-            _playerBlack = new Player(PlayerType.Black);
-
-            _pieceController.OnPieceCreated += PieceController_OnPieceCreated;
             _pieceMoveController.OnMakeMove += PieceMoveController_OnFinishMove;
             _pawnPromotionController.OnPawnPromoted += PawnPromotionController_OnPawnPromoted;
         }
 
         public void StartGame()
         {
-            SetPlayer(_playerWhite);
+            SetCurrentPlayer(PlayerType.White);
         }
 
         //Events
-        private void PieceController_OnPieceCreated(PieceView piece)
-        {
-            Player player = GetPlayer(piece.PlayerType);
-            player.pieces.Add(piece);
-
-            if (piece.Type == PieceType.King)
-            {
-                player.SetKing(piece);
-            }
-        }
-
         private void PieceMoveController_OnFinishMove(PieceView movingPiece)
         {
             UpdateKingCheck();
@@ -62,36 +46,36 @@ namespace Chess2D.Controller
 
         private void SwitchPlayer()
         {
-            Player opponentPlayer = GetOpponentPlayer();
-            SetPlayer(opponentPlayer);
+            PlayerType opponentPlayerType = _gameModel.GetOpponentPlayerType();
+            SetCurrentPlayer(opponentPlayerType);
         }
 
-        private void SetPlayer(Player player)
+        private void SetCurrentPlayer(PlayerType playerType)
         {
-            _currentPlayer = player;
+            _gameModel.SetCurrentPlayer(playerType);
             UpdateCurrentPlayer();
         }
 
         private void UpdateCurrentPlayer()
         {
-            UpdateKingCheck();
-            _currentPlayer.SetInteractive(true);
-            
-            Player opponentPlayer = GetOpponentPlayer();
-            opponentPlayer.SetInteractive(false);
+            CurrentPlayer.SetInteractive(true);
+            CurrentPlayer.ResetLastMove();
 
-            _currentPlayer.ResetLastMove();
+            PlayerModel opponentPlayer = _gameModel.GetOpponentPlayer();
+            opponentPlayer.SetInteractive(false);
+            
+            UpdateKingCheck();
         }
 
         private void UpdateKingCheck()
         {
-            _currentPlayer.King.isTarget = false;
-            Player opponentPlayer = GetOpponentPlayer();
+            CurrentPlayer.King.isTarget = false;
+            PlayerModel opponentPlayer = _gameModel.GetOpponentPlayer();
 
             foreach (PieceView piece in opponentPlayer.pieces)
             {
-                _pieceController.UpdatePieceTarget(_currentPlayer.King, piece);
-                if (_currentPlayer.King.isTarget)
+                _pieceController.UpdatePieceTarget(CurrentPlayer.King, piece);
+                if (CurrentPlayer.King.isTarget)
                 {
                     return;
                 }
@@ -101,7 +85,7 @@ namespace Chess2D.Controller
         private void FinishPlayerMove()
         {
             //King under check, you can't move
-            if (_currentPlayer.King.isTarget)
+            if (CurrentPlayer.King.isTarget)
             {
                 _pieceMoveController.CancelMove();
             }
@@ -110,21 +94,6 @@ namespace Chess2D.Controller
                 _pieceMoveController.ApplyMove();
                 SwitchPlayer();
             }
-        }
-
-        private Player GetOpponentPlayer()
-        {
-            return (_currentPlayer.type == PlayerType.White) ? _playerBlack : _playerWhite;
-        }
-
-        private Player GetPlayer(PlayerType playerType)
-        {
-            return playerType switch
-            {
-                PlayerType.White => _playerWhite,
-                PlayerType.Black => _playerBlack,
-                _ => null
-            };
         }
     }
 }

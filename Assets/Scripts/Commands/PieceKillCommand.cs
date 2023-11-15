@@ -17,12 +17,12 @@ namespace Chess2D.Commands
 
         public void Execute()
         {
-            _boardController.HidePiece(_piece);
+            _boardController.KillPieceView(_piece);
         }
 
         public void Undo()
         {
-            _boardController.ShowPiece(_piece);
+            _boardController.PlacePieceView(_piece);
         }
     }
 }

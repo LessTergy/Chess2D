@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Chess2D.Model.PieceMove
+namespace Chess2D.PieceMovement
 {
     public class KingDefaultMove : PieceMoveAlgorithm
     {

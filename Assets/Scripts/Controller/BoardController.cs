@@ -1,4 +1,5 @@
-﻿using Chess2D.UI;
+﻿using Chess2D.Model;
+using Chess2D.UI;
 using UnityEngine;
 
 namespace Chess2D.Controller
@@ -24,12 +25,7 @@ namespace Chess2D.Controller
         }
 
         #region Initialize
-        public void Initialize()
-        {
-            CreateCells();
-        }
-
-        private void CreateCells()
+        public void CreateCells()
         {
             const int cellCount = GameConstants.CellCount;
             _cells = new CellView[cellCount, cellCount];
@@ -64,6 +60,11 @@ namespace Chess2D.Controller
         {
             return _cells[x, y];
         }
+        
+        public CellView GetCell(Vector2Int coord)
+        {
+            return GetCell(coord.x, coord.y);
+        }
 
         public CellState GetCellStateForMove(int x, int y, PieceView movingPiece)
         {
@@ -76,42 +77,41 @@ namespace Chess2D.Controller
             }
 
             CellView targetCell = GetCell(x, y);
-            if (!targetCell.IsEmpty)
+            if (targetCell.IsEmpty) return CellState.Free;
+            
+            if (movingPiece.PlayerType == targetCell.CurrentPiece.PlayerType)
             {
-                if (movingPiece.PlayerType == targetCell.CurrentPiece.PlayerType)
-                {
-                    return CellState.Friendly;
-                }
-                if (movingPiece.PlayerType != targetCell.CurrentPiece.PlayerType)
-                {
-                    return CellState.Opponent;
-                }
+                return CellState.Friendly;
+            }
+            if (movingPiece.PlayerType != targetCell.CurrentPiece.PlayerType)
+            {
+                return CellState.Opponent;
             }
             return CellState.Free;
         }
 
-        public void ReplacePiece(PieceView piece, Vector2Int cellCoord)
+        public void PlacePieceOnCell(PieceView pieceView, Vector2Int cellCoord)
         {
-            CellView currentCell = this.GetCell(piece.cellCoord);
-            CellView moveCell = this.GetCell(cellCoord);
+            CellView currentCell = GetCell(pieceView.cellCoord);
+            CellView moveCell = GetCell(cellCoord);
 
-            piece.cellCoord = moveCell.Coord;
+            pieceView.cellCoord = moveCell.Coord;
             currentCell.ClearPiece();
 
-            moveCell.SetPiece(piece);
-            piece.transform.position = moveCell.transform.position;
+            moveCell.SetPiece(pieceView);
+            pieceView.transform.position = moveCell.transform.position;
         }
 
-        public void HidePiece(PieceView piece)
+        public void KillPieceView(PieceView piece)
         {
-            CellView cell = this.GetCell(piece.cellCoord);
+            CellView cell = GetCell(piece.cellCoord);
             cell.ClearPiece();
             piece.IsActive = false;
         }
 
-        public void ShowPiece(PieceView piece)
+        public void PlacePieceView(PieceView piece)
         {
-            CellView cell = this.GetCell(piece.cellCoord);
+            CellView cell = GetCell(piece.cellCoord);
             cell.SetPiece(piece);
             piece.IsActive = true;
         }

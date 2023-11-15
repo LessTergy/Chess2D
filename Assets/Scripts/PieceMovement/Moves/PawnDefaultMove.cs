@@ -1,15 +1,16 @@
 ﻿using System.Collections.Generic;
 using Chess2D.Commands;
 using Chess2D.Controller;
+using Chess2D.Model;
 using Chess2D.UI;
 using UnityEngine;
 
-namespace Chess2D.Model.PieceMove
+namespace Chess2D.PieceMovement
 {
     public class PawnDefaultMove : PieceMoveAlgorithm
     {
-        private const int WhiteStartRow = 1;
-        private const int BlackStartRow = 6;
+        private const int WhiteStartYIndex = GameConstants.StartIndex + 1;
+        private const int BlackStartYIndex = GameConstants.FinishIndex - 1;
         
         protected override Vector3Int MoveVector => new(0, 1, 0);
 
@@ -18,8 +19,8 @@ namespace Chess2D.Model.PieceMove
             var moves = new List<MoveData>();
             Vector3Int pMoveVector = InvertMoveVector(MoveVector, movingPiece.PlayerType);
 
-            int startRow = (movingPiece.PlayerType == PlayerType.White) ? WhiteStartRow : BlackStartRow;
-            bool standAtStart = (movingPiece.cellCoord.y == startRow);
+            int startYIndex = (movingPiece.PlayerType == PlayerType.White) ? WhiteStartYIndex : BlackStartYIndex;
+            bool standAtStart = (movingPiece.cellCoord.y == startYIndex);
 
             int movement = (standAtStart) ? 2 : 1;
             FillCellPath(moves, movingPiece, boardController, pMoveVector.y, movement);

@@ -1,4 +1,4 @@
-namespace Chess2D.UI
+namespace Chess2D.Model
 {
     public enum PieceType
     {

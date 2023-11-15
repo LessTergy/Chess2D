@@ -5,7 +5,6 @@ namespace Chess2D.Commands
 {
     public class CommandContainer : ICommand
     {
-
         private readonly List<ICommand> _commands;
 
         public CommandContainer(params ICommand[] list)

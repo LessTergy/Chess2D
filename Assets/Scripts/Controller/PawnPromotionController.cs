@@ -11,14 +11,16 @@ namespace Chess2D.Controller
         private PieceView _promotedPawn;
 
         // Inject
+        private readonly GameModel _gameModel;
         private readonly PawnPromotionPopup _pawnPromotionPopup;
         private readonly BoardController _boardController;
         private readonly PieceController _pieceController;
         private readonly PieceMoveController _pieceMoveController;
 
-        public PawnPromotionController(PawnPromotionPopup pawnPromotionPopup, BoardController boardController, 
+        public PawnPromotionController(GameModel gameModel, PawnPromotionPopup pawnPromotionPopup, BoardController boardController, 
             PieceController pieceController, PieceMoveController pieceMoveController)
         {
+            _gameModel = gameModel;
             _pawnPromotionPopup = pawnPromotionPopup;
             _boardController = boardController;
             _pieceController = pieceController;
@@ -31,15 +33,15 @@ namespace Chess2D.Controller
             _pieceMoveController.OnFinishMove += PieceMoveController_OnFinishMove;
         }
 
-        private void PawnPromotionPopup_OnPieceSelected(PieceType newPieceType)
+        private void PawnPromotionPopup_OnPieceSelected(PieceType pieceType)
         {
             _pawnPromotionPopup.Visible = false;
+            _boardController.KillPieceView(_promotedPawn);
 
-            _boardController.HidePiece(_promotedPawn);
-            _pieceController.CreatePiece(newPieceType, _promotedPawn.PlayerType, _promotedPawn.cellCoord);
+            PlayerModel playerModel = _gameModel.GetPlayer(_promotedPawn.PlayerType);
+            _pieceController.CreatePieceView(playerModel, pieceType, _promotedPawn.cellCoord);
 
             _boardController.SetInteractive(true);
-
             OnPawnPromoted();
         }
 

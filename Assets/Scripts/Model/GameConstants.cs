@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Chess2D.Model;
 using Chess2D.UI;
 using UnityEngine;
 

@@ -4,14 +4,14 @@ using UnityEngine;
 
 namespace Chess2D.Model
 {
-    public class Player
+    public class PlayerModel
     {
         public readonly PlayerType type;
         public readonly List<PieceView> pieces = new();
 
         public PieceView King { get; private set; }
 
-        public Player(PlayerType type)
+        public PlayerModel(PlayerType type)
         {
             this.type = type;
         }

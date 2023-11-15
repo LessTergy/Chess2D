@@ -175,6 +175,7 @@ MonoBehaviour:
   _defaultArrangement: {fileID: 11400000, guid: 1a75eab406d726b4aa4ebb1e6da4d543,
     type: 2}
   _pieceConfig: {fileID: 11400000, guid: c7c264af98f39f04c9f2d7746dba892c, type: 2}
+  _pieceFactory: {fileID: 11400000, guid: dd524279d52653347971d0b89d9c7c09, type: 2}
   _pieceGroupParent: {fileID: 1152494345}
   _cellGroupParent: {fileID: 456302139}
 --- !u!1 &62955219

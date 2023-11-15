@@ -1,7 +1,7 @@
 ﻿using Chess2D.Commands;
-using Chess2D.Model.PieceMove;
 using System;
 using System.Collections.Generic;
+using Chess2D.PieceMovement;
 using Chess2D.UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -19,7 +19,7 @@ namespace Chess2D.Controller
         private CellView _targetCell;
 
         private PieceView _lastMovePiece;
-        private ICommand _lastMoveAction;
+        private ICommand _lastMoveCommand;
         private Vector2 _startMovePosition;
         
         // getters
@@ -27,21 +27,18 @@ namespace Chess2D.Controller
 
         // Inject
         private readonly BoardController _boardController;
-        private readonly PieceController _pieceController;
 
-        public PieceMoveController(BoardController boardController, PieceController pieceController)
+        public PieceMoveController(BoardController boardController)
         {
             _boardController = boardController;
-            _pieceController = pieceController;
         }
 
         public void Initialize()
         {
             _camera = Camera.main;
-            _pieceController.OnPieceCreated += PieceController_OnPieceCreated;
         }
 
-        private void PieceController_OnPieceCreated(PieceView pieceView)
+        public void OnPieceCreated(PieceView pieceView)
         {
             pieceView.OnPointerDown += PieceView_OnPointerDown;
             pieceView.OnPointerUp += PieceView_OnTouchUp;
@@ -54,17 +51,17 @@ namespace Chess2D.Controller
             pieceView.transform.SetAsLastSibling();
             _startMovePosition = GetLocalPosition(eventData);
 
-            GetAvailableMoves(pieceView);
+            UpdateAvailableMoves(pieceView);
             SetHighlightCells(true);
         }
 
-        private void GetAvailableMoves(PieceView piece)
+        private void UpdateAvailableMoves(PieceView pieceView)
         {
             _availableMoves = new List<MoveData>();
 
-            foreach (PieceMoveAlgorithm move in piece.Moves)
+            foreach (PieceMoveAlgorithm moveAlgorithm in pieceView.MoveAlgorithms)
             {
-                _availableMoves.AddRange(move.GetAvailableMoves(piece, _boardController));
+                _availableMoves.AddRange(moveAlgorithm.GetAvailableMoves(pieceView, _boardController));
             }
         }
 
@@ -115,7 +112,7 @@ namespace Chess2D.Controller
             if (_targetCell == null)
             {
                 // replace piece at own start position
-                _boardController.ReplacePiece(pieceView, pieceView.cellCoord);
+                _boardController.PlacePieceOnCell(pieceView, pieceView.cellCoord);
             }
             else
             {
@@ -132,7 +129,7 @@ namespace Chess2D.Controller
                     continue;
                 }
 
-                _lastMoveAction = moveInfo.moveCommand;
+                _lastMoveCommand = moveInfo.moveCommand;
                 moveInfo.moveCommand.Execute();
                 OnMakeMove(_lastMovePiece);
                 break;
@@ -149,9 +146,9 @@ namespace Chess2D.Controller
 
         public void CancelMove()
         {
-            _lastMoveAction.Undo();
+            _lastMoveCommand.Undo();
 
-            _lastMoveAction = null;
+            _lastMoveCommand = null;
             _lastMovePiece = null;
         }
 

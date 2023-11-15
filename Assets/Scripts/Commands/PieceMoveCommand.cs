@@ -23,12 +23,12 @@ namespace Chess2D.Commands
 
         public void Execute()
         {
-            _boardController.ReplacePiece(_piece, _cellCoord);
+            _boardController.PlacePieceOnCell(_piece, _cellCoord);
         }
 
         public void Undo()
         {
-            _boardController.ReplacePiece(_piece, _previousCellCoord);
+            _boardController.PlacePieceOnCell(_piece, _previousCellCoord);
         }
     }
 }

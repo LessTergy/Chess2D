@@ -1,7 +1,7 @@
 ﻿using Chess2D.Commands;
 using Chess2D.UI;
 
-namespace Chess2D.Model.PieceMove
+namespace Chess2D.PieceMovement
 {
     public class MoveData
     {

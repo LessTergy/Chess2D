@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Chess2D.Model;
 using UnityEngine;
 
@@ -8,7 +7,8 @@ namespace Chess2D.UI
     [RequireComponent(typeof(Animator))]
     public class PawnPromotionPopup : MonoBehaviour
     {
-        public event Action<PieceType> OnPieceSelected = delegate { };
+        public delegate void PieceTypeDelegate(PieceType pieceType);
+        public event PieceTypeDelegate OnPieceSelected;
 
         [Header("Components")]
         [SerializeField] private PieceViewButton _buttonPrefab;
@@ -66,7 +66,7 @@ namespace Chess2D.UI
 
         private void PieceButton_OnClick(PieceType pieceType)
         {
-            OnPieceSelected(pieceType);
+            OnPieceSelected?.Invoke(pieceType);
         }
     }
 }

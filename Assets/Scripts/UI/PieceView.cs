@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Chess2D.Model;
-using Chess2D.Model.PieceMove;
+using Chess2D.PieceMovement;
 using LessTergy.UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -30,7 +30,7 @@ namespace Chess2D.UI
         public PieceType Type { get; private set; }
         public PlayerType PlayerType { get; private set; }
 
-        public IReadOnlyList<PieceMoveAlgorithm> Moves { get; private set; }
+        public List<PieceMoveAlgorithm> MoveAlgorithms { get; private set; }
 
         public bool IsActive
         {
@@ -51,6 +51,19 @@ namespace Chess2D.UI
             _interactiveObject.onDrag += InteractiveObject_onDrag;
         }
         
+        public void Construct(PieceType type, PlayerType playerType, List<PieceMoveAlgorithm> moveAlgorithms)
+        {
+            Type = type;
+            MoveAlgorithms = moveAlgorithms;
+            PlayerType = playerType;
+        }
+
+        public void SetSprite(Sprite sprite, Color color)
+        {
+            _image.sprite = sprite;
+            _image.color = color;
+        }
+        
         private void InteractiveObject_onPointerDown(PointerEventData e)
         {
             OnPointerDown?.Invoke(this, e);
@@ -64,17 +77,6 @@ namespace Chess2D.UI
         private void InteractiveObject_onDrag(PointerEventData e)
         {
             OnDrag?.Invoke(this, e);
-        }
-
-        public void Initialize(PieceType type, Sprite sprite, List<PieceMoveAlgorithm> moves, PlayerType playerType, Color color)
-        {
-            Type = type;
-            _image.sprite = sprite;
-
-            Moves = moves;
-
-            PlayerType = playerType;
-            _image.color = color;
         }
     }
 }

@@ -1,3 +1,4 @@
+using Chess2D.Model;
 using UnityEngine;
 using UnityEngine.UI;
 

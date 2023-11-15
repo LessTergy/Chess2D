@@ -8,5 +8,15 @@ namespace Chess2D.Model
     {
         public List<CellInfo> whitePieceCells;
         public List<CellInfo> blackPieceCells;
+
+        public List<CellInfo> GetCells(PlayerType playerType)
+        {
+            return playerType switch
+            {
+                PlayerType.White => whitePieceCells,
+                PlayerType.Black => blackPieceCells,
+                _ => null
+            };
+        }
     }
 }
