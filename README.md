@@ -14,7 +14,7 @@ This was a test assignment when applying for a job. The conditions were not to u
 - Cancel player move if his king is in check
 - You can change start arrangement of pieces for test specific cases
 
-# Unrealized features
+# Unimplemented features
 - If the king is in a checkmate position, the message "Checkmate" does not pop up
 
 ---
