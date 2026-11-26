@@ -1,4 +1,4 @@
-﻿using Chess2D.Controller;
+using Chess2D.Controller;
 using Chess2D.Model;
 using Chess2D.UI;
 using UnityEngine;
@@ -29,12 +29,11 @@ namespace Chess2D
         [SerializeField] private GameObject _pieceGroupParent;
         [SerializeField] private GameObject _cellGroupParent;
 
-        private BoardController _boardController;
-        private PieceController _pieceController;
-        private PieceMoveController _pieceMoveController;
-        private PawnPromotionController _pawnPromotionController;
-        private GameCycleController _gameCycleController;
-        private RestartController _restartController;
+        private BoardController _board;
+        private PieceMoveController _moves;
+        private PieceController _pieces;
+        private PawnPromotionController _promotion;
+        private RestartController _restart;
 
         private void Awake()
         {
@@ -45,33 +44,50 @@ namespace Chess2D
 
         private void Install()
         {
-            _boardController = new BoardController(_boardView, _cellPrefab, _cellGroupParent);
-            _pieceMoveController = new PieceMoveController(_boardController);
-            _pieceController = new PieceController(_boardController,_pieceMoveController, _defaultArrangement, _pieceFactory, _pieceGroupParent);
-            
-            var gameBuilder = new GameBuilder(_boardController, _pieceController);
-            gameBuilder.Build();
-            GameModel gameModel = gameBuilder.GameModel;
-            
-            _pawnPromotionPopup.Construct(_pieceConfig, GameConstants.PromotionPieces);
-            _pawnPromotionController = new PawnPromotionController(gameModel, _pawnPromotionPopup, _boardController, _pieceController, _pieceMoveController);
-            
-            _gameCycleController = new GameCycleController(gameModel, _boardController, _pieceMoveController, _pawnPromotionController);
-            _restartController = new RestartController(_restartButton);
+            var game = GameBuilder.Build(_defaultArrangement);
+            _board = new BoardController(_boardView, _cellPrefab, _cellGroupParent);
+            _moves = new PieceMoveController(_board, game);
+            _pieces = new PieceController(game, _board, _moves, _pieceFactory, _pieceGroupParent.transform);
+            _promotion = new PawnPromotionController(game, _pawnPromotionPopup, _board, _pieces, _moves);
+            _restart = new RestartController(_restartButton);
         }
 
         private void Initialize()
         {
-            _pieceMoveController.Initialize();
-            _gameCycleController.Initialize();
-            
-            _pawnPromotionController.Initialize();
-            _restartController.Initialize();
+            _moves.Initialize();
+            _pawnPromotionPopup.Construct(_pieceConfig, GameConstants.PromotionPieces);
+            _pieces.Initialize();
+            _promotion.Initialize();
+            _restart.Initialize();
         }
 
         private void StartGame()
         {
-            _gameCycleController.StartGame();
+            _board.CreateCells();
+            _pieces.CreatePlayerPieces();
+        }
+
+        private void OnDestroy()
+        {
+            _promotion?.Dispose();
+            _pieces?.Dispose();
+            _restart?.Dispose();
+        }
+
+        private void OnApplicationFocus(bool hasFocus)
+        {
+            if (!hasFocus)
+            {
+                _moves?.CancelDrag();
+            }
+        }
+
+        private void OnApplicationPause(bool isPaused)
+        {
+            if (isPaused)
+            {
+                _moves?.CancelDrag();
+            }
         }
     }
 }

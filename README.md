@@ -26,12 +26,13 @@ To create a position, use **Assets → Create → Chess2D → Arrangement Config
 
 ## Code map
 
-- [GameInstaller](Assets/Scripts/GameInstaller.cs) wires the scene and starts the game. [Controllers](Assets/Scripts/Controller) handle input, turns, and promotion.
-- [PieceMovement](Assets/Scripts/PieceMovement) holds the movement rules. [Commands](Assets/Scripts/Commands) apply and undo moves and captures. Composite commands group changes for moves such as castling.
-- [Model](Assets/Scripts/Model) holds player and game state and the configurable starting positions. Board occupancy and piece state are stored in Unity UI components.
+- [Rules](Assets/Scripts/Rules) is a plain C# assembly with the board, piece state, turns, and move validation. Its commands apply and roll back moves without a scene.
+- [GameInstaller](Assets/Scripts/GameInstaller.cs) creates the game from an arrangement asset. [Controllers](Assets/Scripts/Controller) translate input into moves and update the board, sprites, and promotion popup from the game state.
+
+## Automated tests
+
+Open **Window → General → Test Runner**, select **EditMode**, and run `Chess2D.Rules.Tests`. The [tests](Assets/Tests/EditMode) exercise the C# rules directly without loading a scene. They cover movement and captures, check and rollback, castling, en passant, and promotion.
 
 ## Known limitations
 
 - The game does not detect checkmate, stalemate, or other draw conditions.
-- Clicking a piece without dragging can commit a move to the previous drop square if that square is among the piece's candidate destinations.
-- The sample positions support manual checks. The repository contains no automated gameplay tests.

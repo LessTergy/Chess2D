@@ -1,5 +1,4 @@
-﻿using Chess2D.Model;
-using Chess2D.PieceMovement;
+using Chess2D.Model;
 using Chess2D.UI;
 using UnityEngine;
 
@@ -7,16 +6,12 @@ namespace Chess2D.Controller
 {
     public class BoardController
     {
-        // fields
-        private CellView[,] _cells;
-        
-        // getters
-        public RectTransform BoardRect => _boardView.RectTransform;
-
-        // Inject
+        private readonly CellView[,] _cells = new CellView[GameConstants.CellCount, GameConstants.CellCount];
         private readonly BoardView _boardView;
         private readonly CellView _cellPrefab;
         private readonly GameObject _cellParent;
+
+        public RectTransform BoardRect => _boardView.RectTransform;
 
         public BoardController(BoardView boardView, CellView cellPrefab, GameObject cellParent)
         {
@@ -25,127 +20,29 @@ namespace Chess2D.Controller
             _cellParent = cellParent;
         }
 
-        #region Initialize
         public void CreateCells()
         {
-            const int cellCount = GameConstants.CellCount;
-            _cells = new CellView[cellCount, cellCount];
-
-            float cellWidth = _boardView.Layout.CellWidth;
-            float cellHeight = _boardView.Layout.CellHeight;
-
-            for (var xIndex = 0; xIndex < cellCount; xIndex++)
+            var layout = _boardView.Layout;
+            var width = layout.CellWidth;
+            var height = layout.CellHeight;
+            var offset = layout.CellPositionOffset;
+            for (var x = 0; x < GameConstants.CellCount; x++)
             {
-                for (var yIndex = 0; yIndex < cellCount; yIndex++)
+                for (var y = 0; y < GameConstants.CellCount; y++)
                 {
-                    CellView cell = CreateCell(xIndex, yIndex, cellWidth, cellHeight);
-                    _cells[xIndex, yIndex] = cell;
+                    var cell = Object.Instantiate(_cellPrefab, _cellParent.transform);
+                    cell.Construct(new Square(x, y), width, height);
+                    cell.transform.localPosition = new Vector2(x * width, y * height) - offset;
+                    _cells[x, y] = cell;
                 }
             }
         }
 
-        private CellView CreateCell(int xIndex, int yIndex, float width, float height)
+        public CellView GetCell(Square square) => _cells[square.X, square.Y];
+
+        public void SnapToSquare(PieceView view)
         {
-            CellView cell = Object.Instantiate(_cellPrefab, _cellParent.transform);
-            cell.Construct(xIndex, yIndex, width, height);
-
-            var position = new Vector2(xIndex * width, yIndex * height);
-            position -= _boardView.Layout.CellPositionOffset;
-            cell.transform.localPosition = position;
-
-            return cell;
-        }
-        #endregion
-
-        public CellView GetCell(int x, int y)
-        {
-            return _cells[x, y];
-        }
-        
-        public CellView GetCell(Vector2Int coord)
-        {
-            return GetCell(coord.x, coord.y);
-        }
-
-        public CellState GetCellStateForMove(int x, int y, PieceView movingPiece)
-        {
-            bool xIsOutOfBounds = (x < GameConstants.StartIndex || x > GameConstants.FinishIndex);
-            bool yIsOutOfBounds = (y < GameConstants.StartIndex || y > GameConstants.FinishIndex);
-
-            if (xIsOutOfBounds || yIsOutOfBounds)
-            {
-                return CellState.OutOfBounds;
-            }
-
-            CellView targetCell = GetCell(x, y);
-            if (targetCell.IsEmpty) return CellState.Free;
-            
-            if (movingPiece.PlayerType == targetCell.CurrentPiece.PlayerType)
-            {
-                return CellState.Friendly;
-            }
-            if (movingPiece.PlayerType != targetCell.CurrentPiece.PlayerType)
-            {
-                return CellState.Opponent;
-            }
-            return CellState.Free;
-        }
-
-        public bool IsKingInCheck(PieceView king)
-        {
-            foreach (var cell in _cells)
-            {
-                var attacker = cell.CurrentPiece;
-                if (attacker == null || attacker.PlayerType == king.PlayerType)
-                {
-                    continue;
-                }
-
-                foreach (var algorithm in attacker.MoveAlgorithms)
-                {
-                    // Castling does not attack squares and uses this check itself.
-                    if (algorithm is KingCastlingMove)
-                    {
-                        continue;
-                    }
-
-                    foreach (var move in algorithm.GetAvailableMoves(attacker, this))
-                    {
-                        if (move.cellView.Coord == king.cellCoord)
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-
-            return false;
-        }
-
-        public void PlacePieceOnCell(PieceView pieceView, Vector2Int cellCoord)
-        {
-            CellView currentCell = GetCell(pieceView.cellCoord);
-            CellView moveCell = GetCell(cellCoord);
-
-            pieceView.cellCoord = moveCell.Coord;
-            currentCell.ClearPiece();
-
-            moveCell.SetPiece(pieceView);
-            pieceView.transform.position = moveCell.transform.position;
-        }
-
-        public void KillPieceView(PieceView piece)
-        {
-            CellView cell = GetCell(piece.cellCoord);
-            cell.ClearPiece();
-            piece.IsActive = false;
-        }
-
-        public void PlacePieceView(PieceView piece)
-        {
-            CellView cell = GetCell(piece.cellCoord);
-            cell.SetPiece(piece);
-            piece.IsActive = true;
+            view.transform.position = GetCell(view.Piece.Square).transform.position;
         }
 
         public void SetInteractive(bool value)

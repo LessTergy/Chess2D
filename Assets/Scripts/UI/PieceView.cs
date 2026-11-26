@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
 using Chess2D.Model;
-using Chess2D.PieceMovement;
 using LessTergy.UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -10,26 +8,15 @@ namespace Chess2D.UI
 {
     public class PieceView : MonoBehaviour
     {
-        public delegate void PieceViewMoveDelegate(PieceView pieceView, PointerEventData eventData);
-
-        public event PieceViewMoveDelegate OnPointerDown;
+        public event PieceViewDelegate OnPointerDown;
         public event PieceViewDelegate OnPointerUp;
-        public event PieceViewMoveDelegate OnDrag;
-        
-        [Header("Components")] 
+        public event PieceViewDelegate OnDrag;
+
+        [Header("Components")]
         [SerializeField] private Image _image;
         [SerializeField] private InteractiveObject _interactiveObject;
-        
-        [Header("Properties")]
-        public Vector2Int cellCoord;
-        public bool isWasMoving;
-        public bool LastMoveWasDoublePawnStep { get; set; }
-        
-        // getters
-        public PieceType Type { get; private set; }
-        public PlayerType PlayerType { get; private set; }
 
-        public List<PieceMoveAlgorithm> MoveAlgorithms { get; private set; }
+        public PieceState Piece { get; private set; }
 
         public bool IsActive
         {
@@ -45,16 +32,14 @@ namespace Chess2D.UI
 
         private void Awake()
         {
-            _interactiveObject.onPointerDown += InteractiveObject_onPointerDown;
-            _interactiveObject.onPointerUp += InteractiveObject_onPointerUp;
-            _interactiveObject.onDrag += InteractiveObject_onDrag;
+            _interactiveObject.onPointerDown += ForwardPointerDown;
+            _interactiveObject.onPointerUp += ForwardPointerUp;
+            _interactiveObject.onDrag += ForwardDrag;
         }
-        
-        public void Construct(PieceType type, PlayerType playerType, List<PieceMoveAlgorithm> moveAlgorithms)
+
+        public void Construct(PieceState piece)
         {
-            Type = type;
-            MoveAlgorithms = moveAlgorithms;
-            PlayerType = playerType;
+            Piece = piece;
         }
 
         public void SetSprite(Sprite sprite, Color color)
@@ -62,20 +47,9 @@ namespace Chess2D.UI
             _image.sprite = sprite;
             _image.color = color;
         }
-        
-        private void InteractiveObject_onPointerDown(PointerEventData e)
-        {
-            OnPointerDown?.Invoke(this, e);
-        }
-        
-        private void InteractiveObject_onPointerUp(PointerEventData e)
-        {
-            OnPointerUp?.Invoke(this);
-        }
-        
-        private void InteractiveObject_onDrag(PointerEventData e)
-        {
-            OnDrag?.Invoke(this, e);
-        }
+
+        private void ForwardPointerDown(PointerEventData eventData) => OnPointerDown?.Invoke(this, eventData);
+        private void ForwardPointerUp(PointerEventData eventData) => OnPointerUp?.Invoke(this, eventData);
+        private void ForwardDrag(PointerEventData eventData) => OnDrag?.Invoke(this, eventData);
     }
 }

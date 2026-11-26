@@ -1,20 +1,26 @@
-﻿using UnityEngine.SceneManagement;
+﻿using System;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Chess2D.Controller
 {
-    public class RestartController
+    public class RestartController : IDisposable
     {
-        private readonly Button _restartButton;
+        private readonly Button.ButtonClickedEvent _onClick;
 
         public RestartController(Button restartButton)
         {
-            _restartButton = restartButton;
+            _onClick = restartButton.onClick;
         }
 
         public void Initialize()
         {
-            _restartButton.onClick.AddListener(RestartHandler);
+            _onClick.AddListener(RestartHandler);
+        }
+
+        public void Dispose()
+        {
+            _onClick.RemoveListener(RestartHandler);
         }
 
         private void RestartHandler()

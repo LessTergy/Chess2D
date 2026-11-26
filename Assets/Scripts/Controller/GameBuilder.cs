@@ -3,41 +3,22 @@ using Chess2D.Model;
 
 namespace Chess2D.Controller
 {
-    public class GameBuilder
+    public static class GameBuilder
     {
-        public GameModel GameModel { get; private set; }
-
-        private readonly BoardController _boardController;
-        private readonly PieceController _pieceController;
-        
-        public GameBuilder(BoardController boardController, PieceController pieceController)
+        public static GameModel Build(ArrangementConfig arrangement)
         {
-            _boardController = boardController;
-            _pieceController = pieceController;
-        }
-        
-        public void Build()
-        {
-            GameModel = CreateGameModel();
-            
-            _boardController.CreateCells();
-            _pieceController.CreatePlayerPieces(GameModel);
+            return new GameModel(GetStartingPieces(arrangement));
         }
 
-        private GameModel CreateGameModel()
+        private static IEnumerable<PieceState> GetStartingPieces(ArrangementConfig arrangement)
         {
-            var gameModel = new GameModel
+            foreach (var side in new[] { PlayerType.White, PlayerType.Black })
             {
-                players = new List<PlayerModel>()
-            };
-
-            var playerWhite = new PlayerModel(PlayerType.White);
-            gameModel.players.Add(playerWhite);
-            
-            var playerBlack = new PlayerModel(PlayerType.Black);
-            gameModel.players.Add(playerBlack);
-
-            return gameModel;
+                foreach (var cell in arrangement.GetCells(side))
+                {
+                    yield return new PieceState(cell.pieceType, side, new Square(cell.coord.x, cell.coord.y));
+                }
+            }
         }
     }
 }

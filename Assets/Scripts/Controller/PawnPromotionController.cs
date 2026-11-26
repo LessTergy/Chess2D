@@ -1,78 +1,63 @@
-﻿using System;
+using System;
 using Chess2D.Model;
 using Chess2D.UI;
 
 namespace Chess2D.Controller
 {
-    public class PawnPromotionController
+    public class PawnPromotionController : IDisposable
     {
-        public event Action OnPawnPromoted = delegate { };
+        private readonly GameModel _game;
+        private readonly PawnPromotionPopup _popup;
+        private readonly BoardController _board;
+        private readonly PieceController _pieces;
+        private readonly PieceMoveController _moves;
 
-        private PieceView _promotedPawn;
-
-        // Inject
-        private readonly GameModel _gameModel;
-        private readonly PawnPromotionPopup _pawnPromotionPopup;
-        private readonly BoardController _boardController;
-        private readonly PieceController _pieceController;
-        private readonly PieceMoveController _pieceMoveController;
-
-        public PawnPromotionController(GameModel gameModel, PawnPromotionPopup pawnPromotionPopup, BoardController boardController, 
-            PieceController pieceController, PieceMoveController pieceMoveController)
+        public PawnPromotionController(GameModel game, PawnPromotionPopup popup, BoardController board,
+            PieceController pieces, PieceMoveController moves)
         {
-            _gameModel = gameModel;
-            _pawnPromotionPopup = pawnPromotionPopup;
-            _boardController = boardController;
-            _pieceController = pieceController;
-            _pieceMoveController = pieceMoveController;
+            _game = game;
+            _popup = popup;
+            _board = board;
+            _pieces = pieces;
+            _moves = moves;
         }
 
         public void Initialize()
         {
-            _pawnPromotionPopup.OnPieceSelected += PawnPromotionPopup_OnPieceSelected;
-            _pieceMoveController.OnFinishMove += PieceMoveController_OnFinishMove;
+            _moves.OnMoveAccepted += ShowPendingPromotion;
+            _popup.OnPieceSelected += OnPieceSelected;
         }
 
-        private void PawnPromotionPopup_OnPieceSelected(PieceType pieceType)
+        public void Dispose()
         {
-            _pawnPromotionPopup.Visible = false;
-            _boardController.KillPieceView(_promotedPawn);
-
-            PlayerModel playerModel = _gameModel.GetPlayer(_promotedPawn.PlayerType);
-            _pieceController.CreatePieceView(playerModel, pieceType, _promotedPawn.cellCoord);
-
-            _boardController.SetInteractive(true);
-            OnPawnPromoted();
+            _moves.OnMoveAccepted -= ShowPendingPromotion;
+            _popup.OnPieceSelected -= OnPieceSelected;
         }
 
-        private void PieceMoveController_OnFinishMove(PieceView movingPiece)
+        private void ShowPendingPromotion()
         {
-            if (movingPiece.Type != PieceType.Pawn)
+            var pawn = _game.PendingPromotion;
+            if (pawn == null)
             {
                 return;
             }
-            
-            int promotionYIndex = GetPromotionYIndex(movingPiece.PlayerType);
-            bool isPromotion = movingPiece.cellCoord.y == promotionYIndex;
 
-            if (isPromotion)
+            _board.SetInteractive(false);
+            _popup.SetContent(pawn.PlayerType);
+            _popup.Visible = true;
+        }
+
+        private void OnPieceSelected(PieceType type)
+        {
+            var pawn = _game.PendingPromotion;
+            if (!_game.TryPromote(type))
             {
-                StartPromotePawn(movingPiece);
+                return;
             }
-        }
 
-        private void StartPromotePawn(PieceView pawn)
-        {
-            _promotedPawn = pawn;
-            _pawnPromotionPopup.SetContent(pawn.PlayerType);
-
-            _pawnPromotionPopup.Visible = true;
-            _boardController.SetInteractive(false);
-        }
-
-        private int GetPromotionYIndex(PlayerType playerType)
-        {
-            return (playerType == PlayerType.White) ? GameConstants.FinishIndex : GameConstants.StartIndex;
+            _popup.Visible = false;
+            _board.SetInteractive(true);
+            _pieces.RefreshAfterPromotion(pawn);
         }
     }
 }
