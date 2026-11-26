@@ -6,9 +6,10 @@ using Chess2D.PieceMovement;
 
 namespace Chess2D.Model
 {
-    public sealed class GameModel
+    public sealed partial class GameModel
     {
-        private static readonly PieceMoveAlgorithm[] PawnMoves = { new PawnDefaultMove(), new PawnKillMove(), new PawnEnPassantMove() };
+        private static readonly PawnEnPassantMove EnPassant = new();
+        private static readonly PieceMoveAlgorithm[] PawnMoves = { new PawnDefaultMove(), new PawnKillMove(), EnPassant };
         private static readonly PieceMoveAlgorithm[] RookMoves = { new RookMove() };
         private static readonly PieceMoveAlgorithm[] KnightMoves = { new KnightMove() };
         private static readonly PieceMoveAlgorithm[] BishopMoves = { new BishopMove() };
@@ -20,6 +21,7 @@ namespace Chess2D.Model
         private readonly PlayerModel[] _players = { new(), new() };
 
         public PlayerType CurrentPlayer { get; private set; } = PlayerType.White;
+        public event Action Changed;
         public PieceState PendingPromotion { get; private set; }
         internal PieceState LastDoubleStepPawn { get; private set; }
 
@@ -55,6 +57,8 @@ namespace Chess2D.Model
             {
                 throw new ArgumentException("Each side must start with exactly one king.", nameof(startingPieces));
             }
+
+            EvaluatePosition();
         }
 
         public PieceState GetPieceAt(Square square) => IsOnBoard(square) ? _board[square.X, square.Y] : null;
@@ -80,11 +84,22 @@ namespace Chess2D.Model
                     continue;
                 }
 
+                var resetsClock = piece.Type == PieceType.Pawn || GetPieceAt(to) != null;
                 move.Command.Execute();
                 if (IsKingInCheck(CurrentPlayer))
                 {
                     move.Command.Undo();
                     return false;
+                }
+
+                if (resetsClock)
+                {
+                    _halfMoves = 0;
+                    _repetitions.Clear();
+                }
+                else
+                {
+                    _halfMoves++;
                 }
 
                 piece.HasMoved = true;
@@ -100,9 +115,10 @@ namespace Chess2D.Model
                 }
                 else
                 {
-                    CurrentPlayer = OpponentOf(CurrentPlayer);
+                    FinishTurn();
                 }
 
+                Changed?.Invoke();
                 return true;
             }
 
@@ -118,7 +134,8 @@ namespace Chess2D.Model
 
             PendingPromotion.Type = type;
             PendingPromotion = null;
-            CurrentPlayer = OpponentOf(CurrentPlayer);
+            FinishTurn();
+            Changed?.Invoke();
             return true;
         }
 
@@ -195,7 +212,7 @@ namespace Chess2D.Model
         private PieceState GetMovablePiece(Square from)
         {
             var piece = GetPieceAt(from);
-            return PendingPromotion == null && piece?.PlayerType == CurrentPlayer ? piece : null;
+            return CanPlay && piece?.PlayerType == CurrentPlayer ? piece : null;
         }
 
         private IEnumerable<MoveData> GetMoves(PieceState piece)

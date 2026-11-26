@@ -30,6 +30,7 @@ namespace Chess2D
         [SerializeField] private GameObject _cellGroupParent;
 
         private BoardController _board;
+        private GameModel _game;
         private PieceMoveController _moves;
         private PieceController _pieces;
         private PawnPromotionController _promotion;
@@ -44,11 +45,11 @@ namespace Chess2D
 
         private void Install()
         {
-            var game = GameBuilder.Build(_defaultArrangement);
+            _game = GameBuilder.Build(_defaultArrangement);
             _board = new BoardController(_boardView, _cellPrefab, _cellGroupParent);
-            _moves = new PieceMoveController(_board, game);
-            _pieces = new PieceController(game, _board, _moves, _pieceFactory, _pieceGroupParent.transform);
-            _promotion = new PawnPromotionController(game, _pawnPromotionPopup, _board, _pieces, _moves);
+            _moves = new PieceMoveController(_board, _game);
+            _pieces = new PieceController(_game, _board, _moves, _pieceFactory, _pieceGroupParent.transform);
+            _promotion = new PawnPromotionController(_game, _pawnPromotionPopup, _board, _pieces, _moves);
             _restart = new RestartController(_restartButton);
         }
 
@@ -65,6 +66,7 @@ namespace Chess2D
         {
             _board.CreateCells();
             _pieces.CreatePlayerPieces();
+            GameStatusView.Create(_restartButton, _game, _board, _pieces, _moves);
         }
 
         private void OnDestroy()

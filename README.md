@@ -17,6 +17,10 @@ The repository also contains a [previous Android build](Builds/Chess2D.apk).
 - All six piece types have movement and capture rules. The board highlights candidate destinations when you pick up a piece.
 - A move that leaves your king in check is rolled back. Some highlighted destinations can therefore be rejected on drop.
 - Castling checks the king's starting, transit, and destination squares. En passant is available immediately after an adjacent opposing pawn advances two squares. When a pawn reaches the last rank, choose a queen, rook, knight, or bishop.
+- Checkmate ends the game. The losing king's square lights up red, a white flag appears beside the king, and the footer names the winner. To try it from the starting position, play **1. f3 e5 2. g4 Qh4#**.
+- Stalemate, five occurrences of the same position, or 75 moves by each side without a pawn move or capture end the game in a draw. The game also detects bare kings, a single bishop or knight against a bare king, and positions where all remaining non-king pieces are bishops on the same square color.
+- Use **Заявить ничью** to claim three occurrences of a position or 50 moves by each side without a pawn move or capture. To claim with an intended move, select **Заявить ничью с ходом** before playing it. Repetition includes the side to move, castling rights, and any legal en passant capture.
+- To agree on a draw, choose **Предложить ничью** before making your move. The other player can select **Принять ничью** or continue by moving a piece. After any result, the restart button starts a new game.
 
 ## Try a specific position
 
@@ -31,8 +35,8 @@ To create a position, use **Assets → Create → Chess2D → Arrangement Config
 
 ## Automated tests
 
-Open **Window → General → Test Runner**, select **EditMode**, and run `Chess2D.Rules.Tests`. The [tests](Assets/Tests/EditMode) exercise the C# rules directly without loading a scene. They cover movement and captures, check and rollback, castling, en passant, and promotion.
+Open **Window → General → Test Runner**, select **EditMode**, and run `Chess2D.Rules.Tests`. The [tests](Assets/Tests/EditMode) exercise the C# rules directly without loading a scene. They cover movement and captures, check and rollback, castling, en passant, promotion, checkmate, stalemate, and draw claims and automatic draws.
 
 ## Known limitations
 
-- The game does not detect checkmate, stalemate, or other draw conditions.
+- Dead-position detection uses the material cases listed above. Other dead positions, such as a permanently locked pawn barrier, can require a draw by agreement.

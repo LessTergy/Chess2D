@@ -56,7 +56,7 @@ namespace Chess2D.Controller
             }
 
             _popup.Visible = false;
-            _board.SetInteractive(true);
+            _board.SetInteractive(_game.CanPlay);
             _pieces.RefreshAfterPromotion(pawn);
         }
     }

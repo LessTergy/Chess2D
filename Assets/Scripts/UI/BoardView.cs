@@ -10,17 +10,15 @@ namespace Chess2D.UI
         public BoardLayout Layout => _layout;
 
         public RectTransform RectTransform { get; private set; }
-        private CanvasGroup _canvasGroup;
 
         public void Awake()
         {
             RectTransform = transform as RectTransform;
-            _canvasGroup = GetComponent<CanvasGroup>();
         }
 
         public void SetInteractive(bool value)
         {
-            _canvasGroup.blocksRaycasts = value;
+            GetComponent<CanvasGroup>().blocksRaycasts = value;
         }
     }
 }

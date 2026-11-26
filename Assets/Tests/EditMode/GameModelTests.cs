@@ -31,7 +31,7 @@ namespace Chess2D.Tests
         [TestCase(Knight, "e6", "d6")]
         public void PieceAcceptsItsOwnGeometry(PieceType type, string valid, string invalid)
         {
-            var game = WithKings((type, White, "d4"));
+            var game = WithKings((type, White, "d4"), (Pawn, Black, "a7"));
 
             Assert.That(TryMove(game, "d4", invalid), Is.False);
             Assert.That(TryMove(game, "d4", valid), Is.True);
@@ -40,7 +40,7 @@ namespace Chess2D.Tests
         [Test]
         public void KingMovesOneSquareAndCannotMoveNextToOpponent()
         {
-            var game = Position((King, White, "e4"), (King, Black, "e6"));
+            var game = Position((King, White, "e4"), (King, Black, "e6"), (Pawn, Black, "a7"));
 
             Assert.That(TryMove(game, "e4", "e2"), Is.False);
             Assert.That(TryMove(game, "e4", "e5"), Is.False);
@@ -308,13 +308,221 @@ namespace Chess2D.Tests
         [Test]
         public void StartingPiecesCanBeReusedForIndependentGames()
         {
-            var pieces = new[] { new PieceState(King, White, SquareAt("a1")), new PieceState(King, Black, SquareAt("h8")) };
+            var pieces = new[] { new PieceState(King, White, SquareAt("a1")), new PieceState(King, Black, SquareAt("h8")),
+                new PieceState(Pawn, White, SquareAt("e2")) };
             var first = new GameModel(pieces);
             var second = new GameModel(pieces);
 
             Assert.That(TryMove(first, "a1", "b1"), Is.True);
             Assert.That(At(second, "a1").Type, Is.EqualTo(King));
             Assert.That(second.CurrentPlayer, Is.EqualTo(White));
+        }
+
+        [Test]
+        public void FoolsMateEndsTheGameAndRejectsFurtherInput()
+        {
+            var game = StartingPosition();
+            Play(game, ("f2", "f3"), ("e7", "e5"), ("g2", "g4"), ("d8", "h4"));
+
+            Assert.That(game.Result, Is.EqualTo(GameResult.Checkmate));
+            Assert.That(game.CurrentKing.PlayerType, Is.EqualTo(White));
+            Assert.That(game.GetCandidateDestinations(SquareAt("e2")), Is.Empty);
+            Assert.That(TryMove(game, "e2", "e4"), Is.False);
+            Assert.That(game.TryOfferDraw() || game.TryClaimDraw(), Is.False);
+        }
+
+        [TestCase("c2", GameResult.Stalemate)]
+        [TestCase("b2", GameResult.Checkmate)]
+        public void TerminalStartingPositionsAreRecognized(string queenSquare, GameResult expected)
+        {
+            var game = Position((King, White, "a1"), (King, Black, "c3"), (Queen, Black, queenSquare));
+            Assert.That(game.Result, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void StalemateAfterAMoveHasNoWinner()
+        {
+            var game = Position((King, White, "c6"), (King, Black, "a8"), (Queen, White, "d7"));
+            Play(game, ("d7", "c7"));
+            Assert.That(game.Result, Is.EqualTo(GameResult.Stalemate));
+            Assert.That(game.IsKingInCheck(Black), Is.False);
+            Assert.That(TryMove(game, "a8", "a7"), Is.False);
+        }
+
+        [TestCase(Queen, GameResult.Checkmate)]
+        [TestCase(Rook, GameResult.Checkmate)]
+        [TestCase(Bishop, GameResult.InsufficientMaterial)]
+        public void ResultDependsOnTheChosenPromotion(PieceType choice, GameResult expected)
+        {
+            var game = Position((King, White, "b6"), (King, Black, "a8"), (Pawn, White, "c7"));
+            Play(game, ("c7", "c8"));
+            Assert.That(game.Result, Is.EqualTo(GameResult.Ongoing));
+            Assert.That(game.CanPlay, Is.False);
+            Assert.That(game.TryPromote(choice), Is.True);
+            Assert.That(game.Result, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void EnPassantCanBeTheOnlyLegalReply()
+        {
+            var game = Position((King, White, "a1"), (King, Black, "c2"), (Bishop, Black, "b3"),
+                (Pawn, White, "e4"), (Pawn, Black, "e6"), (Pawn, Black, "d7"));
+            Play(game, ("e4", "e5"), ("d7", "d5"));
+            Assert.That(game.Result, Is.EqualTo(GameResult.Ongoing));
+            Play(game, ("e5", "d6"));
+        }
+
+        [Test]
+        public void DeadMaterialAndMaterialThatCanStillMate()
+        {
+            Assert.That(WithKings().Result, Is.EqualTo(GameResult.InsufficientMaterial));
+            Assert.That(WithKings((Knight, White, "e3")).Result, Is.EqualTo(GameResult.InsufficientMaterial));
+            Assert.That(WithKings((Bishop, White, "e3"), (Bishop, Black, "f4")).Result,
+                Is.EqualTo(GameResult.InsufficientMaterial));
+            Assert.That(WithKings((Bishop, White, "e3"), (Bishop, Black, "e4")).Result, Is.EqualTo(GameResult.Ongoing));
+            Assert.That(WithKings((Knight, White, "e3"), (Knight, White, "e4")).Result, Is.EqualTo(GameResult.Ongoing));
+        }
+
+        [TestCase(true, GameResult.ThreefoldRepetition)]
+        [TestCase(false, GameResult.FivefoldRepetition)]
+        public void ThreefoldIsClaimableAndFivefoldIsAutomatic(bool claim, GameResult expected)
+        {
+            var game = StartingPosition();
+            for (var cycle = 1; cycle <= (claim ? 2 : 4); cycle++)
+            {
+                Play(game, ("g1", "f3"), ("g8", "f6"), ("f3", "g1"), ("f6", "g8"));
+                if (cycle == 2)
+                {
+                    Assert.That(game.Result, Is.EqualTo(GameResult.Ongoing));
+                    Assert.That(game.CanClaimDraw, Is.True);
+                }
+            }
+            if (claim)
+            {
+                Assert.That(game.TryClaimDraw(), Is.True);
+            }
+            Assert.That(game.Result, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void ClaimCanBeAnnouncedBeforeTheRepeatedPosition()
+        {
+            var game = StartingPosition();
+            Play(game, ("g1", "f3"), ("g8", "f6"), ("f3", "g1"), ("f6", "g8"),
+                ("g1", "f3"), ("g8", "f6"), ("f3", "g1"));
+            Assert.That(game.CanClaimDraw, Is.False);
+            Assert.That(game.TryClaimDraw(), Is.True);
+            Assert.That(TryMove(game, "f6", "f4"), Is.False);
+            Assert.That(game.ClaimOnNextMove, Is.True);
+            Play(game, ("f6", "g8"));
+            Assert.That(game.Result, Is.EqualTo(GameResult.ThreefoldRepetition));
+        }
+
+        [TestCase(true)]
+        [TestCase(false)]
+        public void OnlyLegalEnPassantDistinguishesRepeatedPositions(bool pinned)
+        {
+            var pieces = new List<(PieceType, PlayerType, string)>
+            {
+                (King, White, "a5"), (King, Black, "h8"), (Pawn, White, "e5"), (Pawn, Black, "d7"),
+                (Knight, White, "b1"), (Knight, Black, "b8")
+            };
+            if (pinned)
+            {
+                pieces.Add((Rook, Black, "h5"));
+            }
+            var game = Position(pieces.ToArray());
+            Play(game, ("b1", "a3"), ("d7", "d5"));
+            for (var cycle = 0; cycle < 2; cycle++)
+            {
+                Play(game, ("a3", "b1"), ("b8", "a6"), ("b1", "a3"), ("a6", "b8"));
+            }
+            Assert.That(game.CanClaimDraw, Is.EqualTo(pinned));
+        }
+
+        [Test]
+        public void LosingCastlingRightsDistinguishesRepeatedPositions()
+        {
+            var game = Position((King, White, "e1"), (King, Black, "a8"), (Rook, White, "h1"));
+            for (var cycle = 0; cycle < 2; cycle++)
+            {
+                Play(game, ("h1", "h2"), ("a8", "a7"), ("h2", "h1"), ("a7", "a8"));
+            }
+            Assert.That(game.CanClaimDraw, Is.False);
+        }
+
+        [TestCase(99, GameResult.FiftyMoveRule)]
+        [TestCase(100, GameResult.FiftyMoveRule)]
+        [TestCase(150, GameResult.SeventyFiveMoveRule)]
+        [TestCase(150, GameResult.Checkmate)]
+        public void QuietMoveLimitsAndMatePrecedence(int plies, GameResult expected)
+        {
+            var game = QuietPosition();
+            PlayQuietMoves(game, expected == GameResult.Checkmate ? plies - 1 : plies);
+            if (expected == GameResult.Checkmate)
+            {
+                Play(game, ("b6", "b2"));
+            }
+            else if (expected == GameResult.FiftyMoveRule)
+            {
+                Assert.That(game.CanClaimDraw, Is.EqualTo(plies == 100));
+                Assert.That(game.TryClaimDraw(), Is.True);
+                if (plies == 99)
+                {
+                    Play(game, ("h2", "f1"));
+                }
+            }
+            Assert.That(game.Result, Is.EqualTo(expected));
+        }
+
+        [TestCase("a3", "a4")]
+        [TestCase("b6", "a6")]
+        public void PawnMoveOrCaptureResetsTheQuietMoveClock(string from, string to)
+        {
+            var game = QuietPosition((Pawn, White, "a3"), (Pawn, White, "a6"));
+            PlayQuietMoves(game, from == "a3" ? 100 : 101);
+            Assert.That(game.CanClaimDraw, Is.True);
+            Play(game, (from, to));
+            Assert.That(game.CanClaimDraw, Is.False);
+        }
+
+        private static GameModel QuietPosition(params (PieceType, PlayerType, string)[] extra) =>
+            Position(new[] { (King, White, "a1"), (King, Black, "c2"), (Queen, Black, "b6"),
+                (Knight, White, "c5"), (Knight, Black, "f1") }.Concat(extra).ToArray());
+
+        private static void PlayQuietMoves(GameModel game, int plies)
+        {
+            // Different circuit lengths keep every position below five occurrences for 150 plies.
+            var white = new[] { "c5", "d7", "e5", "c6", "e7", "d5", "c7", "e6" };
+            var black = new[] { "f1", "g3", "h1", "f2", "h3", "f4", "g2", "h4", "f3", "h2" };
+            for (var ply = 0; ply < plies; ply++)
+            {
+                var route = ply % 2 == 0 ? white : black;
+                Play(game, (route[ply / 2 % route.Length], route[(ply / 2 + 1) % route.Length]));
+            }
+        }
+
+        [TestCase(true)]
+        [TestCase(false)]
+        public void OpponentCanAcceptAnOfferOrDeclineByMoving(bool accept)
+        {
+            var game = StartingPosition();
+            Play(game, ("e2", "e4"));
+            Assert.That(game.TryOfferDraw(), Is.True);
+            Assert.That(game.TryAcceptDraw(), Is.False);
+            Play(game, ("e7", "e5"));
+            if (accept)
+            {
+                Assert.That(game.TryAcceptDraw(), Is.True);
+                Assert.That(game.Result, Is.EqualTo(GameResult.DrawByAgreement));
+                Assert.That(TryMove(game, "g1", "f3"), Is.False);
+            }
+            else
+            {
+                Play(game, ("g1", "f3"));
+                Assert.That(game.TryAcceptDraw(), Is.False);
+                Assert.That(game.DrawOfferBy, Is.Null);
+            }
         }
 
         private static GameModel Position(params (PieceType Type, PlayerType Side, string Square)[] pieces) =>

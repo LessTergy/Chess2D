@@ -9,29 +9,40 @@ namespace Chess2D.PieceMovement
         public override List<MoveData> GetAvailableMoves(PieceState king, GameModel game)
         {
             var moves = new List<MoveData>();
-            var side = king.PlayerType;
-            var startRank = side == PlayerType.White ? GameConstants.StartIndex : GameConstants.FinishIndex;
-            if (king.Square != new Square(4, startRank) || king.HasMoved || game.IsKingInCheck(side))
+            var queenSide = GetCastlingRook(game, king, GameConstants.StartIndex);
+            var kingSide = GetCastlingRook(game, king, GameConstants.FinishIndex);
+            if ((queenSide == null && kingSide == null) || game.IsKingInCheck(king.PlayerType))
             {
                 return moves;
             }
 
-            AddCastlingMove(moves, game, king, -1);
-            AddCastlingMove(moves, game, king, 1);
+            AddCastlingMove(moves, game, king, queenSide);
+            AddCastlingMove(moves, game, king, kingSide);
             return moves;
         }
 
-        private static void AddCastlingMove(List<MoveData> moves, GameModel game, PieceState king, int direction)
+        internal static PieceState GetCastlingRook(GameModel game, PieceState king, int file)
         {
-            var from = king.Square;
-            var rookFile = direction < 0 ? GameConstants.StartIndex : GameConstants.FinishIndex;
-            var rook = game.GetPieceAt(new Square(rookFile, from.Y));
-            if (rook == null || rook.Type != PieceType.Rook || rook.PlayerType != king.PlayerType || rook.HasMoved)
+            var rank = king.PlayerType == PlayerType.White ? GameConstants.StartIndex : GameConstants.FinishIndex;
+            if (king.HasMoved || king.Square != new Square(4, rank))
+            {
+                return null;
+            }
+
+            var rook = game.GetPieceAt(new Square(file, rank));
+            return rook?.Type == PieceType.Rook && rook.PlayerType == king.PlayerType && !rook.HasMoved ? rook : null;
+        }
+
+        private static void AddCastlingMove(List<MoveData> moves, GameModel game, PieceState king, PieceState rook)
+        {
+            if (rook == null)
             {
                 return;
             }
 
-            for (var file = from.X + direction; file != rookFile; file += direction)
+            var from = king.Square;
+            var direction = rook.Square.X < from.X ? -1 : 1;
+            for (var file = from.X + direction; file != rook.Square.X; file += direction)
             {
                 if (game.GetPieceAt(new Square(file, from.Y)) != null)
                 {
