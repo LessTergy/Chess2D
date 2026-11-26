@@ -8,22 +8,22 @@ namespace Chess2D.Controller
         private PlayerModel CurrentPlayer => _gameModel.CurrentPlayer;
         
         private readonly GameModel _gameModel;
-        private readonly PieceController _pieceController;
+        private readonly BoardController _boardController;
         private readonly PieceMoveController _pieceMoveController;
         private readonly PawnPromotionController _pawnPromotionController;
 
-        public GameCycleController(GameModel gameModel, PieceController pieceController, 
+        public GameCycleController(GameModel gameModel, BoardController boardController,
             PieceMoveController pieceMoveController, PawnPromotionController pawnPromotionController)
         {
             _gameModel = gameModel;
-            _pieceController = pieceController;
+            _boardController = boardController;
             _pieceMoveController = pieceMoveController;
             _pawnPromotionController = pawnPromotionController;
         }
 
         public void Initialize()
         {
-            _pieceMoveController.OnMakeMove += PieceMoveController_OnFinishMove;
+            _pieceMoveController.OnMakeMove += PieceMoveController_OnMakeMove;
             _pawnPromotionController.OnPawnPromoted += PawnPromotionController_OnPawnPromoted;
         }
 
@@ -33,10 +33,16 @@ namespace Chess2D.Controller
         }
 
         //Events
-        private void PieceMoveController_OnFinishMove(PieceView movingPiece)
+        private void PieceMoveController_OnMakeMove(PieceView _)
         {
-            UpdateKingCheck();
-            FinishPlayerMove();
+            if (_boardController.IsKingInCheck(CurrentPlayer.King))
+            {
+                _pieceMoveController.CancelMove();
+                return;
+            }
+
+            _pieceMoveController.ApplyMove();
+            SwitchPlayer();
         }
 
         private void PawnPromotionController_OnPawnPromoted()
@@ -63,37 +69,6 @@ namespace Chess2D.Controller
 
             PlayerModel opponentPlayer = _gameModel.GetOpponentPlayer();
             opponentPlayer.SetInteractive(false);
-            
-            UpdateKingCheck();
-        }
-
-        private void UpdateKingCheck()
-        {
-            CurrentPlayer.King.isTarget = false;
-            PlayerModel opponentPlayer = _gameModel.GetOpponentPlayer();
-
-            foreach (PieceView piece in opponentPlayer.pieces)
-            {
-                _pieceController.UpdatePieceTarget(CurrentPlayer.King, piece);
-                if (CurrentPlayer.King.isTarget)
-                {
-                    return;
-                }
-            }
-        }
-
-        private void FinishPlayerMove()
-        {
-            //King under check, you can't move
-            if (CurrentPlayer.King.isTarget)
-            {
-                _pieceMoveController.CancelMove();
-            }
-            else
-            {
-                _pieceMoveController.ApplyMove();
-                SwitchPlayer();
-            }
         }
     }
 }

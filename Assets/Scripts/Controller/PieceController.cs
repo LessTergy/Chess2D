@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Chess2D.Model;
-using Chess2D.PieceMovement;
 using Chess2D.UI;
 using UnityEngine;
 
@@ -63,29 +62,6 @@ namespace Chess2D.Controller
             var pieceRect = pieceView.transform as RectTransform;
             pieceRect.sizeDelta = cellView.RectT.sizeDelta;
             pieceView.transform.position = cellView.transform.position;
-        }
-
-        public void UpdatePieceTarget(PieceView friendlyPiece, PieceView opponentPiece)
-        {
-            if (!opponentPiece.IsActive)
-            {
-                return;
-            }
-
-            foreach (PieceMoveAlgorithm moveAlgorithm in opponentPiece.MoveAlgorithms)
-            {
-                List<MoveData> moves = moveAlgorithm.GetAvailableMoves(opponentPiece, _boardController);
-
-                foreach (MoveData moveInfo in moves)
-                {
-                    if (moveInfo.cellView.Coord != friendlyPiece.cellCoord)
-                    {
-                        continue;
-                    }
-                    friendlyPiece.isTarget = true;
-                    return;
-                }
-            }
         }
     }
 }

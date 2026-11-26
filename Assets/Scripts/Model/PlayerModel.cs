@@ -38,7 +38,7 @@ namespace Chess2D.Model
         {
             foreach (PieceView piece in pieces)
             {
-                piece.isLastMoving = false;
+                piece.LastMoveWasDoublePawnStep = false;
             }
         }
     }

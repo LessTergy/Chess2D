@@ -1,4 +1,5 @@
 ﻿using Chess2D.Model;
+using Chess2D.PieceMovement;
 using Chess2D.UI;
 using UnityEngine;
 
@@ -88,6 +89,37 @@ namespace Chess2D.Controller
                 return CellState.Opponent;
             }
             return CellState.Free;
+        }
+
+        public bool IsKingInCheck(PieceView king)
+        {
+            foreach (var cell in _cells)
+            {
+                var attacker = cell.CurrentPiece;
+                if (attacker == null || attacker.PlayerType == king.PlayerType)
+                {
+                    continue;
+                }
+
+                foreach (var algorithm in attacker.MoveAlgorithms)
+                {
+                    // Castling does not attack squares and uses this check itself.
+                    if (algorithm is KingCastlingMove)
+                    {
+                        continue;
+                    }
+
+                    foreach (var move in algorithm.GetAvailableMoves(attacker, this))
+                    {
+                        if (move.cellView.Coord == king.cellCoord)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
         }
 
         public void PlacePieceOnCell(PieceView pieceView, Vector2Int cellCoord)

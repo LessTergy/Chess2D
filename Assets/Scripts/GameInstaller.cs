@@ -56,7 +56,7 @@ namespace Chess2D
             _pawnPromotionPopup.Construct(_pieceConfig, GameConstants.PromotionPieces);
             _pawnPromotionController = new PawnPromotionController(gameModel, _pawnPromotionPopup, _boardController, _pieceController, _pieceMoveController);
             
-            _gameCycleController = new GameCycleController(gameModel, _pieceController, _pieceMoveController, _pawnPromotionController);
+            _gameCycleController = new GameCycleController(gameModel, _boardController, _pieceMoveController, _pawnPromotionController);
             _restartController = new RestartController(_restartButton);
         }
 

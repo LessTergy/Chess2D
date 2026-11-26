@@ -23,10 +23,10 @@ namespace Chess2D.PieceMovement
         {
             var moves = new List<MoveData>();
 
-            Vector2Int kingStartCoord = GetKingStartCoord(piece.PlayerType);
-            // king stand at start coord, never was moving and isn't in check
-            bool validMove = piece.cellCoord == kingStartCoord && !piece.isWasMoving && !piece.isTarget;
-            if (!validMove) return moves;
+            if (piece.cellCoord != GetKingStartCoord(piece.PlayerType) || piece.isWasMoving || boardController.IsKingInCheck(piece))
+            {
+                return moves;
+            }
             
             FillCellPath(moves, boardController, piece, true);
             FillCellPath(moves, boardController, piece, false);
@@ -58,24 +58,40 @@ namespace Chess2D.PieceMovement
                 return;
             }
 
-            //rook never was moving and doesn't have anything between
-            bool isEmptyBetween = IsEmptyBetweenCoords(boardController, kingPiece.cellCoord, rookPiece.cellCoord);
-            bool validMove = !rookPiece.isWasMoving && isEmptyBetween;
-            if (!validMove) return;
-            
-            int kingXOffset = (isLeft) ? -2 : 2;
-            var newKingCoord = new Vector2Int(kingPiece.cellCoord.x + kingXOffset, kingPiece.cellCoord.y);
+            if (rookPiece.isWasMoving || !IsEmptyBetweenCoords(boardController, kingPiece.cellCoord, rookPiece.cellCoord))
+            {
+                return;
+            }
 
-            int rookXOffset = (isLeft) ? 1 : -1;
-            var newRookCoord = new Vector2Int(newKingCoord.x + rookXOffset, newKingCoord.y);
+            var direction = isLeft ? -1 : 1;
+            var kingTransitCoord = new Vector2Int(kingPiece.cellCoord.x + direction, kingPiece.cellCoord.y);
+            var kingTransitCommand = new PieceMoveCommand(boardController, kingPiece, kingTransitCoord);
+            if (LeavesKingInCheck(kingTransitCommand, kingPiece, boardController))
+            {
+                return;
+            }
 
+            var newKingCoord = new Vector2Int(kingTransitCoord.x + direction, kingTransitCoord.y);
             var kingMoveCommand = new PieceMoveCommand(boardController, kingPiece, newKingCoord);
-            var rookMoveCommand = new PieceMoveCommand(boardController, rookPiece, newRookCoord);
+            var rookMoveCommand = new PieceMoveCommand(boardController, rookPiece, kingTransitCoord);
+            var castlingCommand = new CommandContainer(kingMoveCommand, rookMoveCommand);
+            if (!LeavesKingInCheck(castlingCommand, kingPiece, boardController))
+            {
+                moves.Add(new MoveData(boardController.GetCell(newKingCoord), castlingCommand));
+            }
+        }
 
-            var container = new CommandContainer(kingMoveCommand, rookMoveCommand);
-
-            var move = new MoveData(boardController.GetCell(newKingCoord), container);
-            moves.Add(move);
+        private static bool LeavesKingInCheck(ICommand command, PieceView king, BoardController boardController)
+        {
+            command.Execute();
+            try
+            {
+                return boardController.IsKingInCheck(king);
+            }
+            finally
+            {
+                command.Undo();
+            }
         }
 
         private bool IsEmptyBetweenCoords(BoardController boardController, Vector2Int coordA, Vector2Int coordB)

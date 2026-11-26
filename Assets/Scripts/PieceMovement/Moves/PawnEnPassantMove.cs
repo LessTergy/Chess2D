@@ -42,13 +42,18 @@ namespace Chess2D.PieceMovement
             CellState opponentPawnCellState = boardController.GetCellStateForMove(coord.x + xOffset, coord.y, movingPiece);
 
             bool validMove = moveCellState == CellState.Free && opponentPawnCellState == CellState.Opponent;
-            if (!validMove) return;
+            if (!validMove)
+            {
+                return;
+            }
             
             CellView opponentCell = boardController.GetCell(coord.x + xOffset, coord.y);
             PieceView opponentPiece = opponentCell.CurrentPiece;
             
-            validMove = opponentPiece.Type == PieceType.Pawn && opponentPiece.isLastMoving;
-            if (!validMove) return;
+            if (opponentPiece.Type != PieceType.Pawn || !opponentPiece.LastMoveWasDoublePawnStep)
+            {
+                return;
+            }
             
             CellView moveCell = boardController.GetCell(coord.x + xOffset, coord.y + yOffset);
             var killCommand = new PieceKillCommand(boardController, opponentPiece);

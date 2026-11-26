@@ -1,6 +1,7 @@
 ﻿using Chess2D.Commands;
 using System;
 using System.Collections.Generic;
+using Chess2D.Model;
 using Chess2D.PieceMovement;
 using Chess2D.UI;
 using UnityEngine;
@@ -20,6 +21,7 @@ namespace Chess2D.Controller
 
         private PieceView _lastMovePiece;
         private ICommand _lastMoveCommand;
+        private int _lastMoveStartRank;
         private Vector2 _startMovePosition;
         
         // getters
@@ -129,6 +131,7 @@ namespace Chess2D.Controller
                     continue;
                 }
 
+                _lastMoveStartRank = _lastMovePiece.cellCoord.y;
                 _lastMoveCommand = moveInfo.moveCommand;
                 moveInfo.moveCommand.Execute();
                 OnMakeMove(_lastMovePiece);
@@ -139,7 +142,8 @@ namespace Chess2D.Controller
         public void ApplyMove()
         {
             _lastMovePiece.isWasMoving = true;
-            _lastMovePiece.isLastMoving = true;
+            _lastMovePiece.LastMoveWasDoublePawnStep = _lastMovePiece.Type == PieceType.Pawn
+                && Math.Abs(_lastMovePiece.cellCoord.y - _lastMoveStartRank) == 2;
 
             OnFinishMove(_lastMovePiece);
         }

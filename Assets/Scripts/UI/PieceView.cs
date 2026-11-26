@@ -22,9 +22,8 @@ namespace Chess2D.UI
         
         [Header("Properties")]
         public Vector2Int cellCoord;
-        public bool isTarget;
         public bool isWasMoving;
-        public bool isLastMoving;
+        public bool LastMoveWasDoublePawnStep { get; set; }
         
         // getters
         public PieceType Type { get; private set; }
