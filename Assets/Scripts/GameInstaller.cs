@@ -12,6 +12,7 @@ namespace Chess2D
         [Header("UI Elements")]
         [SerializeField] private BoardView _boardView;
         [SerializeField] private PawnPromotionPopup _pawnPromotionPopup;
+        [SerializeField] private GameStatusView _gameStatusView;
         [SerializeField] private Button _restartButton;
 
         [Space(10)]
@@ -60,13 +61,14 @@ namespace Chess2D
             _pieces.Initialize();
             _promotion.Initialize();
             _restart.Initialize();
+            _gameStatusView.Initialize(_game, _board, _pieces, _moves);
         }
 
         private void StartGame()
         {
             _board.CreateCells();
             _pieces.CreatePlayerPieces();
-            GameStatusView.Create(_restartButton, _game, _board, _pieces, _moves);
+            _gameStatusView.Refresh();
         }
 
         private void OnDestroy()
